@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.6</java.version>
 		<jee.version>5</jee.version>
-		<ejb.version>3.1</ejb.version>
+		<ejb.version>3.0</ejb.version>
 		<persistence.version>1.0.2</persistence.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<log4j.version>1.2.16</log4j.version>
@@ -42,6 +42,17 @@
 
 	<dependencyManagement>
 		<dependencies>
+		    <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>ejb-api</artifactId>
+            <version>3.0</version>
+        </dependency>
+         <dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.1.7.Final</version>
+		</dependency>
+		
 			<!-- Testscope dependencies -->
 			
 			<dependency>
