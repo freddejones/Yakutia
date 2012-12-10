@@ -1,12 +1,13 @@
 package nu.danielsundberg.yakutia.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Tank {
 
-    @Id
+    @Id @GeneratedValue
 	private int id;
     private long playerId;
     private int health;
