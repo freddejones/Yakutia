@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class Army {
 
-	@OneToMany
+	@OneToMany(mappedBy ="id")
 	public Set<Tank> getTanks() {
 		return new HashSet<Tank>();
 	}
