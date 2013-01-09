@@ -9,6 +9,7 @@
         <class>nu.danielsundberg.yakutia.entity.Unit</class>
         <class>nu.danielsundberg.yakutia.entity.Player</class>
         <class>nu.danielsundberg.yakutia.entity.LandArea</class>
+        <class>nu.danielsundberg.yakutia.entity.Game</class>
 
         <properties>
             <property name="javax.persistence.validation.mode" value="none"/>
@@ -22,4 +23,5 @@
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
     </persistence-unit>
+
 </persistence>

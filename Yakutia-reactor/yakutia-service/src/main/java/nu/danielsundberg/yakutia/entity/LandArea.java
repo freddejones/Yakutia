@@ -4,20 +4,31 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@NamedQuery(name = "LandArea.getLandByName",
+query = "SELECT la FROM LandArea la WHERE la.name =:name")
 public class LandArea {
 
-    private int id;
+    private int landAreaId;
+    private String name;
     private Set<LandArea> neighbours;
 //    private Set<Unit> units;
 
     @Id
     @GeneratedValue
-    public int getId() {
-        return id;
+    public int getLandAreaId() {
+        return landAreaId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLandAreaId(int landAreaId) {
+        this.landAreaId = landAreaId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 //    @OneToMany

@@ -32,7 +32,20 @@ public class LandAreaTest extends JpaTestCase{
         entityManager.persist(landArea);
 
         assertEquals(1, landArea.getNeighbours().size());
-        assertEquals(connectedLandArea.getId(),
-                landArea.getNeighbours().iterator().next().getId());
+        assertEquals(connectedLandArea.getLandAreaId(),
+                landArea.getNeighbours().iterator().next().getLandAreaId());
+    }
+
+    @Test
+    public void testGetLandAreaByName() {
+        LandArea landArea = new LandArea();
+        landArea.setName("LAND1");
+        entityManager.persist(landArea);
+
+        LandArea landAreaGet = (LandArea) entityManager.
+                createNamedQuery("LandArea.getLandByName").
+                setParameter("name","LAND1").getSingleResult();
+
+        assertEquals("LAND1", landAreaGet.getName());
     }
 }

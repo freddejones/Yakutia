@@ -7,7 +7,6 @@ import java.util.Set;
 @Entity
 public class Player {
 
-    //TODO: Do we need composite primary key? game id + playerid?
     private long playerId;
     private Set<LandArea> landAreas;
 
