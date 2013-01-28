@@ -1,54 +1,56 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javassist.NotFoundException;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-import nu.danielsundberg.yakutia.application.service.GameEngineInterface;
+import nu.danielsundberg.yakutia.entity.Game;
+import nu.danielsundberg.yakutia.entity.Player;
 
 
 @Stateless
-public class GameEngineBean implements GameEngineInterface {
+public class GameEngineBean {
 
-	@Override
-	public void startNewGame(Set<Long> playerIds) throws NotFoundException {
-		
-		if (playerIds.size() <= 1) {
-			throw new NotFoundException("Could not find more than one player");
-		}
-		
-		// scramble up the game: 
-		// => order of turns
-		// => set land area to players
-		
-		// Should this be saved to db?
-		// how to store the order?
-		
-	}
+    @EJB
+    private GameBoardBean gameBoardBean;
 
-	@Override
-	public void startTurn() {
-		
-	}
+    @PersistenceContext(name = "yakutiaPU")
+    private EntityManager em;
 
-	@Override
-	public void attack() {
-		
-	}
+	public long startNewGame(Set<Long> playerIds) throws NotFoundException, NamingException {
 
-	@Override
-	public void endTurn() {
-		// current player ends its turn
-	}
+        Context ctx = new InitialContext();
+		Game game = new Game();
+        em.persist(game);
 
-	@Override
-	public void endGame() {
-		
-		// select whos winner?
-		// boolean to decide if game is over?
-		
-	}
-	
+
+        Set<Player> players = new HashSet<Player>();
+
+        // Players already exists right
+        for (Long id : playerIds) {
+            Player play = em.find(Player.class, id);
+            players.add(play);
+        }
+        game.setPlayers(players);
+        em.merge(game);
+
+        gameBoardBean.generateGameBoard(game.getGameId());
+        em.merge(game);
+
+        gameBoardBean.assignPlayers(players, game.getGameId());
+        em.merge(game);
+
+        return game.getGameId();
+    }
+
+
 }

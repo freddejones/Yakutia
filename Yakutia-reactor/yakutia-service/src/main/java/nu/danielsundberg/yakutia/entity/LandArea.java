@@ -1,6 +1,7 @@
 package nu.danielsundberg.yakutia.entity;
 
 import javax.persistence.*;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -49,5 +50,15 @@ public class LandArea {
         this.neighbours = neighbours;
     }
 
+    public boolean isNeighbours(LandArea checkLand) {
+        Iterator<LandArea> landAreaIterator = neighbours.iterator();
 
+        while(landAreaIterator.hasNext()) {
+            LandArea landArea = landAreaIterator.next();
+            if (landArea.getName().equals(checkLand.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

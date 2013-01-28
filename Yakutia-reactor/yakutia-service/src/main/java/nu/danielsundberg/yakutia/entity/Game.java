@@ -10,17 +10,17 @@ import java.util.Set;
 public class Game {
 
     @Id @GeneratedValue
-    private int gameId;
+    private long gameId;
     @OneToMany
     private Set<LandArea> gameBoard;
     @OneToMany
     private Set<Player> players;
 
-    public int getGameId() {
+    public long getGameId() {
         return gameId;
     }
 
-    public void setGameId(int gameId) {
+    public void setGameId(long gameId) {
         this.gameId = gameId;
     }
 

@@ -2,34 +2,34 @@ package nu.danielsundberg.yakutia.application.service.impl;
 
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.LandArea;
+import nu.danielsundberg.yakutia.entity.Player;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Stateless
-public class GenerateGameBoard {
+public class GameBoardBean {
 
     @PersistenceContext(name = "yakutiaPU")
     private EntityManager em;
 
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
-    }
 
-    public int createGame() {
-        Game gameC = new Game();
-        em.persist(gameC);
+    // TODO create a board factory?
+    // TODO and just make the assingment here in this bean?
+    // TODO figure out how to map the domain models
 
-        System.out.println(gameC.getGameId());
-        return gameC.getGameId();
-    }
+    public void generateGameBoard(long gameId) {
 
-    public void generateGameBoard(int gameId) {
         Game game = em.find(Game.class, gameId);
+
+        if (game == null) {
+            throw new RuntimeException("Could not find any game with id: " + gameId);
+        }
 
         LandArea la1 = new LandArea();
         la1.setName("AAAAA");
@@ -63,6 +63,30 @@ public class GenerateGameBoard {
 
         game.setGameBoard(gameBoard);
         em.persist(game);
+    }
+
+    public void assignPlayers(Set<Player> players, long gameId) {
+        Game game = em.find(Game.class, gameId);
+
+        Player p1;
+        Player p2;
+
+        Iterator<Player> playerIt = players.iterator();
+        p1 = playerIt.next();
+        p2 = playerIt.next();
+
+        Iterator<LandArea> landAreaIterable = game.getGameBoard().iterator();
+        Set<LandArea> la1 = new HashSet<LandArea>();
+        la1.add(landAreaIterable.next());
+        la1.add(landAreaIterable.next());
+        p1.setLandAreas(la1);
+
+        Set<LandArea> la2 = new HashSet<LandArea>();
+        la2.add(landAreaIterable.next());
+        p2.setLandAreas(la2);
+
+        em.merge(p1);
+        em.merge(p2);
     }
 
 }
