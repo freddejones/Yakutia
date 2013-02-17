@@ -4,17 +4,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
-public class Game {
+public class Game implements Serializable {
 
     @Id @GeneratedValue
     private long gameId;
-    @OneToMany
-    private Set<LandArea> gameBoard;
-    @OneToMany
-    private Set<Player> players;
+
+    @OneToMany(mappedBy = "game")
+    private Set<GamePlayer> players;
 
     public long getGameId() {
         return gameId;
@@ -24,19 +24,11 @@ public class Game {
         this.gameId = gameId;
     }
 
-    public Set<LandArea> getGameBoard() {
-        return gameBoard;
-    }
-
-    public void setGameBoard(Set<LandArea> gameBoard) {
-        this.gameBoard = gameBoard;
-    }
-
-    public Set<Player> getPlayers() {
+    public Set<GamePlayer> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Set<Player> players) {
+    public void setPlayers(Set<GamePlayer> players) {
         this.players = players;
     }
 }

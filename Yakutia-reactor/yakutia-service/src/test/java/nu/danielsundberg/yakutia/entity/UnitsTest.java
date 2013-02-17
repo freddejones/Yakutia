@@ -10,12 +10,28 @@ public class UnitsTest extends JpaTestCase {
     public void testToPersistTank() {
 
         Unit tank = new Unit();
-        tank.setHealth(1);
         tank.setTypeOfUnit(UnitType.TANK);
+        tank.setLandArea(LandArea.FINLAND);
 
         entityManager.persist(tank);
 
         assertNotNull(tank.getId());
+    }
+
+    @Test
+    public void testNamedQueryFindUnitsByLandAreaName() {
+        Unit tank = new Unit();
+        tank.setTypeOfUnit(UnitType.TANK);
+        tank.setLandArea(LandArea.SVERIGE);
+        tank.setStrength(15);
+
+        entityManager.persist(tank);
+
+        Unit tankGet = (Unit) entityManager.createNamedQuery("Unit.getUnitsByLandArea")
+                .setParameter("laName",LandArea.SVERIGE)
+                .getSingleResult();
+
+        assertEquals(LandArea.SVERIGE,tankGet.getLandArea());
     }
 
 }

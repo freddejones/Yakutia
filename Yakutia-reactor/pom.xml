@@ -10,10 +10,11 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>yakutia-core</module>
+		<module>yakutia-api</module>
 		<module>yakutia-service</module>
+        <module>yakutia-ear</module>
 		<module>yakutia-web</module>
-	</modules>
+    </modules>
 
 	<properties>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -42,20 +43,20 @@
 
 	<dependencyManagement>
 		<dependencies>
-		    <dependency>
+		  <dependency>
             <groupId>javax.ejb</groupId>
             <artifactId>ejb-api</artifactId>
             <version>3.0</version>
-        </dependency>
-         <dependency>
+           </dependency>
+         <!--dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>4.1.7.Final</version>
-		</dependency>
+		</dependency-->
 		
 			<!-- Testscope dependencies -->
 			
-			<dependency>
+			<!--dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
@@ -90,7 +91,7 @@
 				<artifactId>hsqldb</artifactId>
 				<version>${hsqldb.version}</version>
 				<scope>test</scope>
-			</dependency>
+			</dependency-->
 		</dependencies>
 	</dependencyManagement>
 
@@ -259,7 +260,7 @@
 		</plugins>
 	</build>
 	
-	<repositories>
+	<!--repositories>
 		<repository>
 			<id>repo.danielsundberg.nu</id>
 			<layout>default</layout>
@@ -272,6 +273,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-	</repositories>
+	</repositories -->
 
 </project>

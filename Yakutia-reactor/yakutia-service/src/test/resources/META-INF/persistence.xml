@@ -8,8 +8,8 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>nu.danielsundberg.yakutia.entity.Unit</class>
         <class>nu.danielsundberg.yakutia.entity.Player</class>
-        <class>nu.danielsundberg.yakutia.entity.LandArea</class>
         <class>nu.danielsundberg.yakutia.entity.Game</class>
+        <class>nu.danielsundberg.yakutia.entity.GamePlayer</class>
 
         <properties>
             <property name="javax.persistence.validation.mode" value="none"/>

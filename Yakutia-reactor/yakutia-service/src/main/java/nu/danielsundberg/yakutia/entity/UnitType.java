@@ -1,9 +1,9 @@
 package nu.danielsundberg.yakutia.entity;
 
 public enum UnitType {
-    TANK ("TANK"),
-    AIR ("AIR"),
-    SOLDIER ("SOLDIER");
+    TANK ("TANK");
+//    AIR ("AIR"),
+//    SOLDIER ("SOLDIER");
 
     private String unitType;
 

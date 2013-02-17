@@ -1,14 +1,16 @@
 package nu.danielsundberg.yakutia.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Player {
+public class Player implements Serializable {
 
     private long playerId;
-    private Set<LandArea> landAreas;
+    private String name;
+    private Set<GamePlayer> games;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,13 +22,20 @@ public class Player {
         this.playerId = playerId;
     }
 
-    @OneToMany
-    @Column(nullable = true)
-    public Set<LandArea> getLandAreas() {
-        return landAreas;
+    public String getName() {
+        return name;
     }
 
-    public void setLandAreas(Set<LandArea> landAreas) {
-        this.landAreas = landAreas;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @OneToMany(mappedBy = "player")
+    public Set<GamePlayer> getGames() {
+        return games;
+    }
+
+    public void setGames(Set<GamePlayer> games) {
+        this.games = games;
     }
 }

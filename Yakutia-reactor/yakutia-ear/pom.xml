@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>yakutia-reactor</artifactId>
+        <groupId>nu.danielsundberg.games.yakutia</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>yakutia-ear</artifactId>
+    <packaging>ear</packaging>
+    <name>Yaktia :: EAR</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>nu.danielsundberg.games.yakutia</groupId>
+            <artifactId>yakutia-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>nu.danielsundberg.games.yakutia</groupId>
+            <artifactId>yakutia-services</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <modules>
+                        <ejbModule>
+                            <groupId>nu.danielsundberg.games.yakutia</groupId>
+                            <artifactId>yakutia-services</artifactId>
+                        </ejbModule>
+                        <jarModule>
+                            <groupId>nu.danielsundberg.games.yakutia</groupId>
+                            <artifactId>yakutia-api</artifactId>
+                            <bundleDir>lib</bundleDir>
+                        </jarModule>
+                    </modules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

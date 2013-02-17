@@ -1,26 +1,47 @@
 package nu.danielsundberg.yakutia.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Unit {
+@NamedQueries(
+        @NamedQuery(name="Unit.getUnitsByLandArea",
+        query = "SELECT u FROM Unit u where landArea =:laName")
+)
+public class Unit implements Serializable {
+
+	private int id;
+    private int strength;
+    private LandArea landArea;
+    private UnitType typeOfUnit;
+    private GamePlayer gamePlayer;
 
     @Id @GeneratedValue
-	private int id;
-    private int health;
-	private int level;
-    private String description;
-    private UnitType typeOfUnit;
-    private boolean movable;
-
-
-    public boolean isMovable() {
-        return movable;
+    public int getId() {
+        return id;
     }
 
-    public void setMovable(boolean movable) {
-        this.movable = movable;
+    public void setId(int id) {
+        this.id = id;
     }
+
+    @Enumerated(EnumType.STRING)
+    public LandArea getLandArea() {
+        return landArea;
+    }
+
+    public void setLandArea(LandArea landArea) {
+        this.landArea = landArea;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+
 
     @Enumerated(EnumType.STRING)
     public UnitType getTypeOfUnit() {
@@ -31,35 +52,13 @@ public class Unit {
         this.typeOfUnit = typeOfUnit;
     }
 
-    public String getDescription() {
-        return description;
+    @ManyToOne
+    @JoinColumn(name = "gamePlayerId")
+    public GamePlayer getGamePlayer() {
+        return gamePlayer;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
+    public void setGamePlayer(GamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
     }
 }

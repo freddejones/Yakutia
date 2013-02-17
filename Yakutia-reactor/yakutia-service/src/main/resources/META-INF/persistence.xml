@@ -6,13 +6,14 @@
 
     <persistence-unit name="yakutiaPU" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <jta-data-source>jdbc/__default</jta-data-source>
-        <class>nu.danielsundberg.yakutia.application.service.impl.GameBoardBean</class>
-        <class>nu.danielsundberg.yakutia.application.service.impl.GameEngineBean</class>
+        <jta-data-source>jdbc/testDB</jta-data-source>
         <class>nu.danielsundberg.yakutia.entity.Game</class>
+        <class>nu.danielsundberg.yakutia.entity.GamePlayer</class>
+        <class>nu.danielsundberg.yakutia.entity.Player</class>
+        <class>nu.danielsundberg.yakutia.entity.Unit</class>
         <properties>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+                <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+                <property name="hibernate.hbm2ddl.auto" value="create-drop" />
         </properties>
     </persistence-unit>
 </persistence>

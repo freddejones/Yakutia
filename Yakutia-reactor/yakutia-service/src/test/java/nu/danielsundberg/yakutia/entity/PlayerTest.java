@@ -22,13 +22,4 @@ public class PlayerTest extends JpaTestCase {
         assertNotNull(player1.getPlayerId());
     }
 
-    @Test
-    public void testManagedLandAreas() {
-        LandArea landArea1 = new LandArea();
-        LandArea landArea2 = new LandArea();
-        landArea1.setName("LAND1");
-        landArea2.setName("LAND2");
-
-
-    }
 }
