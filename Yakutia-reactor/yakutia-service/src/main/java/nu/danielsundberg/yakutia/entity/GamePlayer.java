@@ -1,16 +1,24 @@
 package nu.danielsundberg.yakutia.entity;
 
+
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(
                 name = "quicky",
-                query = "SELECT g FROM GamePlayer g"
+                query = "SELECT g FROM GamePlayer g"  //TODO REMOVE THIS QUERY?
+        ),
+        @NamedQuery(
+                name = "GamePlayer.getPlayerId", // TODO Rename this query
+                query = "SELECT gp FROM GamePlayer gp WHERE gp.gameId =:gameId AND gp.playerId =:playerId"
         )
-)
+})
 public class GamePlayer implements Serializable {
 
     @Id
@@ -29,7 +37,7 @@ public class GamePlayer implements Serializable {
     private Player player;
 
     @OneToMany(mappedBy = "gamePlayer")
-    private Set<Unit> units;
+    private List<Unit> units;
 
     public long getGamePlayerId() {
         return gamePlayerId;
@@ -71,11 +79,11 @@ public class GamePlayer implements Serializable {
         this.player = player;
     }
 
-    public Set<Unit> getUnits() {
+    public List<Unit> getUnits() {
         return units;
     }
 
-    public void setUnits(Set<Unit> units) {
+    public void setUnits(List<Unit> units) {
         this.units = units;
     }
 }

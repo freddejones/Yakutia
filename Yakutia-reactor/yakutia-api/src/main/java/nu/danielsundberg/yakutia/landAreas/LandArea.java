@@ -1,4 +1,5 @@
-package nu.danielsundberg.yakutia.entity;
+package nu.danielsundberg.yakutia.landAreas;
+
 
 public enum LandArea {
     NORGE ("NORGE"),

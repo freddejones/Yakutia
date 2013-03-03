@@ -1,13 +1,20 @@
 package nu.danielsundberg.yakutia.entity;
 
+import nu.danielsundberg.yakutia.landAreas.LandArea;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(name="Unit.getUnitsByLandArea",
         query = "SELECT u FROM Unit u where landArea =:laName")
-)
+        //,
+//        @NamedQuery(name="Unit.getLandAreasByGamePlayer",
+//        query = "SELECT u.landArea FROM Unit")
+})
 public class Unit implements Serializable {
 
 	private int id;

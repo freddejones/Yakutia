@@ -18,13 +18,11 @@ public class RestTest {
     private GameEngineBean gameEngine;
 
     public RestTest() {
-
     }
 
     @GET
     public String getPlayers() {
-        List<String> players = gameEngine.getPlayers();
-        return "Number of players: " + players.size();
+        return "JUST A TEST";
     }
 
 }

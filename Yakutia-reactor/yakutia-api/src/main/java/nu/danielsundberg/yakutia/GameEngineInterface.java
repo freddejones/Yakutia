@@ -1,19 +1,20 @@
 package nu.danielsundberg.yakutia;
 
+import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
+
 import javax.ejb.Remote;
 import java.util.List;
 
 @Remote
 public interface GameEngineInterface {
 
-    public List<String> getPlayers();
+    public long createNewGame(long playerId);
 
-    public long startNewGame(List<Long> playerIds);
+    public void startNewGame(List<GameplayerId> gamePlayers);
 
-    public void deleteAllPlayers();
+    // fix game object
+    //public boolean isGameFinished();
 
-    public long createNewPlayer(String name);
-
-    public void addUnitsToGamePlayer(long gameId, long playerId);
-
+    // fix game object
+    //public void endGame();
 }

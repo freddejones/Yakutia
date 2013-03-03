@@ -19,7 +19,7 @@ public class JpaPage extends HomePage {
         super(parameters);
 
         InitialContext ctx = new InitialContext();
-        GameEngineInterface test = (GameEngineInterface) ctx.lookup("kickass");
+        PreGameInterface test = (PreGameInterface) ctx.lookup("preGameBean");
 
 
         List<String> players = test.getPlayers();

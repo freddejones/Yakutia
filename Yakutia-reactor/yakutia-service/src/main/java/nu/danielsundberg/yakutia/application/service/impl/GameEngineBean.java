@@ -1,11 +1,15 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
+import nu.danielsundberg.yakutia.GameplayerId;
+import nu.danielsundberg.yakutia.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.*;
 import nu.danielsundberg.yakutia.GameEngineInterface;
 
@@ -13,66 +17,61 @@ import nu.danielsundberg.yakutia.GameEngineInterface;
 @Stateless(mappedName = "kickass")
 public class GameEngineBean implements GameEngineInterface {
 
-
     @PersistenceContext(name = "yakutiaPU")
-    private EntityManager em;
+    protected EntityManager em;
 
-    public List<String> getPlayers() {
-        List<String> players = em.createQuery("SELECT p.name from Player p").getResultList();
-        return players;
-    }
-
-    public void deleteAllPlayers() {
-        List<Player> players = em.createQuery("SELECT p from Player p").getResultList();
-        for(Player p : players) {
-            em.remove(p);
-        }
-    }
-
-    public long createNewPlayer(String name) {
-        Player player = new Player();
-
-        player.setName(name);
-        em.persist(player);
-        return player.getPlayerId();
-    }
-
-	public long startNewGame(List<Long> playerIds) {
-
-		Game game = new Game();
+    // MOVE TO PREGAME INTEFACE
+    @Override
+    public long createNewGame(long playerId) {
+        Game game = new Game();
         em.persist(game);
 
-        for (Long id : playerIds) {
-            Player play = em.find(Player.class, id);
+        Player player = em.find(Player.class, playerId);
 
-            GamePlayer gamePlayer = new GamePlayer();
-            gamePlayer.setGame(game);
-            gamePlayer.setGameId(game.getGameId());
-            gamePlayer.setPlayer(play);
-            gamePlayer.setPlayerId(play.getPlayerId());
-            em.persist(gamePlayer);
-            em.refresh(game);
-            game.getPlayers().add(gamePlayer);
-        }
-
-//        game.setPlayers(players);
+        GamePlayer gamePlayer = new GamePlayer();
+        gamePlayer.setGame(game);
+        gamePlayer.setGameId(game.getGameId());
+        gamePlayer.setPlayer(player);
+        gamePlayer.setPlayerId(player.getPlayerId());
+        em.persist(gamePlayer);
+        em.refresh(game);
+        game.getPlayers().add(gamePlayer);
         em.merge(game);
 
         return game.getGameId();
     }
 
-    public void addUnitsToGamePlayer(long gameId, long playerId) {
-        List<GamePlayer> gps = em.createNamedQuery("quicky").getResultList();
+    @Override
+    public void startNewGame(List<GameplayerId> gamePlayers) {
 
-        System.out.println("Size: " + gps.size());
+        //TODO assign landmasses:
 
-        Unit unit = new Unit();
-        unit.setStrength(15);
-        unit.setLandArea(LandArea.SVERIGE);
-        unit.setTypeOfUnit(UnitType.TANK);
-        unit.setGamePlayer(gps.get(0));
-        em.persist(unit);
+        List<LandArea> landAreas = new ArrayList<LandArea>();
+        landAreas.add(LandArea.SVERIGE);
+        landAreas.add(LandArea.FINLAND);
+        landAreas.add(LandArea.NORGE);
+
+        Collections.shuffle(landAreas);
+
+        Stack<LandArea> landAreaStack = new Stack<LandArea>();
+        for (LandArea landArea : landAreas) {
+            landAreaStack.push(landArea);
+        }
+
+        // TODO add some check that number of players have been reached
+
+        // TODO turn around the loop to go on landAreas instead
+        // TODO Move Landarea to API level instead
+        for (GameplayerId gamePlayerId : gamePlayers) {
+            // TODO FIX QUERY
+            @SuppressWarnings("unchecked")
+            List<GamePlayer> gplist = em.createQuery("SELECT g FROM GamePlayer g WHERE g.playerId = "+gamePlayerId.getPlayerId()).getResultList();
+            Unit u = new Unit();
+            u.setGamePlayer(gplist.get(0));
+            u.setLandArea(landAreaStack.pop());
+            u.setStrength(5);
+            em.persist(u);
+        }
+
     }
-
-
 }
