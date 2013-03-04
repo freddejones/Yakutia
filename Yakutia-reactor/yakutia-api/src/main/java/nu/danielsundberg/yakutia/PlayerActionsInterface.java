@@ -12,12 +12,12 @@ public interface PlayerActionsInterface {
 
 	public boolean attackLandArea(LandArea from, LandArea to) throws LandIsNotNeighbourException;
 
-    public List<LandArea> getPlayersLandAreas(long PlayerId, long gameId);
+    public List<LandArea> getPlayersLandAreas(long playerId, long gameId);
 
-    public void moveUnits();
+    public void moveUnits(long playerId, long gameId);
 
-    public void placeUnits();
+    public void placeUnits(long playerId, long gameId, LandArea landArea, int extraUnits);
 
-    public void endTurn() throws TurnCannotBeEndedException;
+    public void endTurn(long playerId, long gameId) throws TurnCannotBeEndedException;
 
 }

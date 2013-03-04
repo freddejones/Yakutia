@@ -1,20 +1,21 @@
 package nu.danielsundberg.yakutia;
 
-import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
-
 import javax.ejb.Remote;
-import java.util.List;
 
 @Remote
 public interface GameEngineInterface {
 
     public long createNewGame(long playerId);
 
-    public void startNewGame(List<GameplayerId> gamePlayers);
+    public void startNewGame(long gameId);
 
     // fix game object
     //public boolean isGameFinished();
 
     // fix game object
     //public void endGame();
+
+
+    // TODO add some check that number of players have been reached in gameEngineBEAN
+    // Like maximum number of players
 }

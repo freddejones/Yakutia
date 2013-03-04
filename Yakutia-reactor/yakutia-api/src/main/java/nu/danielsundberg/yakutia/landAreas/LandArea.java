@@ -4,7 +4,8 @@ package nu.danielsundberg.yakutia.landAreas;
 public enum LandArea {
     NORGE ("NORGE"),
     SVERIGE ("SVERIGE"),
-    FINLAND ("FINLAND");
+    FINLAND ("FINLAND"),
+    UNASSIGNEDLAND("UNASSIGNEDLAND");
 
     private String landArea;
 

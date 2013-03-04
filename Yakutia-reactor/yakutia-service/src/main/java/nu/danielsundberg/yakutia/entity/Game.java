@@ -10,6 +10,10 @@ import java.util.Set;
 @Entity
 public class Game implements Serializable {
 
+    // TODO add temporal values (for when created game etc
+    // TODO add enum for state of game (STARTED, ONGOING, FINISHED)
+
+
     @Id @GeneratedValue
     private long gameId;
 

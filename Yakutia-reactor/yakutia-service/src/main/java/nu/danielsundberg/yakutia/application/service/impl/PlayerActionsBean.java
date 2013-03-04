@@ -5,7 +5,6 @@ import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.exceptions.LandIsNotNeighbourException;
 import nu.danielsundberg.yakutia.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.Unit;
-import nu.danielsundberg.yakutia.entity.UnitType;
 import nu.danielsundberg.yakutia.exceptions.TurnCannotBeEndedException;
 import nu.danielsundberg.yakutia.landAreas.LandAreaConnections;
 
@@ -13,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -58,24 +56,17 @@ public class PlayerActionsBean implements PlayerActionsInterface {
 
     @Override
     public List<LandArea> getPlayersLandAreas(long playerId, long gameId) {
-        // Get gameplayerID
-        GamePlayer gp = (GamePlayer) em.createNamedQuery("GamePlayer.getPlayerId")
+        GamePlayer gp = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
                 .setParameter("gameId",gameId)
                 .setParameter("playerId", playerId)
                 .getSingleResult();
 
         em.refresh(gp);
-        log.info("Gameid: " +gp.getGameId());
-        log.info("plaerid: " +gp.getPlayerId());
-        log.info("gameplayerid: " +gp.getGamePlayerId());
-        log.info(Integer.toString(gp.getUnits().size()));
 
         List<LandArea> landAreas = new ArrayList<LandArea>();
-
         for (Unit u : gp.getUnits()) {
             landAreas.add(u.getLandArea());
         }
-
         return landAreas;
     }
 
@@ -88,32 +79,53 @@ public class PlayerActionsBean implements PlayerActionsInterface {
     }
 
     @Override
-    public void moveUnits() {
+    public void moveUnits(long playerId, long gameId) {
 
     }
 
     @Override
-    public void placeUnits() {
+    public void placeUnits(long playerId, long gameId, LandArea landArea, int unitStrength) {
+        GamePlayer gamePlayer = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
+                .setParameter("gameId",gameId)
+                .setParameter("playerId",playerId)
+                .getSingleResult();
+
+        List<Unit> units = gamePlayer.getUnits();
+        // TODO check that unitsStrength can be done
+
+        for (Unit unit : units) {
+            log.info(unit.getLandArea().toString());
+            if (unit.getLandArea() == LandArea.UNASSIGNEDLAND) {
+                if (unitStrength > unit.getStrength()) {
+                    //TODO Throw new exception
+                    log.info("Throw exception");
+                    continue; //TODO REMOVE after fixed exception
+                }
+                em.refresh(unit);
+                unit.setStrength(unit.getStrength()-unitStrength);
+                if (unit.getStrength() == 0) {
+                    em.remove(unit);
+                } else {
+                    em.merge(unit);
+                }
+            }
+        }
+
+        for (Unit unit : units) {
+            if (unit.getLandArea() == landArea) {
+                em.refresh(unit);
+                unit.setStrength(unit.getStrength()+unitStrength);
+                em.merge(unit);
+            }
+        }
 
     }
 
     @Override
-    public void endTurn() throws TurnCannotBeEndedException {
+    public void endTurn(long playerId, long gameId) throws TurnCannotBeEndedException {
         // TODO end Turn
 
-    }
+        // Check that no empty units exists
 
-    // REMOVE THIS CODE LATER
-    public void addUnitsToGamePlayer(long gameId, long playerId) {
-        List<GamePlayer> gps = em.createNamedQuery("quicky").getResultList();
-
-        System.out.println("Size: " + gps.size());
-
-        Unit unit = new Unit();
-        unit.setStrength(15);
-        unit.setLandArea(LandArea.SVERIGE);
-        unit.setTypeOfUnit(UnitType.TANK);
-        unit.setGamePlayer(gps.get(0));
-        em.persist(unit);
     }
 }

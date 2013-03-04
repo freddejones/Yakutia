@@ -8,6 +8,7 @@ import nu.danielsundberg.yakutia.application.service.impl.GameEngineBean;
 import nu.danielsundberg.yakutia.application.service.impl.PreGameBean;
 import nu.danielsundberg.yakutia.exceptions.LandIsNotNeighbourException;
 import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.exceptions.TurnCannotBeEndedException;
 import nu.danielsundberg.yakutia.landAreas.LandArea;
 
 import javax.annotation.Resource;
@@ -45,36 +46,43 @@ public class WsTest {
         try {
             InitialContext ctx = new InitialContext();
             preGame = (PreGameInterface) ctx.lookup("preGameBean");
-            gameEngine = (GameEngineInterface) ctx.lookup("kickass");
+            gameEngine = (GameEngineInterface) ctx.lookup("kickass"); // TODO RENAME THIS BEAN
             playerActions = (PlayerActionsInterface) ctx.lookup("playerActionsBean");
+
+            log.info("Creating players + creating a new game");
             long p1ID = preGame.createNewPlayer("Jones");
             long p2ID = preGame.createNewPlayer("Apan");
             long gameID = gameEngine.createNewGame(p1ID);
 
+            log.info("Accepting invite");
             preGame.acceptInvite(p2ID,gameID);
 
-            log.warning("Accepting invite");
-
-            log.info("Testing log info level");
-
-            // TODO user playerid instead of gameplayer
-            List<GameplayerId> listOfPlayers = new ArrayList<GameplayerId>();
-            GameplayerId gameplayerId = new GameplayerId();
-            GameplayerId gamePlayerId2  = new GameplayerId();
-            gameplayerId.setPlayerId(p1ID);
-            listOfPlayers.add(gameplayerId);
-            gamePlayerId2.setPlayerId(p2ID);
-            listOfPlayers.add(gamePlayerId2);
             log.info("starting new game");
-            gameEngine.startNewGame(listOfPlayers);
-            log.info("New game started");
+            gameEngine.startNewGame(gameID);
+
+            log.info("Place units for player1");
             List<LandArea> landAreasP1 = playerActions.getPlayersLandAreas(p1ID, gameID);
+            playerActions.placeUnits(p1ID, gameID, landAreasP1.get(0), 14);
+            playerActions.endTurn(p1ID,gameID);
+
+            log.info("Place units for player2");
             List<LandArea> landAreasP2 = playerActions.getPlayersLandAreas(p2ID, gameID);
-            playerActions.attackLandArea(landAreasP1.get(0),landAreasP2.get(0));
+            playerActions.placeUnits(p2ID, gameID, landAreasP2.get(0), 14);
+            playerActions.endTurn(p2ID,gameID);
+
+            log.info("Check that no units are not placed");
+            // TODO add method to API
+
+//            landAreasP1 = playerActions.getPlayersLandAreas(p1ID, gameID);
+//            landAreasP2 = playerActions.getPlayersLandAreas(p2ID, gameID);
+//            playerActions.attackLandArea(landAreasP1.get(0),landAreasP2.get(0));
+//            playerActions.endTurn(p1ID, gameID);
+
 
         } catch (NamingException e) {
         } catch (PlayerAlreadyExists playerAlreadyExists) {
-        } catch (LandIsNotNeighbourException e) {
+//        } catch (LandIsNotNeighbourException e) {
+        } catch (TurnCannotBeEndedException e) {
         }
 
     }

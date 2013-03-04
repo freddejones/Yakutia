@@ -1,21 +1,17 @@
 package nu.danielsundberg.yakutia.entity;
 
-
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @NamedQueries({
         @NamedQuery(
-                name = "quicky",
-                query = "SELECT g FROM GamePlayer g"  //TODO REMOVE THIS QUERY?
+                name = "GamePlayer.getGamePlayersFromGameId",
+                query = "SELECT gp FROM GamePlayer gp WHERE gp.gameId =:gameId"
         ),
         @NamedQuery(
-                name = "GamePlayer.getPlayerId", // TODO Rename this query
+                name = "GamePlayer.getGamePlayer",
                 query = "SELECT gp FROM GamePlayer gp WHERE gp.gameId =:gameId AND gp.playerId =:playerId"
         )
 })

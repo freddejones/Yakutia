@@ -3,12 +3,11 @@ package nu.danielsundberg.yakutia.application.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import nu.danielsundberg.yakutia.GameplayerId;
+
 import nu.danielsundberg.yakutia.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.*;
 import nu.danielsundberg.yakutia.GameEngineInterface;
@@ -42,35 +41,43 @@ public class GameEngineBean implements GameEngineInterface {
     }
 
     @Override
-    public void startNewGame(List<GameplayerId> gamePlayers) {
-
-        //TODO assign landmasses:
+    public void startNewGame(long gameId) {
 
         List<LandArea> landAreas = new ArrayList<LandArea>();
         landAreas.add(LandArea.SVERIGE);
         landAreas.add(LandArea.FINLAND);
         landAreas.add(LandArea.NORGE);
+        // TODO Extend number of LandAreas
 
         Collections.shuffle(landAreas);
 
-        Stack<LandArea> landAreaStack = new Stack<LandArea>();
+        @SuppressWarnings("unchecked")  // TODO How to get rid of supress warnings
+        List<GamePlayer> gamePlayers = (List<GamePlayer>) em.createNamedQuery("GamePlayer.getGamePlayersFromGameId")
+                .setParameter("gameId",gameId)
+                .getResultList();
+
+        /* assign gameplayers their landAreas */
+        int playerIdx = 0;
         for (LandArea landArea : landAreas) {
-            landAreaStack.push(landArea);
+            Unit u = new Unit();
+            u.setGamePlayer(gamePlayers.get(playerIdx));
+            u.setLandArea(landArea);
+            u.setStrength(1);
+            em.persist(u);
+
+            playerIdx++;
+            if (playerIdx == gamePlayers.size()) {
+                playerIdx = 0;
+            }
         }
 
-        // TODO add some check that number of players have been reached
-
-        // TODO turn around the loop to go on landAreas instead
-        // TODO Move Landarea to API level instead
-        for (GameplayerId gamePlayerId : gamePlayers) {
-            // TODO FIX QUERY
-            @SuppressWarnings("unchecked")
-            List<GamePlayer> gplist = em.createQuery("SELECT g FROM GamePlayer g WHERE g.playerId = "+gamePlayerId.getPlayerId()).getResultList();
-            Unit u = new Unit();
-            u.setGamePlayer(gplist.get(0));
-            u.setLandArea(landAreaStack.pop());
-            u.setStrength(5);
-            em.persist(u);
+        /* also assign gameplayers their units to place */
+        for (GamePlayer gp : gamePlayers) {
+            Unit unassignedUnit = new Unit();
+            unassignedUnit.setStrength(14);
+            unassignedUnit.setGamePlayer(gp);
+            unassignedUnit.setLandArea(LandArea.UNASSIGNEDLAND);
+            em.persist(unassignedUnit);
         }
 
     }

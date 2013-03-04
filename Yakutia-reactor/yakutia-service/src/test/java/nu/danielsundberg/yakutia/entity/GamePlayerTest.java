@@ -12,26 +12,19 @@ import static junit.framework.Assert.*;
 
 public class GamePlayerTest extends JpaTestCase {
 
-//    private static Game g;
-//    private static Player p;
+    private Game g;
+    private Player p;
+    private GamePlayer gp;
 
-    @BeforeClass
-    public static void setup() {
-//        g = new Game();
-//        p = new Player();
-    }
+    @Before
+    public void setup() {
 
-
-    @Test
-    public void testGetAllGamePlayersQuery() {
-        Game g = new Game();
-        Player p = new Player();
+        g = new Game();
+        p = new Player();
         entityManager.persist(p);
         entityManager.persist(g);
-//        entityManager.flush();
         entityManager.refresh(g);
-//        entityManager.refresh(p);
-        GamePlayer gp = new GamePlayer();
+        gp = new GamePlayer();
         gp.setGame(g);
         gp.setGameId(g.getGameId());
         gp.setPlayer(p);
@@ -39,8 +32,23 @@ public class GamePlayerTest extends JpaTestCase {
         entityManager.persist(gp);
         g.getPlayers().add(gp);
         entityManager.merge(g);
-
-        assertEquals(1,
-                entityManager.createNamedQuery("quicky").getResultList().size());
     }
+
+    @Test
+    public void testGetGamePlayersFromGameIdAndPlayerId() {
+        assertEquals(1,
+                entityManager.createNamedQuery("GamePlayer.getGamePlayer")
+                        .setParameter("gameId",g.getGameId())
+                        .setParameter("playerId",p.getPlayerId())
+                        .getResultList().size());
+    }
+
+    @Test
+    public void testGetGamePlayersFromGameId() {
+        assertEquals(1,
+                entityManager.createNamedQuery("GamePlayer.getGamePlayersFromGameId")
+                        .setParameter("gameId",g.getGameId())
+                        .getResultList().size());
+    }
+
 }
