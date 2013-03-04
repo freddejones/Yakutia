@@ -22,4 +22,17 @@ public class PlayerTest extends JpaTestCase {
         assertNotNull(player1.getPlayerId());
     }
 
+    @Test
+    public void testSearchPlayerNameQuery() {
+        String name = "TJOLAHOPPSAN";
+        player1.setName(name);
+        entityManager.persist(player1);
+
+        Player p = (Player) entityManager.createNamedQuery("Player.findPlayerBySearchName")
+                .setParameter("pName","%LAHOP%").getSingleResult();
+
+        assertNotNull(p);
+        assertEquals(name, p.getName());
+    }
+
 }

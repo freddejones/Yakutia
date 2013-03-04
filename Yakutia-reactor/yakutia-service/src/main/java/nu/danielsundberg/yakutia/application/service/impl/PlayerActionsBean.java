@@ -2,10 +2,10 @@ package nu.danielsundberg.yakutia.application.service.impl;
 
 import nu.danielsundberg.yakutia.PlayerActionsInterface;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
+import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
 import nu.danielsundberg.yakutia.exceptions.LandIsNotNeighbourException;
 import nu.danielsundberg.yakutia.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.Unit;
-import nu.danielsundberg.yakutia.exceptions.TurnCannotBeEndedException;
 import nu.danielsundberg.yakutia.landAreas.LandAreaConnections;
 
 import javax.ejb.Stateless;
@@ -35,13 +35,14 @@ public class PlayerActionsBean implements PlayerActionsInterface {
         List<Unit> attackingUnits = getUnits(attacking);
         List<Unit> defendingUnits = getUnits(defending);
 
+        // TODO get a nicer way to get gamePlayer
+        GamePlayer attackingPlayer = attackingUnits.get(0).getGamePlayer();
+        GamePlayer defendingGamePlayer = defendingUnits.get(0).getGamePlayer();
+
         // TODO need to get how many units to attack with
         // maybe just put in a list of Units instead?
         // Hmm something needs to go in the api in that case..
 
-
-        // TODO get a nicer way to get gamePlayer
-        GamePlayer attackingPlayer = attackingUnits.get(0).getGamePlayer();
 
         // Cheat for fun:
         for (Unit defeatedUnit : defendingUnits) {
@@ -51,6 +52,16 @@ public class PlayerActionsBean implements PlayerActionsInterface {
             em.persist(defeatedUnit);
         }
 
+        em.flush();
+
+        em.refresh(defendingGamePlayer);
+        if (defendingGamePlayer.getUnits().size() == 0) {
+            defendingGamePlayer.setGamePlayerStatus(GamePlayerStatus.DEAD);
+            em.merge(defendingGamePlayer);
+            log.info(defendingGamePlayer.getPlayer().getName() + " DIED!");
+        }
+
+        em.flush();
         return true;
     }
 
@@ -94,7 +105,6 @@ public class PlayerActionsBean implements PlayerActionsInterface {
         // TODO check that unitsStrength can be done
 
         for (Unit unit : units) {
-            log.info(unit.getLandArea().toString());
             if (unit.getLandArea() == LandArea.UNASSIGNEDLAND) {
                 if (unitStrength > unit.getStrength()) {
                     //TODO Throw new exception
@@ -111,6 +121,8 @@ public class PlayerActionsBean implements PlayerActionsInterface {
             }
         }
 
+        em.flush();
+
         for (Unit unit : units) {
             if (unit.getLandArea() == landArea) {
                 em.refresh(unit);
@@ -119,13 +131,24 @@ public class PlayerActionsBean implements PlayerActionsInterface {
             }
         }
 
+        em.flush();
+
+        em.refresh(gamePlayer);
     }
 
     @Override
-    public void endTurn(long playerId, long gameId) throws TurnCannotBeEndedException {
-        // TODO end Turn
+    public boolean endTurn(long playerId, long gameId)  {
+        GamePlayer gamePlayer = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
+                .setParameter("gameId",gameId)
+                .setParameter("playerId",playerId)
+                .getSingleResult();
 
-        // Check that no empty units exists
-
+        for (Unit unit : gamePlayer.getUnits()) {
+            log.info(gamePlayer.getPlayerId() + " " + unit.getLandArea().toString());
+            if (unit.getLandArea() == LandArea.UNASSIGNEDLAND) {
+                return false;
+            }
+        }
+        return true;
     }
 }

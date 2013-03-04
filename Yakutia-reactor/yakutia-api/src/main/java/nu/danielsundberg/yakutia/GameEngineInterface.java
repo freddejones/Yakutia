@@ -9,13 +9,12 @@ public interface GameEngineInterface {
 
     public void startNewGame(long gameId);
 
-    // fix game object
-    //public boolean isGameFinished();
+    public boolean isGameFinished(long gameId);
 
-    // fix game object
     //public void endGame();
-
 
     // TODO add some check that number of players have been reached in gameEngineBEAN
     // Like maximum number of players
+
+    // TODO add logic here like (nr of reinforcements and other game rules)
 }

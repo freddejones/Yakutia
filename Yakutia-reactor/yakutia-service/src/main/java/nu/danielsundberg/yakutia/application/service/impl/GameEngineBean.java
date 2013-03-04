@@ -23,6 +23,7 @@ public class GameEngineBean implements GameEngineInterface {
     @Override
     public long createNewGame(long playerId) {
         Game game = new Game();
+        game.setGameStatus(GameStatus.CREATED);
         em.persist(game);
 
         Player player = em.find(Player.class, playerId);
@@ -32,6 +33,7 @@ public class GameEngineBean implements GameEngineInterface {
         gamePlayer.setGameId(game.getGameId());
         gamePlayer.setPlayer(player);
         gamePlayer.setPlayerId(player.getPlayerId());
+        gamePlayer.setGamePlayerStatus(GamePlayerStatus.ACCEPTED);
         em.persist(gamePlayer);
         em.refresh(game);
         game.getPlayers().add(gamePlayer);
@@ -43,6 +45,9 @@ public class GameEngineBean implements GameEngineInterface {
     @Override
     public void startNewGame(long gameId) {
 
+        // TODO Add temporal check for when players are wiped out of invite
+
+        /* setup the land areas */
         List<LandArea> landAreas = new ArrayList<LandArea>();
         landAreas.add(LandArea.SVERIGE);
         landAreas.add(LandArea.FINLAND);
@@ -51,10 +56,18 @@ public class GameEngineBean implements GameEngineInterface {
 
         Collections.shuffle(landAreas);
 
-        @SuppressWarnings("unchecked")  // TODO How to get rid of supress warnings
-        List<GamePlayer> gamePlayers = (List<GamePlayer>) em.createNamedQuery("GamePlayer.getGamePlayersFromGameId")
-                .setParameter("gameId",gameId)
-                .getResultList();
+        List<GamePlayer> gamePlayers = getGamePlayerForGame(gameId);
+
+        /* set status for gameplayer to be alive */
+        for (GamePlayer gp : gamePlayers) {
+            if (gp.getGamePlayerStatus() == GamePlayerStatus.ACCEPTED) {
+                gp.setGamePlayerStatus(GamePlayerStatus.ALIVE);
+                em.merge(gp);
+            }
+        }
+
+        /* update game players */
+        gamePlayers = getGamePlayerForGameAlive(gameId);
 
         /* assign gameplayers their landAreas */
         int playerIdx = 0;
@@ -80,5 +93,46 @@ public class GameEngineBean implements GameEngineInterface {
             em.persist(unassignedUnit);
         }
 
+        /* set status of the game to ongoing */
+        Game game = em.find(Game.class, gameId);
+        game.setGameStatus(GameStatus.ONGOING);
+        em.merge(game);
     }
+
+    @Override
+    public boolean isGameFinished(long gameId) {
+        @SuppressWarnings("unchecked")  // TODO How to get rid of supress warnings
+                List<GamePlayer> gamePlayers = (List<GamePlayer>) em.createNamedQuery("GamePlayer.getGamePlayersFromGameId")
+                .setParameter("gameId",gameId)
+                .getResultList();
+
+        int numberOfActivePlayers = 0;
+        for (GamePlayer gamePlayer : gamePlayers) {
+            if (gamePlayer.getGamePlayerStatus() == GamePlayerStatus.ALIVE) {
+                numberOfActivePlayers++;
+            }
+        }
+
+        return numberOfActivePlayers == 1;
+    }
+
+    @SuppressWarnings("unchecked")  // TODO How to get rid of supress warnings
+    private List<GamePlayer> getGamePlayerForGame(long gameId) {
+        return (List<GamePlayer>) em.createNamedQuery("GamePlayer.getGamePlayersFromGameId")
+                .setParameter("gameId",gameId)
+                .getResultList();
+    }
+
+    @SuppressWarnings("unchecked")  // TODO How to get rid of supress warnings
+    private List<GamePlayer> getGamePlayerForGameAlive(long gameId) {
+        List<GamePlayer> gamePlayers = getGamePlayerForGame(gameId);
+        List<GamePlayer> gamePlayersAccepted = new ArrayList<GamePlayer>();
+        for (GamePlayer gp : gamePlayers) {
+            if (gp.getGamePlayerStatus() == GamePlayerStatus.ALIVE) {
+                gamePlayersAccepted.add(gp);
+            }
+        }
+        return gamePlayersAccepted;
+    }
+
 }

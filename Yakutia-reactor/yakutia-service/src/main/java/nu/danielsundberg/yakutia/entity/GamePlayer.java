@@ -13,6 +13,10 @@ import java.util.List;
         @NamedQuery(
                 name = "GamePlayer.getGamePlayer",
                 query = "SELECT gp FROM GamePlayer gp WHERE gp.gameId =:gameId AND gp.playerId =:playerId"
+        ),
+        @NamedQuery(
+                name = "GamePlayer.getGamePlayerFromPlayerId",
+                query = "SELECT gp FROM GamePlayer gp WHERE gp.playerId =:playerId"
         )
 })
 public class GamePlayer implements Serializable {
@@ -23,6 +27,9 @@ public class GamePlayer implements Serializable {
 
     private long gameId;
     private long playerId;
+
+    @Enumerated(EnumType.STRING)
+    private GamePlayerStatus gamePlayerStatus;
 
     @ManyToOne
     @JoinColumn(name="gameId", insertable = false, updatable = false)
@@ -57,6 +64,14 @@ public class GamePlayer implements Serializable {
 
     public void setPlayerId(long playerId) {
         this.playerId = playerId;
+    }
+
+    public GamePlayerStatus getGamePlayerStatus() {
+        return gamePlayerStatus;
+    }
+
+    public void setGamePlayerStatus(GamePlayerStatus gamePlayerStatus) {
+        this.gamePlayerStatus = gamePlayerStatus;
     }
 
     public Game getGame() {

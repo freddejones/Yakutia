@@ -18,6 +18,6 @@ public interface PlayerActionsInterface {
 
     public void placeUnits(long playerId, long gameId, LandArea landArea, int extraUnits);
 
-    public void endTurn(long playerId, long gameId) throws TurnCannotBeEndedException;
+    public boolean endTurn(long playerId, long gameId);
 
 }

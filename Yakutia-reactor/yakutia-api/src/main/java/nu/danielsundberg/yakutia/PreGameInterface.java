@@ -11,12 +11,13 @@ public interface PreGameInterface {
 
     public long createNewPlayer(String name) throws PlayerAlreadyExists;
 
-    public void invitePlayerToGame(String playerName);
+    public void invitePlayerToGame(String playerName, long gameId);
 
-    //public List<Long> getInvites(GameplayerId player);
+    public List<Long> getInvites(long playerId);
 
-    // What for parameters
-    public boolean acceptInvite(long playerId, long gameId);
+    public void acceptInvite(long playerId, long gameId);
+
+    public void declineInvite(long playerId, long gameId);
 
     public List<String> getPlayers();
 

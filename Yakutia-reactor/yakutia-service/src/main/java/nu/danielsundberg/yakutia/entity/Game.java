@@ -1,9 +1,6 @@
 package nu.danielsundberg.yakutia.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -20,6 +17,9 @@ public class Game implements Serializable {
     @OneToMany(mappedBy = "game")
     private Set<GamePlayer> players;
 
+    @Enumerated(EnumType.STRING)
+    private GameStatus gameStatus;
+
     public long getGameId() {
         return gameId;
     }
@@ -34,5 +34,13 @@ public class Game implements Serializable {
 
     public void setPlayers(Set<GamePlayer> players) {
         this.players = players;
+    }
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
     }
 }

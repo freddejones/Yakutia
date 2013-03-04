@@ -6,10 +6,16 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@NamedQueries(
-        @NamedQuery(name = "Player.findPlayerByName",
-        query = "SELECT p FROM Player p WHERE name=:pName")
-)
+@NamedQueries({
+        @NamedQuery(
+                name = "Player.findPlayerByName",
+                query = "SELECT p FROM Player p WHERE name=:pName"
+        ),
+        @NamedQuery(
+                name = "Player.findPlayerBySearchName",
+                query = "SELECT p FROM Player p WHERE p.name LIKE :pName"
+        )
+})
 public class Player implements Serializable {
 
     private long playerId;
