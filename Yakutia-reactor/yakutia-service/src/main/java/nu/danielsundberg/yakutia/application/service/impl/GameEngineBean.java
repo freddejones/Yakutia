@@ -2,6 +2,7 @@ package nu.danielsundberg.yakutia.application.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -24,6 +25,7 @@ public class GameEngineBean implements GameEngineInterface {
     public long createNewGame(long playerId) {
         Game game = new Game();
         game.setGameStatus(GameStatus.CREATED);
+        game.setCreationTime(new Date());
         em.persist(game);
 
         Player player = em.find(Player.class, playerId);
@@ -96,6 +98,7 @@ public class GameEngineBean implements GameEngineInterface {
         /* set status of the game to ongoing */
         Game game = em.find(Game.class, gameId);
         game.setGameStatus(GameStatus.ONGOING);
+        game.setStartedTime(new Date());
         em.merge(game);
     }
 
@@ -114,6 +117,14 @@ public class GameEngineBean implements GameEngineInterface {
         }
 
         return numberOfActivePlayers == 1;
+    }
+
+    @Override
+    public void endGame(long gameId) {
+        Game game = em.find(Game.class, gameId);
+        game.setGameStatus(GameStatus.FINISHED);
+        game.setFinshedTime(new Date());
+        em.merge(game);
     }
 
     @SuppressWarnings("unchecked")  // TODO How to get rid of supress warnings

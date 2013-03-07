@@ -11,7 +11,7 @@ public interface GameEngineInterface {
 
     public boolean isGameFinished(long gameId);
 
-    //public void endGame();
+    public void endGame(long gameId);
 
     // TODO add some check that number of players have been reached in gameEngineBEAN
     // Like maximum number of players

@@ -88,6 +88,7 @@ public class WsTest {
                     playerActions.endTurn(p1ID, gameID));
 
             log.info("is game finished? " + gameEngine.isGameFinished(gameID));
+            gameEngine.endGame(gameID);
 
         } catch (NamingException e) {
         } catch (PlayerAlreadyExists playerAlreadyExists) {
