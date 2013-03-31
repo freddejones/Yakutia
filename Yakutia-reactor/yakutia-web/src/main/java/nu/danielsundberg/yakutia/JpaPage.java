@@ -2,18 +2,18 @@ package nu.danielsundberg.yakutia;
 
 
 
-import nu.danielsundberg.yakutia.GameEngineInterface;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.List;
 
-public class JpaPage extends HomePage {
+@AuthorizeInstantiation("USER")
+public class JpaPage extends NavbarPage {
 
     public JpaPage(PageParameters parameters) throws NamingException {
         super(parameters);

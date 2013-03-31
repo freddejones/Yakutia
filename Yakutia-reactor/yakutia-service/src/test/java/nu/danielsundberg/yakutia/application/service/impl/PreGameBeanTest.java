@@ -16,7 +16,7 @@ public class PreGameBeanTest extends JpaTestCase {
 
         PreGameBean preGameBean = new PreGameBean();
         preGameBean.em = entityManager;
-        preGameBean.createNewPlayer("PLAYER");
+        preGameBean.createNewPlayer("PLAYER","mail");
 
     }
 

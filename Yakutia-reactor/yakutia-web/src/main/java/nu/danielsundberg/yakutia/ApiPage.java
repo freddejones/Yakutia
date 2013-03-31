@@ -1,6 +1,7 @@
 package nu.danielsundberg.yakutia;
 
 import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -11,7 +12,8 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-public class ApiPage extends HomePage {
+@AuthorizeInstantiation("USER")
+public class ApiPage extends NavbarPage {
 
 
     private String name = "myname";
@@ -36,7 +38,7 @@ public class ApiPage extends HomePage {
                 try {
                     ctx = new InitialContext();
                     test = (PreGameInterface) ctx.lookup("preGameBean");
-                    test.createNewPlayer(name);
+                    test.createNewPlayer(name, "fuckface");
                 } catch (NamingException e) {
 
                 } catch (PlayerAlreadyExists pae) {

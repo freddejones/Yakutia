@@ -12,9 +12,12 @@ import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
+//@Path("/pregame")
 @Stateless(mappedName = "preGameBean")
 public class PreGameBean implements PreGameInterface {
 
@@ -22,7 +25,23 @@ public class PreGameBean implements PreGameInterface {
     protected EntityManager em;
 
     @Override
-    public long createNewPlayer(String name) throws PlayerAlreadyExists {
+    public boolean playerExists(String email) {
+        if(em.createNamedQuery("Player.findPlayerBySearchEmail")
+            .setParameter("pEmail", email)
+            .getResultList().size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    //    @Path("/createGame")
+//    @POST
+////    @Produces({"application/xml","application/json"})
+////    @Consumes({"application/xml","application/json"})
+//    @Produces(MediaType.TEXT_HTML)
+//    @Consumes(MediaType.TEXT_HTML)
+//    @Override
+    public long createNewPlayer(String name, String email) throws PlayerAlreadyExists {
 
         if (em.createNamedQuery("Player.findPlayerByName")
                 .setParameter("pName", name)
@@ -33,13 +52,13 @@ public class PreGameBean implements PreGameInterface {
         Player player = new Player();
 
         player.setName(name);
+        player.setEmail(email);
         em.persist(player);
         return player.getPlayerId();
     }
 
     @Override
     public void invitePlayerToGame(String playerName, long gameId) {
-        // TODO fix invitePlayersToGame
         playerName = "%" + playerName + "%";
         Player playerToInvite = (Player) em.createNamedQuery("Player.findPlayerBySearchName")
                 .setParameter("pName",playerName).getSingleResult();

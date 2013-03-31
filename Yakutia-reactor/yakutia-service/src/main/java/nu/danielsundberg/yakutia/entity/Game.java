@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 public class Game implements Serializable {
 
-    // TODO add temporal values (for when created game etc
+    // TODO add name of game
 
 
     @Id @GeneratedValue

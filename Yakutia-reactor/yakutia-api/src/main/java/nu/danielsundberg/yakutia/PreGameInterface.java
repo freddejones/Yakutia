@@ -9,7 +9,9 @@ import java.util.List;
 @Remote
 public interface PreGameInterface {
 
-    public long createNewPlayer(String name) throws PlayerAlreadyExists;
+    public boolean playerExists(String email);
+
+    public long createNewPlayer(String name, String email) throws PlayerAlreadyExists;
 
     public void invitePlayerToGame(String playerName, long gameId);
 

@@ -31,6 +31,10 @@ public class GamePlayer implements Serializable {
     @Enumerated(EnumType.STRING)
     private GamePlayerStatus gamePlayerStatus;
 
+    private long nextGamePlayerIdTurn;
+
+    private boolean activePlayerTurn;
+
     @ManyToOne
     @JoinColumn(name="gameId", insertable = false, updatable = false)
     private Game game;
@@ -72,6 +76,22 @@ public class GamePlayer implements Serializable {
 
     public void setGamePlayerStatus(GamePlayerStatus gamePlayerStatus) {
         this.gamePlayerStatus = gamePlayerStatus;
+    }
+
+    public long getNextGamePlayerIdTurn() {
+        return nextGamePlayerIdTurn;
+    }
+
+    public void setNextGamePlayerIdTurn(long nextGamePlayerIdTurn) {
+        this.nextGamePlayerIdTurn = nextGamePlayerIdTurn;
+    }
+
+    public boolean isActivePlayerTurn() {
+        return activePlayerTurn;
+    }
+
+    public void setActivePlayerTurn(boolean activePlayerTurn) {
+        this.activePlayerTurn = activePlayerTurn;
     }
 
     public Game getGame() {

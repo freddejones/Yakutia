@@ -14,12 +14,17 @@ import java.util.Set;
         @NamedQuery(
                 name = "Player.findPlayerBySearchName",
                 query = "SELECT p FROM Player p WHERE p.name LIKE :pName"
+        ),
+        @NamedQuery(
+                name = "Player.findPlayerBySearchEmail",
+                query = "SELECT p FROM Player p WHERE p.email LIKE :pEmail"
         )
 })
 public class Player implements Serializable {
 
     private long playerId;
     private String name;
+    private String email;
     private Set<GamePlayer> games;
 
     @Id
@@ -47,5 +52,13 @@ public class Player implements Serializable {
 
     public void setGames(Set<GamePlayer> games) {
         this.games = games;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

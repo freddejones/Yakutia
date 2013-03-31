@@ -56,9 +56,17 @@ public class GameEngineBean implements GameEngineInterface {
         landAreas.add(LandArea.NORGE);
         // TODO Extend number of LandAreas
 
+        /* shuffle the land areas */
         Collections.shuffle(landAreas);
 
+        // TODO well fix this then...
+        /* shuffle up the players and assign turn order */
         List<GamePlayer> gamePlayers = getGamePlayerForGame(gameId);
+//        Collections.shuffle(gamePlayers);
+//
+//        for (GamePlayer gp : gamePlayers) {
+//            gp.getGamePlayerId();
+//        }
 
         /* set status for gameplayer to be alive */
         for (GamePlayer gp : gamePlayers) {

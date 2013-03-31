@@ -102,7 +102,6 @@ public class PlayerActionsBean implements PlayerActionsInterface {
                 .getSingleResult();
 
         List<Unit> units = gamePlayer.getUnits();
-        // TODO check that unitsStrength can be done
 
         for (Unit unit : units) {
             if (unit.getLandArea() == LandArea.UNASSIGNEDLAND) {

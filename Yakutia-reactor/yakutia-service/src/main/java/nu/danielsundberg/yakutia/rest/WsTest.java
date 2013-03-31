@@ -27,8 +27,8 @@ import java.util.logging.Logger;
 @Stateless
 public class WsTest {
 
-//    @Resource
-//    InitialContext ctx;
+    @Resource
+    InitialContext ctx;
 
     private Logger log = Logger.getLogger(WsTest.class.getName());
 
@@ -50,9 +50,9 @@ public class WsTest {
             playerActions = (PlayerActionsInterface) ctx.lookup("playerActionsBean");
 
             log.info("Creating players + creating a new game");
-            long p1ID = preGame.createNewPlayer("Jones");
-            long p2ID = preGame.createNewPlayer("Apan");
-            long p3Id = preGame.createNewPlayer("trean");
+            long p1ID = preGame.createNewPlayer("Jones","mail");
+            long p2ID = preGame.createNewPlayer("Apan","mail");
+            long p3Id = preGame.createNewPlayer("trean","mail");
             long gameID = gameEngine.createNewGame(p1ID);
 
             preGame.invitePlayerToGame("pan",gameID);

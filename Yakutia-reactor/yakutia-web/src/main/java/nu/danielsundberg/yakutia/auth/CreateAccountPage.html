@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>HomePage</title>
+</head>
+<body>
+<wicket:extend>
+    <center>
+    <header class="jumbotron subhead" id="overview">
+        <div class="container">
+            <h1>Create account</h1>
+
+            <p class="lead">Create a new yakutia player</p>
+        </div>
+    </header>
+
+
+
+    <div class="container">
+        <form wicket:id="form">
+            <input type="text" wicket:id="playername" onclick="this.value='';" value="" size="50" />
+            <br>
+            <input type="text" wicket:id="email" value="" size="60" disabled="disabled"/>
+            <br>
+            <input type="submit" class="btn btn-primary" wicket:id="createButton" value="create player" />
+        </form>
+    </div>
+    </center>
+</wicket:extend>
+</body>
+</html>
