@@ -1,6 +1,7 @@
 package nu.danielsundberg.yakutia.rest;
 
 
+import nu.danielsundberg.yakutia.PlayerApi;
 import nu.danielsundberg.yakutia.PreGameInterface;
 import nu.danielsundberg.yakutia.application.service.impl.GameEngineBean;
 import nu.danielsundberg.yakutia.application.service.impl.PreGameBean;
@@ -14,6 +15,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/player")
@@ -44,11 +46,34 @@ public class RestTest {
         return "false";
     }
 
-    @Path("/getplayer")
+    @Path("/getAllPlayers")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<PlayerApi> getAllPlayers() {
+        try {
+            InitialContext ctx = new InitialContext();
+            preGame = (PreGameInterface) ctx.lookup("preGameBean");
+            return preGame.getPlayers();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<PlayerApi>();
+    }
+
+    @Path("/getPlayerByEmail")
     @GET
     @Produces("text/html")
-    public String getPlayers() {
-        return "JUST A TEST";
+    @Consumes("text/html")
+    public String getPlayers(@QueryParam("email") String email) {
+        try {
+            InitialContext ctx = new InitialContext();
+            preGame = (PreGameInterface) ctx.lookup("preGameBean");
+            return preGame.getPlayerByEmail(email);
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     @Path("/createplayer")

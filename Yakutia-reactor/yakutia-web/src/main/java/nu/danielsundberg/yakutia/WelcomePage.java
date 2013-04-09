@@ -1,5 +1,6 @@
 package nu.danielsundberg.yakutia;
 
+import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -17,9 +18,8 @@ public class WelcomePage extends NavbarPage {
     public WelcomePage(PageParameters parameters) throws NamingException {
         super(parameters);
 
-        StringValue playerName = parameters.get("playername");
-
-        add(new Label("welcomeMsg", "Welcome to Yakutia, " + playerName));
+        MySession session = (MySession) getSession();
+        add(new Label("welcomeMsg", "Welcome to Yakutia, " + session.getPlayerName()));
 
     }
 }

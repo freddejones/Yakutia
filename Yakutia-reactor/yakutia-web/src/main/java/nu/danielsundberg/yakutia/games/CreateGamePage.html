@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>HomePage</title>
+</head>
+<body>
+<wicket:extend>
+    <center>
+        <header class="jumbotron subhead" id="overview">
+            <div class="container">
+                <h1>Create game</h1>
+
+                <p class="lead">Create a new game</p>
+            </div>
+        </header>
+
+        <form class="form-search" wicket:id="form">
+            <input type="text" class="input-medium search-query">
+            <input type="submit" wicket:id="searchButton" class="btn" value="Search player"/>
+        </form>
+
+        <div class="container">
+            <span wicket:id="msg" id="msg">Message goes here</span>
+        </div>
+
+        <div class="row" wicket:id="players">
+            <div class="span1 offset2" wicket:id="playername">Friend name</div>
+            <div class="span1 offset1">
+                <form class="form-search">
+                    <button type="submit" class="btn">Invite</button>
+                </form>
+            </div>
+            <div class="span1">
+                <span wicket:id="status" class="badge badge-success">Acceped</span>
+            </div>
+        </div>
+
+        <form class="form" wicket:id="ajaxform">
+            <input type="submit" wicket:id="button1" class="btn" value="Ajax test"/>
+            <span wicket:id="status2" class="badge badge-success" status="not">[message]</span>
+
+        </form>
+
+
+        <label class="checkbox">
+            <input type="checkbox" id="inlineCheckbox1" value="option1">
+            <span>player1</span>
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" id="inlineCheckbox2" value="option2">
+            <span>player2</span>
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" id="inlineCheckbox3" value="option3">
+            <span>player1</span>
+        </label>
+
+        <!-- MIGHT BE USED LATER
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span2">Friend name</div>
+                <div class="span1">
+                <form class="form-search">
+                    <button type="submit" class="btn">Invite</button>
+                </form>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span2">Game1</div>
+                <div class="span1"><span class="badge badge-success">Acceped</span></div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-large btn-primary" value="No value needed">Create</button>
+        <div>
+            <center>
+            <span wicket:id="listview">
+                <div class="row-fluid">
+                    <div class="span1" wicket:id="label">Friend name</div>
+                    <div class="span1">
+                        <form class="form-search">
+                            <button type="submit" class="btn">Invite</button>
+                        </form>
+                    </div>
+                    <div class="span1">
+                        <span class="badge badge-success">Invited</span>
+                    </div>
+                </div>
+            </span>
+            </center>
+        </div>
+        -->
+    </center>
+
+</wicket:extend>
+</body>
+</html>

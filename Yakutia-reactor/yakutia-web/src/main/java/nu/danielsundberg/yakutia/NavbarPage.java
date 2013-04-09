@@ -1,7 +1,11 @@
 package nu.danielsundberg.yakutia;
 
+import de.agilecoders.wicket.markup.html.bootstrap.button.dropdown.MenuBookmarkablePageLink;
+import de.agilecoders.wicket.markup.html.bootstrap.extensions.button.DropDownAutoOpen;
 import de.agilecoders.wicket.markup.html.bootstrap.image.IconType;
 import de.agilecoders.wicket.markup.html.bootstrap.navbar.*;
+import nu.danielsundberg.yakutia.friends.FriendsPage;
+import nu.danielsundberg.yakutia.games.GamesPage;
 import nu.danielsundberg.yakutia.session.SignOut;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -24,9 +28,11 @@ public class NavbarPage extends BasePage {
 
         navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.LEFT,
                 new NavbarButton<NavbarPage>(WelcomePage.class, Model.of("Home")).setIconType(IconType.home),
+                new NavbarButton<NavbarPage>(GamesPage.class, Model.of("Games")).setIconType(IconType.thlist),
+                new NavbarButton<NavbarPage>(FriendsPage.class, Model.of("Friends")).setIconType(IconType.search),
                 new NavbarButton<NavbarPage>(JpaPage.class, Model.of("Jpa")).setIconType(IconType.check),
                 new NavbarButton<NavbarPage>(ApiPage.class, Model.of("API")).setIconType(IconType.thumbsup),
-                new NavbarButton<NavbarPage>(SignOut.class, Model.of("Logout")).setIconType(IconType.play)
+                new NavbarButton<NavbarPage>(SignOut.class, Model.of("Logout")).setIconType(IconType.off)
                 /*new NavbarDropDownButton(Model.of("WTF?"))
                         .addButton(new MenuBookmarkablePageLink<NavbarPage>(NavbarPage.class, Model.of("Home1")).setIconType(IconType.thumbsup))
                         .addButton(new MenuBookmarkablePageLink<NavbarPage>(NavbarPage.class, Model.of("Home2")).setIconType(IconType.thumbsdown))

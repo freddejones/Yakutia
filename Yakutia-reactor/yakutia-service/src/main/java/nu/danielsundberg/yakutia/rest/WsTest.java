@@ -27,8 +27,8 @@ import java.util.logging.Logger;
 @Stateless
 public class WsTest {
 
-    @Resource
-    InitialContext ctx;
+//    @Resource
+//    InitialContext ctx;
 
     private Logger log = Logger.getLogger(WsTest.class.getName());
 

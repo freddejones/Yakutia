@@ -22,13 +22,14 @@ public class JpaPage extends NavbarPage {
         PreGameInterface test = (PreGameInterface) ctx.lookup("preGameBean");
 
 
-        List<String> players = test.getPlayers();
-        add(new ListView<String>("rows", players)
+        List<PlayerApi> players = test.getPlayers();
+        add(new ListView<PlayerApi>("rows", players)
         {
-            public void populateItem(final ListItem<String> item)
+            public void populateItem(final ListItem<PlayerApi> item)
             {
-                final String player = item.getModelObject();
-                item.add(new Label("name", player));
+                final PlayerApi player = item.getModelObject();
+                item.add(new Label("name", player.getPlayerName()));
+                item.add(new Label("id", player.getPlayerId().toString()));
             }
         });
 

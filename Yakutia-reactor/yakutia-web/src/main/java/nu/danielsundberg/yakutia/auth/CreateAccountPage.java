@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.*;
+import org.eclipse.jetty.http.HttpStatus;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -42,8 +43,6 @@ public class CreateAccountPage extends BasePage {
         setEmail(preEmail.toString());
         final String finalEmail = getEmail();
 
-        System.out.println("MAIL = " + getEmail());
-
         Form form = new Form("form");
 
         PropertyModel model = new PropertyModel<String>(this, "playername");
@@ -55,16 +54,15 @@ public class CreateAccountPage extends BasePage {
 
             @Override
             public void onSubmit() {
-                // TODO SAVE TOKEN AS WELL??????
 
-                System.out.println("MAil out: " + finalEmail);
-                String createPlayer = "http://localhost:8080/yakutia-services/rest/player/createplayer";
+                // TODO Save token as well?
+
+                String createPlayer = RestParameters.CREATEPLAYER_URL;
                 HttpPost post = new HttpPost(createPlayer);
 
                 List<NameValuePair> nvps = new ArrayList<NameValuePair>();
                 nvps.add(new BasicNameValuePair("name", getPlayername()));
                 nvps.add(new BasicNameValuePair("email", finalEmail));
-//                StringEntity entity1 = new StringEntity("name=BLAHA", Consts.UTF_8);
 
                 UrlEncodedFormEntity entity1 = new UrlEncodedFormEntity(nvps, Consts.UTF_8);
                 entity1.setContentType("text/html");
@@ -76,17 +74,16 @@ public class CreateAccountPage extends BasePage {
                 try {
                     HttpResponse resp = client.execute(post);
 
-                    // TODO Check response that it was ok?
-
-                    // TODO fix this
-                    MySession session = (MySession)getSession();
-
-                    if (session.signIn("admin",""))
-                    {
-                        PageParameters params = new PageParameters();
-                        params.set("playername",getPlayername());
-                        setResponsePage(WelcomePage.class, params);
+                    if (resp.getStatusLine().getStatusCode() == HttpStatus.OK_200) {
+                        MySession session = (MySession)getSession();
+                        if (session.signIn(finalEmail,""))
+                        {
+                            setResponsePage(WelcomePage.class);
+                        }
+                    } else {
+                        // TODO Redirect to error page?
                     }
+
                 } catch (IOException e) {
 
                     // TODO How to handle this?

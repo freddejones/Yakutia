@@ -18,6 +18,10 @@ import java.util.Set;
         @NamedQuery(
                 name = "Player.findPlayerBySearchEmail",
                 query = "SELECT p FROM Player p WHERE p.email LIKE :pEmail"
+        ),
+        @NamedQuery(
+                name = "Player.getAllPlayers",
+                query = "SELECT p FROM Player p"
         )
 })
 public class Player implements Serializable {

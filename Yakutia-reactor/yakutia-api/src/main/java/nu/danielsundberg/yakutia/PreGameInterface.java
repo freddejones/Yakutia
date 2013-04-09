@@ -21,9 +21,11 @@ public interface PreGameInterface {
 
     public void declineInvite(long playerId, long gameId);
 
-    public List<String> getPlayers();
+    public List<PlayerApi> getPlayers();
 
-    public void deleteAllPlayers();
+    public String getPlayerByEmail(String email);
+
+    //public void deleteAllPlayers();
 
 
 }

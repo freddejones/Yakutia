@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>HomePage</title>
+</head>
+<body>
+<wicket:extend>
+    <center>
+        <header class="jumbotron subhead" id="overview">
+            <div class="container">
+                <h1>Games</h1>
+
+                <p class="lead">What games do we have?</p>
+            </div>
+        </header>
+
+        <form wicket:id="CreateGame">
+            <input type="submit" wicket:id="createGameButton" class="btn btn-large btn-primary" value="Create game"/>
+        </form>
+        <!--button type="button" class="btn btn-large btn-primary" value="No value needed">List games</button-->
+
+        <!--div class="container">
+            <div class="row-fluid">
+                <div class="span2">Game name</div>
+                <div class="span1">Status</div>
+            </div>
+            <div class="row-fluid">
+                <div class="span2">Game1</div>
+                <div class="span1"><span class="badge badge-success">Acceped</span></div>
+            </div>
+            <div class="row-fluid">
+                <div class="span2">GAMERS!!!</div>
+                <div class="span1"><span class="badge badge-success">Acceped</span></div>
+            </div>
+            <div class="row-fluid">
+                <div class="span2">WW3</div>
+                <div class="span1"><span class="badge">Pending invite</span></div>
+            </div>
+            <div class="row-fluid">
+                <div class="span2">WW4</div>
+                <div class="span1"><span class="badge badge-warning">Finished</span></div>
+            </div>
+        </div-->
+    </center>
+</wicket:extend>
+</body>
+</html>

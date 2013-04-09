@@ -2,6 +2,7 @@ package nu.danielsundberg.yakutia.application.service.impl;
 
 
 import nu.danielsundberg.yakutia.GameplayerId;
+import nu.danielsundberg.yakutia.PlayerApi;
 import nu.danielsundberg.yakutia.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
@@ -17,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Path("/pregame")
 @Stateless(mappedName = "preGameBean")
 public class PreGameBean implements PreGameInterface {
 
@@ -34,13 +34,7 @@ public class PreGameBean implements PreGameInterface {
         return true;
     }
 
-    //    @Path("/createGame")
-//    @POST
-////    @Produces({"application/xml","application/json"})
-////    @Consumes({"application/xml","application/json"})
-//    @Produces(MediaType.TEXT_HTML)
-//    @Consumes(MediaType.TEXT_HTML)
-//    @Override
+    @Override
     public long createNewPlayer(String name, String email) throws PlayerAlreadyExists {
 
         if (em.createNamedQuery("Player.findPlayerByName")
@@ -117,18 +111,33 @@ public class PreGameBean implements PreGameInterface {
     }
 
     @Override
-    public List<String> getPlayers() {
-        // TODO fix query for Player entity
-        List<String> players = em.createQuery("SELECT p.name from Player p").getResultList();
-        return players;
+    public List<PlayerApi> getPlayers() {
+        // TODO fix query for PlayerApi entity
+        List<Player> players = em.createNamedQuery("Player.getAllPlayers").getResultList();
+        List<PlayerApi> playersToReturn = new ArrayList<PlayerApi>();
+        for (Player p : players) {
+            PlayerApi pa = new PlayerApi();
+            pa.setPlayerId(p.getPlayerId());
+            pa.setPlayerName(p.getName());
+            playersToReturn.add(pa);
+        }
+        return playersToReturn;
     }
 
     @Override
-    public void deleteAllPlayers() {
-        // TODO fix query for Player entity
-        List<Player> players = em.createQuery("SELECT p from Player p").getResultList();
-        for(Player p : players) {
-            em.remove(p);
-        }
+    public String getPlayerByEmail(String email) {
+        Player p = (Player) em.createNamedQuery("Player.findPlayerBySearchEmail")
+                .setParameter("pEmail", email)
+                .getSingleResult();
+        System.out.println("PLAYER FOUND: " + p.getName());
+        return p.getName();
     }
+//    @Override
+//    public void deleteAllPlayers() {
+//        // TODO fix query for PlayerApi entity
+//        List<PlayerApi> players = em.createQuery("SELECT p from PlayerApi p").getResultList();
+//        for(PlayerApi p : players) {
+//            em.remove(p);
+//        }
+//    }
 }
