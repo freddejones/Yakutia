@@ -19,11 +19,11 @@ import java.util.Iterator;
  */
 public class CallbackPage extends BasePage {
 
-
-
     public CallbackPage(PageParameters parameters) {
         super(parameters);
         getSession().bind();
+
+        boolean isAdmin = false;
 
         String oauthVerifier = null;
         Iterator<String> iter = parameters.getNamedKeys().iterator();
@@ -35,63 +35,77 @@ public class CallbackPage extends BasePage {
                     oauthVerifier = null;
                     // TODO handle some exception here?
                 }
+            } else if (name.equals("admin")) {
+                isAdmin = true;
+                break;
             }
         }
 
-        Token requestToken = null;
-        if (getSession().getAttribute("requestToken") != null) {
-            requestToken = (Token) getSession().getAttribute("requestToken");
-        }
+        if (isAdmin) {
+            adminSingIn();
+        } else {
+            Token requestToken = null;
+            if (getSession().getAttribute("requestToken") != null) {
+                requestToken = (Token) getSession().getAttribute("requestToken");
+            }
 
-        OAuthService service = new ServiceBuilder()
-                .provider(GoogleApi.class)
-                .apiKey(OauthParameters.APIKEY)
-                .apiSecret(OauthParameters.APISECRET)
-                .scope(OauthParameters.SCOPE)
-                .build();
+            OAuthService service = new ServiceBuilder()
+                    .provider(GoogleApi.class)
+                    .apiKey(OauthParameters.APIKEY)
+                    .apiSecret(OauthParameters.APISECRET)
+                    .scope(OauthParameters.SCOPE)
+                    .build();
 
-        String emailExtracted = "";
-        if (oauthVerifier != null) {
-            try {
-                Verifier verifier = new Verifier(oauthVerifier);
-                Token accessToken = service.getAccessToken(requestToken, verifier);
-                // TODO Store this token?
-
-                OAuthRequest request = new OAuthRequest(Verb.GET,
-                        OauthParameters.GOOGLE_API_USERINFO);
-                service.signRequest(accessToken, request);
-                request.addHeader("GData-Version", "3.0");
-                Response response = request.send();
-
-                JSONObject obj = null;
+            String emailExtracted = "";
+            if (oauthVerifier != null) {
                 try {
-                    obj = new JSONObject(response.getBody().toString());
-                    emailExtracted = obj.getString("email");
-                } catch (JSONException e) {
-                    // TODO handle some exceptions here
-                    e.printStackTrace();
+                    Verifier verifier = new Verifier(oauthVerifier);
+                    Token accessToken = service.getAccessToken(requestToken, verifier);
+                    // TODO Store this token?
+
+                    OAuthRequest request = new OAuthRequest(Verb.GET,
+                            OauthParameters.GOOGLE_API_USERINFO);
+                    service.signRequest(accessToken, request);
+                    request.addHeader("GData-Version", "3.0");
+                    Response response = request.send();
+
+                    JSONObject obj = null;
+                    try {
+                        obj = new JSONObject(response.getBody().toString());
+                        emailExtracted = obj.getString("email");
+                    } catch (JSONException e) {
+                        // TODO handle some exceptions here
+                        e.printStackTrace();
+                    }
+
+                } catch (RuntimeException re) {
+                    // TODO what to do here..
                 }
-
-            } catch (RuntimeException re) {
-                // TODO what to do here..
+            } else {
+                // TODO handle some exception here
             }
-        } else {
-            // TODO handle some exception here
+
+            MySession session = (MySession)getSession();
+
+            if (session.signIn(emailExtracted,""))
+            {
+                setResponsePage(WelcomePage.class);
+            } else {
+                PageParameters params = new PageParameters();
+                params.set("email",emailExtracted);
+                setResponsePage(CreateAccountPage.class, params);
+            }
+
+            // TODO add some nice message here
+            add(new Label("msg", "Something went wrong.."));
         }
+    }
 
-        MySession session = (MySession)getSession();
-
-        if (session.signIn(emailExtracted,""))
-        {
+    private void adminSingIn() {
+        MySession session = (MySession) getSession();
+        if (session.signIn("admin","")) {
             setResponsePage(WelcomePage.class);
-        } else {
-            PageParameters params = new PageParameters();
-            params.set("email",emailExtracted);
-            setResponsePage(CreateAccountPage.class, params);
         }
-
-        // TODO add some nice message here
-        add(new Label("msg", "Something went wrong.."));
     }
 
 

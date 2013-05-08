@@ -1,24 +1,21 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
 
-import nu.danielsundberg.yakutia.GameplayerId;
-import nu.danielsundberg.yakutia.PlayerApi;
-import nu.danielsundberg.yakutia.PreGameInterface;
+import nu.danielsundberg.yakutia.application.service.PlayerApi;
+import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
 import nu.danielsundberg.yakutia.entity.Player;
-import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
-@Stateless(mappedName = "preGameBean")
+@Stateless(mappedName = "preGameBean", name = "pregamebean")
 public class PreGameBean implements PreGameInterface {
 
     @PersistenceContext(name = "yakutiaPU")
@@ -52,10 +49,10 @@ public class PreGameBean implements PreGameInterface {
     }
 
     @Override
-    public void invitePlayerToGame(String playerName, long gameId) {
-        playerName = "%" + playerName + "%";
-        Player playerToInvite = (Player) em.createNamedQuery("Player.findPlayerBySearchName")
-                .setParameter("pName",playerName).getSingleResult();
+    public void invitePlayerToGame(long playerId, long gameId) {
+
+        Player playerToInvite = (Player) em.createNamedQuery("Player.findPlayerById")
+                .setParameter("pId",playerId).getSingleResult();
         Game gameToInvite = em.find(Game.class, gameId);
 
         GamePlayer gamePlayer = new GamePlayer();
@@ -69,7 +66,6 @@ public class PreGameBean implements PreGameInterface {
         em.refresh(gameToInvite);
         gameToInvite.getPlayers().add(gamePlayer);
         em.merge(gameToInvite);
-
     }
 
     @Override
@@ -111,17 +107,11 @@ public class PreGameBean implements PreGameInterface {
     }
 
     @Override
-    public List<PlayerApi> getPlayers() {
+    public List<Player> getPlayers() {
         // TODO fix query for PlayerApi entity
         List<Player> players = em.createNamedQuery("Player.getAllPlayers").getResultList();
-        List<PlayerApi> playersToReturn = new ArrayList<PlayerApi>();
-        for (Player p : players) {
-            PlayerApi pa = new PlayerApi();
-            pa.setPlayerId(p.getPlayerId());
-            pa.setPlayerName(p.getName());
-            playersToReturn.add(pa);
-        }
-        return playersToReturn;
+
+        return players;
     }
 
     @Override
@@ -131,6 +121,28 @@ public class PreGameBean implements PreGameInterface {
                 .getSingleResult();
         System.out.println("PLAYER FOUND: " + p.getName());
         return p.getName();
+    }
+
+    @Override
+    public PlayerApi getPlayerByName(String name) {
+        Player p = (Player) em.createNamedQuery("Player.findPlayerByName")
+                .setParameter("pName", name)
+                .getSingleResult();
+        PlayerApi pApi = new PlayerApi();
+        pApi.setPlayerId(p.getPlayerId());
+        pApi.setPlayerName(p.getName());
+        return pApi;
+    }
+
+    @Override
+    public PlayerApi getPlayerById(long id) {
+        Player p = (Player) em.createNamedQuery("Player.findPlayerById")
+                .setParameter("pId", id)
+                .getSingleResult();
+        PlayerApi pApi = new PlayerApi();
+        pApi.setPlayerId(p.getPlayerId());
+        pApi.setPlayerName(p.getName());
+        return pApi;
     }
 //    @Override
 //    public void deleteAllPlayers() {

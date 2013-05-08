@@ -1,25 +1,12 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
-import nu.danielsundberg.yakutia.entity.GamePlayer;
-import nu.danielsundberg.yakutia.entity.Unit;
-import nu.danielsundberg.yakutia.entity.UnitType;
-import nu.danielsundberg.yakutia.exceptions.LandIsNotNeighbourException;
-import nu.danielsundberg.yakutia.landAreas.LandArea;
-import nu.danielsundberg.yakutia.testcore.JpaTestCase;
+import nu.danielsundberg.yakutia.application.service.exceptions.LandIsNotNeighbourException;
+import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 import org.junit.Test;
-import org.mockito.Mock;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class PlayerActionBeanTest {
 

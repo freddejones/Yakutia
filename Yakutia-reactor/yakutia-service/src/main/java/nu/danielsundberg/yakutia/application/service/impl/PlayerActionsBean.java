@@ -1,12 +1,12 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
-import nu.danielsundberg.yakutia.PlayerActionsInterface;
+import nu.danielsundberg.yakutia.application.service.iface.PlayerActionsInterface;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
-import nu.danielsundberg.yakutia.exceptions.LandIsNotNeighbourException;
-import nu.danielsundberg.yakutia.landAreas.LandArea;
+import nu.danielsundberg.yakutia.application.service.exceptions.LandIsNotNeighbourException;
+import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.Unit;
-import nu.danielsundberg.yakutia.landAreas.LandAreaConnections;
+import nu.danielsundberg.yakutia.application.service.landAreas.LandAreaConnections;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

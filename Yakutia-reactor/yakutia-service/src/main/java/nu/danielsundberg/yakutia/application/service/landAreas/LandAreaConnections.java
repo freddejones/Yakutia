@@ -1,4 +1,4 @@
-package nu.danielsundberg.yakutia.landAreas;
+package nu.danielsundberg.yakutia.application.service.landAreas;
 
 public class LandAreaConnections {
 

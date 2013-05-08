@@ -1,8 +1,6 @@
 package nu.danielsundberg.yakutia.entity;
 
-import nu.danielsundberg.yakutia.landAreas.LandArea;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 
 import javax.persistence.*;
 import java.io.Serializable;

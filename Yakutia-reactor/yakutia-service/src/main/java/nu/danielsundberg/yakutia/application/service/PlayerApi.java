@@ -1,4 +1,4 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.application.service;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;

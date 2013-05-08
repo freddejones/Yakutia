@@ -1,6 +1,6 @@
 package nu.danielsundberg.yakutia.entity;
 
-import nu.danielsundberg.yakutia.landAreas.LandArea;
+import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 import nu.danielsundberg.yakutia.testcore.JpaTestCase;
 import org.junit.Test;
 import static org.junit.Assert.*;

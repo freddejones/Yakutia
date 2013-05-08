@@ -1,8 +1,7 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.application.service.iface;
 
-import nu.danielsundberg.yakutia.exceptions.LandIsNotNeighbourException;
-import nu.danielsundberg.yakutia.exceptions.TurnCannotBeEndedException;
-import nu.danielsundberg.yakutia.landAreas.LandArea;
+import nu.danielsundberg.yakutia.application.service.exceptions.LandIsNotNeighbourException;
+import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 
 import javax.ejb.Remote;
 import java.util.List;

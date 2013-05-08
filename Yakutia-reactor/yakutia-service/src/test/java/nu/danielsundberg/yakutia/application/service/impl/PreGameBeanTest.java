@@ -1,7 +1,7 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
 import nu.danielsundberg.yakutia.entity.Player;
-import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.testcore.JpaTestCase;
 import org.junit.Test;
 

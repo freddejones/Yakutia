@@ -10,11 +10,10 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>yakutia-api</module>
+		<!--module>yakutia-api</module-->
 		<module>yakutia-service</module>
-        <module>yakutia-ear</module>
 		<module>yakutia-web</module>
-        <module>oauth</module>
+        <module>yakutia-ear</module>
     </modules>
 
 	<properties>

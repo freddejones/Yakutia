@@ -1,10 +1,9 @@
 package nu.danielsundberg.yakutia.auth;
 
 import nu.danielsundberg.yakutia.BasePage;
-import nu.danielsundberg.yakutia.NavbarPage;
-import nu.danielsundberg.yakutia.PreGameInterface;
+import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.WelcomePage;
-import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -14,8 +13,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -24,7 +21,6 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.*;
 import org.eclipse.jetty.http.HttpStatus;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.IOException;
 import java.util.ArrayList;

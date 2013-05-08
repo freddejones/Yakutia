@@ -6,10 +6,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nu.danielsundberg.yakutia</groupId>
-	<artifactId>adminweb</artifactId>
+	<artifactId>yakutia-web</artifactId>
 	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
-	<name>Yakutia :: Admin app</name>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Yakutia :: WAR</name>
 	<description>web app during development</description>
 
 	<licenses>
@@ -35,6 +35,11 @@
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-auth-roles</artifactId>
             <version>6.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wicketstuff</groupId>
+            <artifactId>wicketstuff-javaee-inject</artifactId>
+            <version>${wicket.version}</version>
         </dependency>
 
         <!-- WICKET BOOTSTRAP DEPENDENCIES -->
@@ -68,6 +73,12 @@
             <version>4.2.2</version>
         </dependency>
 
+        <!-- JSON stuff -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.12</version>
+        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -78,10 +89,16 @@
         <!-- YAKUTIA GAME API -->
         <dependency>
             <groupId>nu.danielsundberg.games.yakutia</groupId>
-            <artifactId>yakutia-api</artifactId>
+            <artifactId>yakutia-services</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <!--dependency>
+            <groupId>nu.danielsundberg.games.yakutia</groupId>
+            <artifactId>yakutia-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency-->
 
 
         <dependency>

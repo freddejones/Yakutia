@@ -1,6 +1,7 @@
 package nu.danielsundberg.yakutia;
 
-import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -20,7 +21,6 @@ public class ApiPage extends NavbarPage {
 
     public ApiPage(PageParameters parameters) throws NamingException {
         super(parameters);
-
 
         Form form = new Form("form");
 
@@ -51,6 +51,32 @@ public class ApiPage extends NavbarPage {
         form.add(button);
         form.add(text);
         add(form);
+
+        Form testdataForm = new Form("testdata");
+        Button testdataButton = new Button("testbutton") {
+
+            @Override
+            public void onSubmit() {
+                InitialContext ctx = null;
+                PreGameInterface test = null;
+
+                try {
+                    ctx = new InitialContext();
+                    test = (PreGameInterface) ctx.lookup("preGameBean");
+                    test.createNewPlayer("apan1","email@email.com");
+                    test.createNewPlayer("apan2","email@email.com");
+                    test.createNewPlayer("apan3","email@email.com");
+                } catch (NamingException e) {
+
+                } catch (PlayerAlreadyExists pae) {
+
+                }
+
+            }
+        };
+
+        testdataForm.add(testdataButton);
+        add(testdataForm);
     }
 
     public String getName() {

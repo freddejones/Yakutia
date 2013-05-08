@@ -6,12 +6,15 @@ import de.agilecoders.wicket.settings.BootswatchThemeProvider;
 import de.agilecoders.wicket.settings.ThemeProvider;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.Session;
+import org.apache.wicket.application.IComponentInstantiationListener;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.IRequestLogger;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
+import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
+import org.wicketstuff.javaee.naming.global.ModuleJndiNamingStrategy;
 
 /**
  * Application object for your web application. If you want to run this application without deploying, run the Start class.
@@ -35,6 +38,13 @@ public class WicketApplication extends AuthenticatedWebApplication
 	public void init()
 	{
 		super.init();
+
+        /* Enable wicket to handle injects */
+        getComponentInstantiationListeners().add(getComponentInstantiationListener());
+        // TODO remove this later
+        // yakutia-ear-0.0.1-SNAPSHOT
+        // yakutia-services-0.0.1-SNAPSHOT
+
         BootstrapSettings settings = new BootstrapSettings();
 //        settings.minify(false);
 
@@ -47,6 +57,10 @@ public class WicketApplication extends AuthenticatedWebApplication
         getMarkupSettings().setStripWicketTags(true);
         Bootstrap.install(this, settings);
 	}
+
+    protected IComponentInstantiationListener getComponentInstantiationListener() {
+        return new JavaEEComponentInjector(this);
+    }
 
     @Override
     public Session newSession(Request request, Response response)

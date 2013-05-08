@@ -11,19 +11,23 @@
 	<groupId>nu.danielsundberg.games.yakutia</groupId>
 	<artifactId>yakutia-services</artifactId>
 	<name>Yakutia :: Services</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 		<dependencies>
 
             <!-- Yakutia API -->
-            <dependency>
+            <!--dependency>
                 <groupId>nu.danielsundberg.games.yakutia</groupId>
                 <artifactId>yakutia-api</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
                 <scope>provided</scope>
-            </dependency>
+            </dependency-->
 
             <!-- java ee stuff -->
+            <dependency>
+                <groupId>javax.ejb</groupId>
+                <artifactId>ejb-api</artifactId>
+            </dependency>
             <dependency>
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>javax.ws.rs-api</artifactId>

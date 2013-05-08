@@ -9,9 +9,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import nu.danielsundberg.yakutia.landAreas.LandArea;
+import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.*;
-import nu.danielsundberg.yakutia.GameEngineInterface;
+import nu.danielsundberg.yakutia.application.service.iface.GameEngineInterface;
 
 
 @Stateless(mappedName = "kickass")

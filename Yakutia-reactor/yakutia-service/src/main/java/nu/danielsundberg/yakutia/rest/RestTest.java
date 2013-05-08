@@ -1,16 +1,13 @@
 package nu.danielsundberg.yakutia.rest;
 
 
-import nu.danielsundberg.yakutia.PlayerApi;
-import nu.danielsundberg.yakutia.PreGameInterface;
-import nu.danielsundberg.yakutia.application.service.impl.GameEngineBean;
-import nu.danielsundberg.yakutia.application.service.impl.PreGameBean;
+import nu.danielsundberg.yakutia.application.service.PlayerApi;
+import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
+import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.entity.Player;
-import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Singleton;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.*;
@@ -50,7 +47,7 @@ public class RestTest {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<PlayerApi> getAllPlayers() {
+    public List<Player> getAllPlayers() {
         try {
             InitialContext ctx = new InitialContext();
             preGame = (PreGameInterface) ctx.lookup("preGameBean");
@@ -58,7 +55,7 @@ public class RestTest {
         } catch (NamingException e) {
             e.printStackTrace();
         }
-        return new ArrayList<PlayerApi>();
+        return new ArrayList<Player>();
     }
 
     @Path("/getPlayerByEmail")

@@ -1,25 +1,18 @@
 package nu.danielsundberg.yakutia.rest;
 
-import nu.danielsundberg.yakutia.GameEngineInterface;
-import nu.danielsundberg.yakutia.GameplayerId;
-import nu.danielsundberg.yakutia.PlayerActionsInterface;
-import nu.danielsundberg.yakutia.PreGameInterface;
-import nu.danielsundberg.yakutia.application.service.impl.GameEngineBean;
-import nu.danielsundberg.yakutia.application.service.impl.PreGameBean;
-import nu.danielsundberg.yakutia.exceptions.LandIsNotNeighbourException;
-import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
-import nu.danielsundberg.yakutia.exceptions.TurnCannotBeEndedException;
-import nu.danielsundberg.yakutia.landAreas.LandArea;
+import nu.danielsundberg.yakutia.application.service.iface.GameEngineInterface;
+import nu.danielsundberg.yakutia.application.service.iface.PlayerActionsInterface;
+import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
+import nu.danielsundberg.yakutia.application.service.exceptions.LandIsNotNeighbourException;
+import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -55,8 +48,8 @@ public class WsTest {
             long p3Id = preGame.createNewPlayer("trean","mail");
             long gameID = gameEngine.createNewGame(p1ID);
 
-            preGame.invitePlayerToGame("pan",gameID);
-            preGame.invitePlayerToGame("trean", gameID);
+            preGame.invitePlayerToGame(p2ID,gameID);
+            preGame.invitePlayerToGame(p3Id, gameID);
 
             log.info("invited to game: "+ preGame.getInvites(p2ID).get(0));
 

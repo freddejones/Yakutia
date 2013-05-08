@@ -1,7 +1,9 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.application.service.iface;
 
 
-import nu.danielsundberg.yakutia.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.application.service.PlayerApi;
+import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.entity.Player;
 
 import javax.ejb.Remote;
 import java.util.List;
@@ -13,7 +15,7 @@ public interface PreGameInterface {
 
     public long createNewPlayer(String name, String email) throws PlayerAlreadyExists;
 
-    public void invitePlayerToGame(String playerName, long gameId);
+    public void invitePlayerToGame(long playerId, long gameId);
 
     public List<Long> getInvites(long playerId);
 
@@ -21,9 +23,13 @@ public interface PreGameInterface {
 
     public void declineInvite(long playerId, long gameId);
 
-    public List<PlayerApi> getPlayers();
+    public List<Player> getPlayers();
 
     public String getPlayerByEmail(String email);
+
+    public PlayerApi getPlayerByName(String name);
+
+    public PlayerApi getPlayerById(long id);
 
     //public void deleteAllPlayers();
 

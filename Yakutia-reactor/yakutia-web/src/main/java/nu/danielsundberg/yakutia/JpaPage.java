@@ -2,6 +2,9 @@ package nu.danielsundberg.yakutia;
 
 
 
+import nu.danielsundberg.yakutia.application.service.PlayerApi;
+import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
+import nu.danielsundberg.yakutia.entity.Player;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -22,14 +25,14 @@ public class JpaPage extends NavbarPage {
         PreGameInterface test = (PreGameInterface) ctx.lookup("preGameBean");
 
 
-        List<PlayerApi> players = test.getPlayers();
-        add(new ListView<PlayerApi>("rows", players)
+        List<Player> players = test.getPlayers();
+        add(new ListView<Player>("rows", players)
         {
-            public void populateItem(final ListItem<PlayerApi> item)
+            public void populateItem(final ListItem<Player> item)
             {
-                final PlayerApi player = item.getModelObject();
-                item.add(new Label("name", player.getPlayerName()));
-                item.add(new Label("id", player.getPlayerId().toString()));
+                final Player player = item.getModelObject();
+                item.add(new Label("name", player.getName()));
+                item.add(new Label("id", player.getPlayerId()));
             }
         });
 

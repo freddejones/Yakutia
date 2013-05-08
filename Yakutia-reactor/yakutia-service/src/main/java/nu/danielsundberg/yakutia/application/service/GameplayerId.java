@@ -1,4 +1,4 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.application.service;
 
 
 public class GameplayerId {

@@ -42,5 +42,18 @@ public class SignIn extends BasePage {
         Form form = new Form("google-form");
         form.add(googleSign);
         add(form);
+
+        Form formAdmin = new Form("admin-form");
+        Button adminButton = new Button("admin") {
+            @Override
+            public void onSubmit() {
+                PageParameters param = new PageParameters();
+                param.add("admin","");
+                setResponsePage(CallbackPage.class,param);
+            }
+        };
+        formAdmin.add(adminButton);
+        add(formAdmin);
+
     }
 }

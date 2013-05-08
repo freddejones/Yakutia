@@ -1,4 +1,4 @@
-package nu.danielsundberg.yakutia.exceptions;
+package nu.danielsundberg.yakutia.application.service.exceptions;
 
 public class PlayerAlreadyExists extends Exception {
 

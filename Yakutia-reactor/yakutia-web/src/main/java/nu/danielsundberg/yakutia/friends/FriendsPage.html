@@ -15,6 +15,16 @@
         </div>
     </header>
 
+    <form class="form" wicket:id="ajaxform">
+        <input type="submit" wicket:id="button1" class="btn" value="Ajax test"/>
+        <span wicket:id="status2" class="badge badge-success" status="not">[message]</span>
+    </form>
+
+    <form class="form-search" wicket:id="form">
+        <input type="text" class="input-medium search-query">
+        <input type="submit" wicket:id="searchButton" class="btn" value="Search player"/>
+    </form>
+
     <button type="button" class="btn btn-large btn-primary" value="No value needed">Search for friends</button>
     <button type="button" class="btn btn-large btn-primary" value="No value needed">List friends</button>
 

@@ -8,6 +8,10 @@ import java.util.Set;
 @Entity
 @NamedQueries({
         @NamedQuery(
+                name = "Player.findPlayerById",
+                query = "SELECT p FROM Player p WHERE playerId=:pId"
+        ),
+        @NamedQuery(
                 name = "Player.findPlayerByName",
                 query = "SELECT p FROM Player p WHERE name=:pName"
         ),

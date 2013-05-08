@@ -1,4 +1,4 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.application.service.iface;
 
 import javax.ejb.Remote;
 
