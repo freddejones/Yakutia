@@ -51,4 +51,11 @@ public class GamePlayerTest extends JpaTestCase {
                         .getResultList().size());
     }
 
+    @Test
+    public void testGetGamePlayersFromPlayerId() {
+        assertEquals(1,
+                entityManager.createNamedQuery("GamePlayer.getGamePlayersFromPlayerId")
+                        .setParameter("playerId",p.getPlayerId())
+                        .getResultList().size());
+    }
 }

@@ -15,7 +15,7 @@ import java.util.List;
                 query = "SELECT gp FROM GamePlayer gp WHERE gp.gameId =:gameId AND gp.playerId =:playerId"
         ),
         @NamedQuery(
-                name = "GamePlayer.getGamePlayerFromPlayerId",
+                name = "GamePlayer.getGamePlayersFromPlayerId",
                 query = "SELECT gp FROM GamePlayer gp WHERE gp.playerId =:playerId"
         )
 })

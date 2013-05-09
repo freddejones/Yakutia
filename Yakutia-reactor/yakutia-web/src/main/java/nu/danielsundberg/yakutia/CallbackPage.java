@@ -79,10 +79,10 @@ public class CallbackPage extends BasePage {
                     }
 
                 } catch (RuntimeException re) {
-                    // TODO what to do here..
+                    re.printStackTrace();
                 }
             } else {
-                // TODO handle some exception here
+                System.out.println("NO oath found");
             }
 
             MySession session = (MySession)getSession();
