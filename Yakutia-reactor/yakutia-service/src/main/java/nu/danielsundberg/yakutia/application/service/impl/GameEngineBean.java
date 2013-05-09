@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import nu.danielsundberg.yakutia.application.service.exceptions.NotEnoughPlayers;
 import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.*;
 import nu.danielsundberg.yakutia.application.service.iface.GameEngineInterface;
@@ -45,7 +46,7 @@ public class GameEngineBean implements GameEngineInterface {
     }
 
     @Override
-    public void startNewGame(long gameId) {
+    public void startNewGame(long gameId) throws NotEnoughPlayers {
 
         // TODO Add temporal check for when players are wiped out of invite
 
@@ -62,6 +63,13 @@ public class GameEngineBean implements GameEngineInterface {
         // TODO well fix this then...
         /* shuffle up the players and assign turn order */
         List<GamePlayer> gamePlayers = getGamePlayerForGame(gameId);
+        if (gamePlayers.size() < 2) {
+            throw new NotEnoughPlayers("Could only find " + gamePlayers.size() +" of players");
+        }
+
+        System.out.println(gamePlayers.get(0).getPlayer().getName());
+        System.out.println(gamePlayers.get(1).getPlayer().getName());
+
 //        Collections.shuffle(gamePlayers);
 //
 //        for (GamePlayer gp : gamePlayers) {
@@ -82,6 +90,7 @@ public class GameEngineBean implements GameEngineInterface {
         /* assign gameplayers their landAreas */
         int playerIdx = 0;
         for (LandArea landArea : landAreas) {
+            System.out.println("idx: " + playerIdx);
             Unit u = new Unit();
             u.setGamePlayer(gamePlayers.get(playerIdx));
             u.setLandArea(landArea);

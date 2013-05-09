@@ -1,5 +1,6 @@
 package nu.danielsundberg.yakutia.rest;
 
+import nu.danielsundberg.yakutia.application.service.exceptions.NotEnoughPlayers;
 import nu.danielsundberg.yakutia.application.service.iface.GameEngineInterface;
 import nu.danielsundberg.yakutia.application.service.iface.PlayerActionsInterface;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
@@ -87,6 +88,8 @@ public class WsTest {
         } catch (PlayerAlreadyExists playerAlreadyExists) {
         } catch (LandIsNotNeighbourException e) {
 //        } catch (LandIsNotNeighbourException e) {
+        } catch (NotEnoughPlayers notEnoughPlayers) {
+            notEnoughPlayers.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
     }

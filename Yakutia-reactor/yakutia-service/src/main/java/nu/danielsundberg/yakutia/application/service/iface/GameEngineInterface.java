@@ -1,5 +1,7 @@
 package nu.danielsundberg.yakutia.application.service.iface;
 
+import nu.danielsundberg.yakutia.application.service.exceptions.NotEnoughPlayers;
+
 import javax.ejb.Remote;
 
 @Remote
@@ -7,7 +9,7 @@ public interface GameEngineInterface {
 
     public long createNewGame(long playerId);
 
-    public void startNewGame(long gameId);
+    public void startNewGame(long gameId) throws NotEnoughPlayers;
 
     public boolean isGameFinished(long gameId);
 
