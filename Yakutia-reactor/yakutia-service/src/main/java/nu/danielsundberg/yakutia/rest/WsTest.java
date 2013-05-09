@@ -47,7 +47,7 @@ public class WsTest {
             long p1ID = preGame.createNewPlayer("Jones","mail");
             long p2ID = preGame.createNewPlayer("Apan","mail");
             long p3Id = preGame.createNewPlayer("trean","mail");
-            long gameID = gameEngine.createNewGame(p1ID);
+            long gameID = preGame.createNewGame(p1ID);
 
             preGame.invitePlayerToGame(p2ID,gameID);
             preGame.invitePlayerToGame(p3Id, gameID);

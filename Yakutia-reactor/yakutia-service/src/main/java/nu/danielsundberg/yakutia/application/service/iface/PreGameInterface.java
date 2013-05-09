@@ -15,6 +15,8 @@ public interface PreGameInterface {
 
     public long createNewPlayer(String name, String email) throws PlayerAlreadyExists;
 
+    public long createNewGame(long playerId);
+
     public void invitePlayerToGame(long playerId, long gameId);
 
     public List<Long> getInvites(long playerId);

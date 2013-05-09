@@ -3,16 +3,14 @@ package nu.danielsundberg.yakutia.application.service.impl;
 
 import nu.danielsundberg.yakutia.application.service.PlayerApi;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
-import nu.danielsundberg.yakutia.entity.Game;
-import nu.danielsundberg.yakutia.entity.GamePlayer;
-import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
-import nu.danielsundberg.yakutia.entity.Player;
+import nu.danielsundberg.yakutia.entity.*;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Stateless(mappedName = "preGameBean", name = "pregamebean")
@@ -46,6 +44,30 @@ public class PreGameBean implements PreGameInterface {
         player.setEmail(email);
         em.persist(player);
         return player.getPlayerId();
+    }
+
+    // MOVE TO PREGAME INTEFACE
+    @Override
+    public long createNewGame(long playerId) {
+        Game game = new Game();
+        game.setGameStatus(GameStatus.CREATED);
+        game.setCreationTime(new Date());
+        em.persist(game);
+
+        Player player = em.find(Player.class, playerId);
+
+        GamePlayer gamePlayer = new GamePlayer();
+        gamePlayer.setGame(game);
+        gamePlayer.setGameId(game.getGameId());
+        gamePlayer.setPlayer(player);
+        gamePlayer.setPlayerId(player.getPlayerId());
+        gamePlayer.setGamePlayerStatus(GamePlayerStatus.ACCEPTED);
+        em.persist(gamePlayer);
+        em.refresh(game);
+        game.getPlayers().add(gamePlayer);
+        em.merge(game);
+
+        return game.getGameId();
     }
 
     @Override

@@ -7,7 +7,6 @@ import javax.ejb.Remote;
 @Remote
 public interface GameEngineInterface {
 
-    public long createNewGame(long playerId);
 
     public void startNewGame(long gameId) throws NotEnoughPlayers;
 

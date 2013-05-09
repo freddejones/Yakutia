@@ -21,30 +21,6 @@ public class GameEngineBean implements GameEngineInterface {
     @PersistenceContext(name = "yakutiaPU")
     protected EntityManager em;
 
-    // MOVE TO PREGAME INTEFACE
-    @Override
-    public long createNewGame(long playerId) {
-        Game game = new Game();
-        game.setGameStatus(GameStatus.CREATED);
-        game.setCreationTime(new Date());
-        em.persist(game);
-
-        Player player = em.find(Player.class, playerId);
-
-        GamePlayer gamePlayer = new GamePlayer();
-        gamePlayer.setGame(game);
-        gamePlayer.setGameId(game.getGameId());
-        gamePlayer.setPlayer(player);
-        gamePlayer.setPlayerId(player.getPlayerId());
-        gamePlayer.setGamePlayerStatus(GamePlayerStatus.ACCEPTED);
-        em.persist(gamePlayer);
-        em.refresh(game);
-        game.getPlayers().add(gamePlayer);
-        em.merge(game);
-
-        return game.getGameId();
-    }
-
     @Override
     public void startNewGame(long gameId) throws NotEnoughPlayers {
 
@@ -63,12 +39,10 @@ public class GameEngineBean implements GameEngineInterface {
         // TODO well fix this then...
         /* shuffle up the players and assign turn order */
         List<GamePlayer> gamePlayers = getGamePlayerForGame(gameId);
+
         if (gamePlayers.size() < 2) {
             throw new NotEnoughPlayers("Could only find " + gamePlayers.size() +" of players");
         }
-
-        System.out.println(gamePlayers.get(0).getPlayer().getName());
-        System.out.println(gamePlayers.get(1).getPlayer().getName());
 
 //        Collections.shuffle(gamePlayers);
 //
@@ -122,7 +96,8 @@ public class GameEngineBean implements GameEngineInterface {
     @Override
     public boolean isGameFinished(long gameId) {
         @SuppressWarnings("unchecked")  // TODO How to get rid of supress warnings
-                List<GamePlayer> gamePlayers = (List<GamePlayer>) em.createNamedQuery("GamePlayer.getGamePlayersFromGameId")
+        List<GamePlayer> gamePlayers = (List<GamePlayer>) em.createNamedQuery(
+                "GamePlayer.getGamePlayersFromGameId")
                 .setParameter("gameId",gameId)
                 .getResultList();
 

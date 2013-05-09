@@ -1,10 +1,8 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
+import junit.framework.Assert;
 import nu.danielsundberg.yakutia.application.service.exceptions.NotEnoughPlayers;
-import nu.danielsundberg.yakutia.entity.Game;
-import nu.danielsundberg.yakutia.entity.GamePlayer;
-import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
-import nu.danielsundberg.yakutia.entity.Player;
+import nu.danielsundberg.yakutia.entity.*;
 import nu.danielsundberg.yakutia.testcore.JpaTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,54 +14,128 @@ import org.junit.Test;
 public class GameEngineBeanTest extends JpaTestCase {
 
     private Game game;
-    private Player player1;
-    private Player player2;
-    private GamePlayer gamePlayer1;
-    private GamePlayer gamePlayer2;
 
     @Before
     public void setup() {
-
         game = new Game();
-        player1 = new Player();
-        player1.setName("stickan");
-        player1.setEmail("test");
-        entityManager.persist(player1);
         entityManager.persist(game);
         entityManager.refresh(game);
-
-        gamePlayer1 = new GamePlayer();
-        gamePlayer1.setGame(game);
-        gamePlayer1.setGameId(game.getGameId());
-        gamePlayer1.setPlayer(player1);
-        gamePlayer1.setPlayerId(player1.getPlayerId());
-        gamePlayer1.setGamePlayerStatus(GamePlayerStatus.ACCEPTED);
-        entityManager.persist(gamePlayer1);
-        game.getPlayers().add(gamePlayer1);
-        entityManager.merge(game);
-
-        entityManager.refresh(game);
-        player2 = new Player();
-        player2.setName("tratten");
-        player2.setEmail("test2");
-        entityManager.persist(player2);
-        entityManager.refresh(player2);
-        gamePlayer2 = new GamePlayer();
-        gamePlayer2.setGame(game);
-        gamePlayer2.setGameId(game.getGameId());
-        gamePlayer2.setPlayer(player2);
-        gamePlayer2.setPlayerId(player2.getPlayerId());
-        gamePlayer2.setGamePlayerStatus(GamePlayerStatus.ACCEPTED);
-        entityManager.persist(gamePlayer2);
-//        game.getPlayers().add(gamePlayer2);
-//        entityManager.merge(game);
     }
 
     @Test
     public void startNewGameTest() throws NotEnoughPlayers {
         GameEngineBean gameEngineBean = new GameEngineBean();
         gameEngineBean.em = entityManager;
+
+        // Given: two players
+        Player player1 = new Player();
+        player1.setName("stickan");
+        player1.setEmail("test");
+
+        Player player2 = new Player();
+        player2.setName("tratten");
+        player2.setEmail("test2");
+
+        // When: both players has accepted status
+        addNewPlayer(player1, GamePlayerStatus.ACCEPTED);
+        addNewPlayer(player2, GamePlayerStatus.ACCEPTED);
+
+        // Then: will get a new game started
         gameEngineBean.startNewGame(game.getGameId());
     }
 
+    @Test(expected = NotEnoughPlayers.class)
+    public void onePlayerStartNewGameTest() throws NotEnoughPlayers {
+        GameEngineBean gameEngineBean = new GameEngineBean();
+        gameEngineBean.em = entityManager;
+
+        // Given: one player
+        Player player1 = new Player();
+        player1.setName("stickan");
+        player1.setEmail("test");
+
+        // When: has accepted status
+        addNewPlayer(player1, GamePlayerStatus.ACCEPTED);
+
+        // Then: NotEnoughPlayers exception thrown
+        gameEngineBean.startNewGame(game.getGameId());
+    }
+
+    @Test
+    public void gameIsNotFinishedTest() {
+        GameEngineBean gameEngineBean = new GameEngineBean();
+        gameEngineBean.em = entityManager;
+
+        // Given: two players
+        Player player1 = new Player();
+        player1.setName("stickan");
+        player1.setEmail("test");
+
+        Player player2 = new Player();
+        player2.setName("tot");
+        player2.setEmail("test2");
+
+        // When: not finished status
+        addNewPlayer(player1, GamePlayerStatus.ALIVE);
+        addNewPlayer(player2, GamePlayerStatus.ALIVE);
+
+        // Then: false returned
+        Assert.assertFalse(gameEngineBean.isGameFinished(game.getGameId()));
+    }
+
+    @Test
+    public void gameIsFinishedTest() {
+        GameEngineBean gameEngineBean = new GameEngineBean();
+        gameEngineBean.em = entityManager;
+
+        // Given: two players
+        Player player1 = new Player();
+        player1.setName("stickan");
+
+        Player player2 = new Player();
+        player2.setName("tot");
+
+        Player player3 = new Player();
+        player2.setName("tat");
+
+        Player player4 = new Player();
+        player2.setName("tit");
+
+        // When: not finished status
+        addNewPlayer(player1, GamePlayerStatus.ALIVE);
+        addNewPlayer(player2, GamePlayerStatus.DEAD);
+        addNewPlayer(player3, GamePlayerStatus.DECLINED);
+        addNewPlayer(player4, GamePlayerStatus.INVITED);
+
+        // Then: false returned
+        Assert.assertTrue(gameEngineBean.isGameFinished(game.getGameId()));
+    }
+
+    @Test
+    public void endGameTest() {
+        GameEngineBean gameEngineBean = new GameEngineBean();
+        gameEngineBean.em = entityManager;
+        // Given: a game
+
+        // When: calling endGame method
+        gameEngineBean.endGame(game.getGameId());
+
+        // Then: game object has status FINISHED
+        Assert.assertTrue(entityManager.find(Game.class,game.getGameId())
+                .getGameStatus() == GameStatus.FINISHED);
+    }
+
+    private void addNewPlayer(Player p, GamePlayerStatus gpStatus) {
+        entityManager.refresh(game);
+        entityManager.persist(p);
+        GamePlayer genericGamePlayer = new GamePlayer();
+        genericGamePlayer.setGame(game);
+        genericGamePlayer.setGameId(game.getGameId());
+        genericGamePlayer.setPlayer(p);
+        genericGamePlayer.setPlayerId(p.getPlayerId());
+        genericGamePlayer.setGamePlayerStatus(gpStatus);
+        entityManager.persist(genericGamePlayer);
+        game.getPlayers().add(genericGamePlayer);
+        entityManager.merge(game);
+    }
 }

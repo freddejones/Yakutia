@@ -25,6 +25,11 @@ public class PreGameBeanMock implements PreGameInterface {
     }
 
     @Override
+    public long createNewGame(long playerId) {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public void invitePlayerToGame(long playerId, long gameId) {
         //To change body of implemented methods use File | Settings | File Templates.
     }

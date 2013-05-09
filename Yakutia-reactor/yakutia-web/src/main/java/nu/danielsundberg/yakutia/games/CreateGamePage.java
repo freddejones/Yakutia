@@ -169,10 +169,10 @@ public class CreateGamePage extends NavbarPage {
 
                 try {
                     InitialContext ctx = new InitialContext();
-                    GameEngineInterface gameBean = (GameEngineInterface) ctx.lookup("kickass");
+//                    GameEngineInterface gameBean = (GameEngineInterface) ctx.lookup("kickass");
                     PreGameInterface preGame = (PreGameInterface) ctx.lookup("preGameBean");
 
-                    long gameId = gameBean.createNewGame(3);
+                    long gameId = preGame.createNewGame(3);
                     for (PlayerApi p : players) {
                         preGame.invitePlayerToGame(p.getPlayerId(),gameId);
                     }
