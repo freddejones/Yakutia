@@ -2,12 +2,14 @@ package nu.danielsundberg.yakutia.application.service.impl;
 
 
 import nu.danielsundberg.yakutia.application.service.PlayerApi;
+import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.*;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,7 +95,7 @@ public class PreGameBean implements PreGameInterface {
     @Override
     public List<Long> getInvites(long playerId) {
         @SuppressWarnings("unchecked") //TODO REMOVE UNCHECKED WARNING
-        List<GamePlayer> gamePlayers = em.createNamedQuery("GamePlayer.getGamePlayerFromPlayerId")
+        List<GamePlayer> gamePlayers = em.createNamedQuery("GamePlayer.getGamePlayersFromPlayerId")
                 .setParameter("playerId", playerId).getResultList();
         List<Long> gameIds = new ArrayList<Long>();
         for (GamePlayer gp : gamePlayers) {
@@ -107,32 +109,44 @@ public class PreGameBean implements PreGameInterface {
 
 
     @Override
-    public void acceptInvite(long playerId, long gameId) {
-        GamePlayer gp = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
+    public boolean acceptInvite(long playerId, long gameId) {
+        GamePlayer gp;
+        try {
+            gp = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
                 .setParameter("gameId",gameId)
                 .setParameter("playerId",playerId).getSingleResult();
+        } catch (NoResultException nre) {
+            return false;
+        }
 
         gp.setGamePlayerStatus(GamePlayerStatus.ACCEPTED);
         em.merge(gp);
         em.flush();
+
+        return true;
     }
 
     @Override
-    public void declineInvite(long playerId, long gameId) {
-        GamePlayer gp = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
+    public boolean declineInvite(long playerId, long gameId) {
+        GamePlayer gp;
+        try {
+            gp = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
                 .setParameter("gameId",gameId)
                 .setParameter("playerId",playerId).getSingleResult();
+        } catch (NoResultException nre) {
+            return false;
+        }
 
         gp.setGamePlayerStatus(GamePlayerStatus.DECLINED);
         em.merge(gp);
         em.flush();
+
+        return true;
     }
 
     @Override
     public List<Player> getPlayers() {
-        // TODO fix query for PlayerApi entity
         List<Player> players = em.createNamedQuery("Player.getAllPlayers").getResultList();
-
         return players;
     }
 
@@ -146,32 +160,28 @@ public class PreGameBean implements PreGameInterface {
     }
 
     @Override
-    public PlayerApi getPlayerByName(String name) {
-        Player p = (Player) em.createNamedQuery("Player.findPlayerByName")
-                .setParameter("pName", name)
-                .getSingleResult();
-        PlayerApi pApi = new PlayerApi();
-        pApi.setPlayerId(p.getPlayerId());
-        pApi.setPlayerName(p.getName());
-        return pApi;
+    public Player getPlayerByName(String name) throws NoPlayerFoundException {
+        Player p;
+        try {
+            p = (Player) em.createNamedQuery("Player.findPlayerByName")
+                    .setParameter("pName", name)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            throw new NoPlayerFoundException("No player named " + name + " found.");
+        }
+        return p;
     }
 
     @Override
-    public PlayerApi getPlayerById(long id) {
-        Player p = (Player) em.createNamedQuery("Player.findPlayerById")
-                .setParameter("pId", id)
-                .getSingleResult();
-        PlayerApi pApi = new PlayerApi();
-        pApi.setPlayerId(p.getPlayerId());
-        pApi.setPlayerName(p.getName());
-        return pApi;
+    public Player getPlayerById(long id) throws NoPlayerFoundException {
+        Player p;
+        try {
+            p = (Player) em.createNamedQuery("Player.findPlayerById")
+                    .setParameter("pId", id)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            throw new NoPlayerFoundException("No player with id " + id + " found.");
+        }
+        return p;
     }
-//    @Override
-//    public void deleteAllPlayers() {
-//        // TODO fix query for PlayerApi entity
-//        List<PlayerApi> players = em.createQuery("SELECT p from PlayerApi p").getResultList();
-//        for(PlayerApi p : players) {
-//            em.remove(p);
-//        }
-//    }
 }

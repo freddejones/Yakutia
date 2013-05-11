@@ -1,15 +1,20 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
 import junit.framework.Assert;
+import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
+import nu.danielsundberg.yakutia.entity.Game;
+import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.testcore.JpaTestCase;
 import org.junit.Test;
 
+import java.util.List;
+
 public class PreGameBeanTest extends JpaTestCase {
 
     private String playerName = "PLAYER";
-    private String email = "";
+    private String email = "email";
     private Player player;
 
     @Test
@@ -26,6 +31,13 @@ public class PreGameBeanTest extends JpaTestCase {
         PreGameBean preGameBean = new PreGameBean();
         preGameBean.em = entityManager;
         preGameBean.createNewPlayer(playerName, "mail");
+    }
+
+    @Test
+    public void playerDoesNotExist() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+        Assert.assertFalse(preGameBean.playerExists("someOtherMail"));
     }
 
     @Test
@@ -59,6 +71,173 @@ public class PreGameBeanTest extends JpaTestCase {
         Assert.assertNotNull(gameId);
     }
 
+    @Test
+    public void invitePlayerToGame() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: one player, one game
+        createPlayer();
+        Game g = new Game();
+        entityManager.persist(g);
+        entityManager.refresh(g);
+        Assert.assertNull(player.getGames());
+
+        // When: player gets an invite
+        preGameBean.invitePlayerToGame(player.getPlayerId(), g.getGameId());
+
+        // Then: a game is connected to player
+        entityManager.refresh(player);
+        Assert.assertTrue(player.getGames().size() == 1);
+    }
+
+    @Test
+    public void getInvitesNoInvites() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player with no invites
+        createPlayer();
+
+        // When: checking a invite
+        entityManager.refresh(player);
+        List<Long> invites = preGameBean.getInvites(player.getPlayerId());
+
+        // Then: no invite for player
+        Assert.assertEquals(0, invites.size());
+    }
+
+    @Test
+    public void getInvitesOneInvite() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player with one invite
+        createPlayer();
+        Game g = new Game();
+        entityManager.persist(g);
+        entityManager.refresh(g);
+        entityManager.refresh(player);
+        preGameBean.invitePlayerToGame(player.getPlayerId(),g.getGameId());
+
+        // When: checking a invite
+        entityManager.refresh(player);
+        List<Long> invites = preGameBean.getInvites(player.getPlayerId());
+
+        // Then: one invite for player
+        Assert.assertEquals(1, invites.size());
+    }
+
+    @Test
+    public void acceptTheInviteTest() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player and an invite
+        createPlayer();
+        Game g = new Game();
+        entityManager.persist(g);
+        entityManager.refresh(g);
+        entityManager.refresh(player);
+        preGameBean.invitePlayerToGame(player.getPlayerId(), g.getGameId());
+
+        // When: a player accepts the invite
+        boolean isAccepted = preGameBean.acceptInvite(player.getPlayerId(), g.getGameId());
+
+        // Then: the invite gets accepted
+        Assert.assertTrue(isAccepted);
+    }
+
+    @Test
+    public void acceptTheInviteButNoInviteExistsTest() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player without invite
+        createPlayer();
+        Game g = new Game();
+        entityManager.persist(g);
+        entityManager.refresh(g);
+        entityManager.refresh(player);
+
+        // When: a player accepts the invite
+        boolean isAccepted = preGameBean.acceptInvite(player.getPlayerId(), g.getGameId());
+
+        // Then: the invite does not get accepted
+        Assert.assertFalse(isAccepted);
+    }
+
+    @Test
+    public void declineTheInviteTest() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player with a invite
+        createPlayer();
+        Game g = new Game();
+        entityManager.persist(g);
+        entityManager.refresh(g);
+        entityManager.refresh(player);
+        preGameBean.invitePlayerToGame(player.getPlayerId(), g.getGameId());
+
+        // When: a player declines the invite
+        boolean isDeclined = preGameBean.declineInvite(player.getPlayerId(), g.getGameId());
+
+        // Then: the invite gets declined
+        Assert.assertTrue(isDeclined);
+    }
+
+    @Test
+    public void declineTheInviteButNoInviteExistsTest() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player without a invite
+        createPlayer();
+        Game g = new Game();
+        entityManager.persist(g);
+        entityManager.refresh(g);
+        entityManager.refresh(player);
+
+        // When: a player declines the invite
+        boolean isDeclined = preGameBean.declineInvite(player.getPlayerId(), g.getGameId());
+
+        // Then: the invite does not get declined
+        Assert.assertFalse(isDeclined);
+    }
+
+    @Test
+    public void getPlayerByIdTest() throws NoPlayerFoundException {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player
+        createPlayer();
+
+        // When: query a player by id
+        entityManager.refresh(player);
+        Player p = preGameBean.getPlayerById(player.getPlayerId());
+
+        // Then: same player id found
+        Assert.assertEquals(player.getPlayerId(), p.getPlayerId());
+    }
+
+    @Test
+    public void getPlayerByNameTest() throws NoPlayerFoundException {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player
+        createPlayer();
+
+        // When: query a player by name
+        entityManager.refresh(player);
+        Player p = preGameBean.getPlayerByName(playerName);
+
+        // Then: same player id found
+        Assert.assertEquals(player.getPlayerId(), p.getPlayerId());
+        Assert.assertEquals(player.getName(), p.getName());
+    }
 
     private void createPlayer() {
         player = new Player();

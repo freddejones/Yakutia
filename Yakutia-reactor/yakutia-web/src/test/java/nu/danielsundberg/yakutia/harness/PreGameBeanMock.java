@@ -40,13 +40,13 @@ public class PreGameBeanMock implements PreGameInterface {
     }
 
     @Override
-    public void acceptInvite(long playerId, long gameId) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public boolean acceptInvite(long playerId, long gameId) {
+        return false;
     }
 
     @Override
-    public void declineInvite(long playerId, long gameId) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public boolean declineInvite(long playerId, long gameId) {
+        return false;
     }
 
     @Override
@@ -60,12 +60,12 @@ public class PreGameBeanMock implements PreGameInterface {
     }
 
     @Override
-    public PlayerApi getPlayerByName(String name) {
+    public Player getPlayerByName(String name) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public PlayerApi getPlayerById(long id) {
+    public Player getPlayerById(long id) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
