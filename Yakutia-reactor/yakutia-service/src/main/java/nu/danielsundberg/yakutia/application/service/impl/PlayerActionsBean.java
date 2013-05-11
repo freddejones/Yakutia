@@ -25,17 +25,16 @@ public class PlayerActionsBean implements PlayerActionsInterface {
     protected EntityManager em;
 
     @Override
-    public boolean attackLandArea(LandArea attacking, LandArea defending) throws LandIsNotNeighbourException {
+    public boolean attackLandArea(LandArea attacking, LandArea defending, long gameId) throws LandIsNotNeighbourException {
 
         if (!LandAreaConnections.isConnected(attacking, defending)) {
             log.info("Not connected");
             throw new LandIsNotNeighbourException("LandAreas not connected");
         }
 
-        List<Unit> attackingUnits = getUnits(attacking);
-        List<Unit> defendingUnits = getUnits(defending);
+        List<Unit> attackingUnits = getUnitsByLandArea(attacking, gameId);
+        List<Unit> defendingUnits = getUnitsByLandArea(defending, gameId);
 
-        // TODO get a nicer way to get gamePlayer
         GamePlayer attackingPlayer = attackingUnits.get(0).getGamePlayer();
         GamePlayer defendingGamePlayer = defendingUnits.get(0).getGamePlayer();
 
@@ -68,7 +67,7 @@ public class PlayerActionsBean implements PlayerActionsInterface {
     @Override
     public List<LandArea> getPlayersLandAreas(long playerId, long gameId) {
         GamePlayer gp = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
-                .setParameter("gameId",gameId)
+                .setParameter("gameId", gameId)
                 .setParameter("playerId", playerId)
                 .getSingleResult();
 
@@ -83,10 +82,18 @@ public class PlayerActionsBean implements PlayerActionsInterface {
 
     // TODO how to fix this nice???
     @SuppressWarnings (value="unchecked")
-    private List<Unit> getUnits(LandArea landArea) {
-        return em.createNamedQuery("Unit.getUnitsByLandArea")
+    protected List<Unit> getUnitsByLandArea(LandArea landArea, long gameId) {
+        List<Unit> sortedUnits = new ArrayList<Unit>();
+        List<Unit> unSortedUnits = em.createNamedQuery("Unit.getUnitsByLandArea")
                 .setParameter("laName",landArea)
                 .getResultList();
+
+        for (Unit unit : unSortedUnits) {
+            if (unit.isSameGameId(gameId)) {
+                sortedUnits.add(unit);
+            }
+        }
+        return sortedUnits;
     }
 
     @Override

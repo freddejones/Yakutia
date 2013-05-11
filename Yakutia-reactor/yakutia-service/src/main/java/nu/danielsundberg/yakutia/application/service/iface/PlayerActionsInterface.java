@@ -9,7 +9,7 @@ import java.util.List;
 @Remote
 public interface PlayerActionsInterface {
 
-	public boolean attackLandArea(LandArea from, LandArea to) throws LandIsNotNeighbourException;
+	public boolean attackLandArea(LandArea from, LandArea to, long gameId) throws LandIsNotNeighbourException;
 
     public List<LandArea> getPlayersLandAreas(long playerId, long gameId);
 

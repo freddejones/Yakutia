@@ -8,10 +8,9 @@ import java.io.Serializable;
 @Entity
 @NamedQueries({
         @NamedQuery(name="Unit.getUnitsByLandArea",
-        query = "SELECT u FROM Unit u where landArea =:laName")
-        //,
-//        @NamedQuery(name="Unit.getLandAreasByGamePlayer",
-//        query = "SELECT u.landArea FROM Unit")
+                query = "SELECT u FROM Unit u where landArea = :laName"),
+        @NamedQuery(name="Unit.getUnitsByLandAreaAndGamePlayer",
+                query = "SELECT u FROM Unit u where landArea =:laName and gamePlayer=:gp")
 })
 public class Unit implements Serializable {
 
@@ -47,7 +46,6 @@ public class Unit implements Serializable {
         this.strength = strength;
     }
 
-
     @Enumerated(EnumType.STRING)
     public UnitType getTypeOfUnit() {
         return typeOfUnit;
@@ -65,5 +63,9 @@ public class Unit implements Serializable {
 
     public void setGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
+    }
+
+    public boolean isSameGameId(long gameId) {
+        return this.gamePlayer.getGameId() == gameId;
     }
 }
