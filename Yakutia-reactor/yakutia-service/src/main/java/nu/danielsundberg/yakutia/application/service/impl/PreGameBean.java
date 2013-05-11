@@ -1,7 +1,6 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
 
-import nu.danielsundberg.yakutia.application.service.PlayerApi;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.*;
@@ -148,15 +147,6 @@ public class PreGameBean implements PreGameInterface {
     public List<Player> getPlayers() {
         List<Player> players = em.createNamedQuery("Player.getAllPlayers").getResultList();
         return players;
-    }
-
-    @Override
-    public String getPlayerByEmail(String email) {
-        Player p = (Player) em.createNamedQuery("Player.findPlayerBySearchEmail")
-                .setParameter("pEmail", email)
-                .getSingleResult();
-        System.out.println("PLAYER FOUND: " + p.getName());
-        return p.getName();
     }
 
     @Override

@@ -2,13 +2,7 @@ package nu.danielsundberg.yakutia.games;
 
 
 
-import nu.danielsundberg.yakutia.application.service.iface.GameEngineInterface;
 import nu.danielsundberg.yakutia.NavbarPage;
-import nu.danielsundberg.yakutia.application.service.PlayerApi;
-import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
-import nu.danielsundberg.yakutia.application.service.PlayerApi;
-import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
-import nu.danielsundberg.yakutia.application.service.iface.GameEngineInterface;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.session.MySession;
@@ -164,8 +158,8 @@ public class CreateGamePage extends NavbarPage {
 
             @Override
             public void onSubmit() {
-                List<PlayerApi> players = (ArrayList<PlayerApi>)group.getDefaultModelObject();
-                System.out.println(players.get(0).getPlayerName());
+                List<Player> players = (ArrayList<Player>)group.getDefaultModelObject();
+                System.out.println(players.get(0).getName());
 
                 try {
                     InitialContext ctx = new InitialContext();
@@ -173,7 +167,7 @@ public class CreateGamePage extends NavbarPage {
                     PreGameInterface preGame = (PreGameInterface) ctx.lookup("preGameBean");
 
                     long gameId = preGame.createNewGame(3);
-                    for (PlayerApi p : players) {
+                    for (Player p : players) {
                         preGame.invitePlayerToGame(p.getPlayerId(),gameId);
                     }
 

@@ -1,7 +1,6 @@
 package nu.danielsundberg.yakutia.rest;
 
 
-import nu.danielsundberg.yakutia.application.service.PlayerApi;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.entity.Player;
@@ -58,20 +57,20 @@ public class RestTest {
         return new ArrayList<Player>();
     }
 
-    @Path("/getPlayerByEmail")
-    @GET
-    @Produces("text/html")
-    @Consumes("text/html")
-    public String getPlayers(@QueryParam("email") String email) {
-        try {
-            InitialContext ctx = new InitialContext();
-            preGame = (PreGameInterface) ctx.lookup("preGameBean");
-            return preGame.getPlayerByEmail(email);
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+//    @Path("/getPlayerByEmail")
+//    @GET
+//    @Produces("text/html")
+//    @Consumes("text/html")
+//    public String getPlayers(@QueryParam("email") String email) {
+//        try {
+//            InitialContext ctx = new InitialContext();
+//            preGame = (PreGameInterface) ctx.lookup("preGameBean");
+//            return preGame.getPlayerByEmail(email);
+//        } catch (NamingException e) {
+//            e.printStackTrace();
+//        }
+//        return "";
+//    }
 
     @Path("/createplayer")
     @POST

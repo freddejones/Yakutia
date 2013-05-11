@@ -1,7 +1,6 @@
 package nu.danielsundberg.yakutia.application.service.iface;
 
 
-import nu.danielsundberg.yakutia.application.service.PlayerApi;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.entity.Player;
@@ -27,8 +26,6 @@ public interface PreGameInterface {
     public boolean declineInvite(long playerId, long gameId);
 
     public List<Player> getPlayers();
-
-    public String getPlayerByEmail(String email);
 
     public Player getPlayerByName(String name) throws NoPlayerFoundException;
 

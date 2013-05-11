@@ -1,6 +1,5 @@
 package nu.danielsundberg.yakutia.harness;
 
-import nu.danielsundberg.yakutia.application.service.PlayerApi;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.entity.Player;
@@ -52,11 +51,6 @@ public class PreGameBeanMock implements PreGameInterface {
     @Override
     public List<Player> getPlayers() {
         return new ArrayList<Player>();
-    }
-
-    @Override
-    public String getPlayerByEmail(String email) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

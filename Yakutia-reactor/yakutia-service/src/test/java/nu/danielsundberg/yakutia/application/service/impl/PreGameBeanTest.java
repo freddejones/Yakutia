@@ -129,6 +129,28 @@ public class PreGameBeanTest extends JpaTestCase {
     }
 
     @Test
+    public void getInvitesOneDeclinedInvite() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player with one declined invite
+        createPlayer();
+        Game g = new Game();
+        entityManager.persist(g);
+        entityManager.refresh(g);
+        entityManager.refresh(player);
+        preGameBean.invitePlayerToGame(player.getPlayerId(),g.getGameId());
+        preGameBean.declineInvite(player.getPlayerId(),g.getGameId());
+
+        // When: checking invites
+        entityManager.refresh(player);
+        List<Long> invites = preGameBean.getInvites(player.getPlayerId());
+
+        // Then: one 0 invite for player
+        Assert.assertEquals(0, invites.size());
+    }
+
+    @Test
     public void acceptTheInviteTest() {
         PreGameBean preGameBean = new PreGameBean();
         preGameBean.em = entityManager;
@@ -206,6 +228,20 @@ public class PreGameBeanTest extends JpaTestCase {
         Assert.assertFalse(isDeclined);
     }
 
+    @Test(expected = NoPlayerFoundException.class)
+    public void getPlayerByIdNotExistTest() throws NoPlayerFoundException {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player id that does not exists
+        long notExistingId = -999;
+
+        // When: query a player by id
+        preGameBean.getPlayerById(notExistingId);
+
+        // Then: exception is thrown
+    }
+
     @Test
     public void getPlayerByIdTest() throws NoPlayerFoundException {
         PreGameBean preGameBean = new PreGameBean();
@@ -220,6 +256,20 @@ public class PreGameBeanTest extends JpaTestCase {
 
         // Then: same player id found
         Assert.assertEquals(player.getPlayerId(), p.getPlayerId());
+    }
+
+    @Test(expected = NoPlayerFoundException.class)
+    public void getPlayerByNameNotExistTest() throws NoPlayerFoundException {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a playername that does not exists
+        String notExistingName = "blahonga";
+
+        // When: query a player by name
+        preGameBean.getPlayerByName(notExistingName);
+
+        // Then: exception is thrown
     }
 
     @Test
@@ -237,6 +287,53 @@ public class PreGameBeanTest extends JpaTestCase {
         // Then: same player id found
         Assert.assertEquals(player.getPlayerId(), p.getPlayerId());
         Assert.assertEquals(player.getName(), p.getName());
+    }
+
+    @Test
+    public void getPlayersOneExistsTest() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: 1 player exists
+        createPlayer();
+
+        // When: query for players
+        List<Player> players = preGameBean.getPlayers();
+
+        // Then: list is size of 1
+        Assert.assertEquals(1, players.size());
+    }
+
+    @Test
+    public void getPlayersZeroExists() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: 0 player exists
+
+        // When: query for players
+        List<Player> players = preGameBean.getPlayers();
+
+        // Then: list is size of 0
+        Assert.assertEquals(0, players.size());
+    }
+
+    @Test
+    public void getPlayersTwoExists() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: 2 player exists
+        createPlayer();
+        Player p2 = new Player();
+        p2.setName("Blaha");
+        entityManager.persist(p2);
+
+        // When: query for players
+        List<Player> players = preGameBean.getPlayers();
+
+        // Then: list is size of 2
+        Assert.assertEquals(2, players.size());
     }
 
     private void createPlayer() {
