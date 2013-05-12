@@ -1,5 +1,7 @@
 package nu.danielsundberg.yakutia.application.service.impl;
 
+import nu.danielsundberg.yakutia.application.service.exceptions.NotSufficientUnitException;
+import nu.danielsundberg.yakutia.application.service.exceptions.PlayerDoNotOwnLandAreaException;
 import nu.danielsundberg.yakutia.application.service.iface.PlayerActionsInterface;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
@@ -102,20 +104,30 @@ public class PlayerActionsBean implements PlayerActionsInterface {
     }
 
     @Override
-    public void placeUnits(long playerId, long gameId, LandArea landArea, int unitStrength) {
+    public void placeUnits(long playerId, long gameId, LandArea landArea, int unitStrength) throws NotSufficientUnitException, PlayerDoNotOwnLandAreaException {
         GamePlayer gamePlayer = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
                 .setParameter("gameId",gameId)
                 .setParameter("playerId",playerId)
                 .getSingleResult();
 
         List<Unit> units = gamePlayer.getUnits();
+        boolean check = false;
+        for (Unit u : units) {
+            if (u.getLandArea() == landArea) {
+                check = true;
+            }
+        }
+
+        if (!check) {
+            throw new PlayerDoNotOwnLandAreaException("Landarea "
+                    + landArea.toString() + " not connected to gameplayer "
+                    + gamePlayer.getGameId());
+        }
 
         for (Unit unit : units) {
             if (unit.getLandArea() == LandArea.UNASSIGNEDLAND) {
                 if (unitStrength > unit.getStrength()) {
-                    //TODO Throw new exception
-                    log.info("Throw exception");
-                    continue; //TODO REMOVE after fixed exception
+                    throw new NotSufficientUnitException("Not enough units");
                 }
                 em.refresh(unit);
                 unit.setStrength(unit.getStrength()-unitStrength);
