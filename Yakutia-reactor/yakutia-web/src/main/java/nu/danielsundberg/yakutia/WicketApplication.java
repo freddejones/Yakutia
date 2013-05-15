@@ -41,9 +41,6 @@ public class WicketApplication extends AuthenticatedWebApplication
 
         /* Enable wicket to handle injects */
         getComponentInstantiationListeners().add(getComponentInstantiationListener());
-        // TODO remove this later
-        // yakutia-ear-0.0.1-SNAPSHOT
-        // yakutia-services-0.0.1-SNAPSHOT
 
         BootstrapSettings settings = new BootstrapSettings();
 //        settings.minify(false);

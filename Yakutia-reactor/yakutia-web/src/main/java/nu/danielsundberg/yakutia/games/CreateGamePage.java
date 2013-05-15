@@ -3,6 +3,7 @@ package nu.danielsundberg.yakutia.games;
 
 
 import nu.danielsundberg.yakutia.NavbarPage;
+import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.session.MySession;
@@ -166,13 +167,17 @@ public class CreateGamePage extends NavbarPage {
 //                    GameEngineInterface gameBean = (GameEngineInterface) ctx.lookup("kickass");
                     PreGameInterface preGame = (PreGameInterface) ctx.lookup("preGameBean");
 
-                    long gameId = preGame.createNewGame(3);
+                    // TODO Switch session stuff when fixed player id to session
+                    MySession session = (MySession) getSession();
+                    long gameId = preGame.createNewGame(preGame.getPlayerByName(session.getPlayerName()).getPlayerId());
                     for (Player p : players) {
                         preGame.invitePlayerToGame(p.getPlayerId(),gameId);
                     }
 
                 } catch (NamingException e) {
                     e.printStackTrace();
+                } catch (NoPlayerFoundException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
         };

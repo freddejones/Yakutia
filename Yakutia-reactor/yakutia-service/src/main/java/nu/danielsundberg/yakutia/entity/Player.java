@@ -53,7 +53,7 @@ public class Player implements Serializable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "player")
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     public Set<GamePlayer> getGames() {
         return games;
     }

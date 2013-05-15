@@ -22,11 +22,13 @@ import java.io.InputStreamReader;
 public class MySession extends AuthenticatedWebSession {
 
     private String playerName = "";
+    private Long playerId;
 
     public MySession(Request request) {
         super(request);
     }
 
+    // TODO REMOVE THE REST STUFF
     @Override
     public boolean authenticate(String email, String s2) {
         HttpClient client = new DefaultHttpClient();
@@ -58,13 +60,14 @@ public class MySession extends AuthenticatedWebSession {
         }
 
         if ("admin".equals(email)) {
+            long playerId = -1;
             InitialContext ctx = null;
             PreGameInterface test=null;
             try {
                 ctx = new InitialContext();
                 test = (PreGameInterface) ctx.lookup("preGameBean");
                 if (!test.playerExists("admin@jones.com")) {
-                    test.createNewPlayer("admin", "admin@jones.com");
+                    playerId = test.createNewPlayer("admin", "admin@jones.com");
                 }
             } catch (NamingException e) {
 
@@ -72,6 +75,7 @@ public class MySession extends AuthenticatedWebSession {
 
             }
             setPlayerName("admin");
+            setPlayerId(playerId);
             return true;
         }
 
@@ -96,5 +100,13 @@ public class MySession extends AuthenticatedWebSession {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+
+    public Long getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(Long playerId) {
+        this.playerId = playerId;
     }
 }

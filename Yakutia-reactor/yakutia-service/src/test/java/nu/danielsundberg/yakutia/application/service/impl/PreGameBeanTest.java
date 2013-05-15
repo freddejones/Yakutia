@@ -2,6 +2,7 @@ package nu.danielsundberg.yakutia.application.service.impl;
 
 import junit.framework.Assert;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
+import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.Player;

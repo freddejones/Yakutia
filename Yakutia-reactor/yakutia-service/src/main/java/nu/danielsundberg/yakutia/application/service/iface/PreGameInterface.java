@@ -3,6 +3,7 @@ package nu.danielsundberg.yakutia.application.service.iface;
 
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.Player;
 
 import javax.ejb.Remote;
