@@ -45,16 +45,41 @@ public class GamesPage extends NavbarPage {
         form.add(button);
         add(form);
 
-
-
         Label noGamesFound = new Label("msg","No games for you");
         add(noGamesFound);
 
-        Label gamesFound = new Label("msg2", "games found");
-        add(gamesFound);
+        List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
+        ListView<GamePlayer> gameLV = getListViewOfGames(gamePlayers);
+        add(gameLV);
 
-        List<GamePlayer> games = new ArrayList<GamePlayer>();
-        ListView<GamePlayer> gameLV = new ListView<GamePlayer>("rows", games)
+
+        MySession session = (MySession) getSession();
+        try {
+            Player player = preGameInterface.getPlayerByName(session.getPlayerName());
+
+            if (player.getGames() != null || !player.getGames().isEmpty()) {
+                noGamesFound.setVisible(false);
+
+                Set<GamePlayer> g = player.getGames();
+                Iterator<GamePlayer> gpi = g.iterator();
+                List<GamePlayer> games2 = new ArrayList<GamePlayer>();
+                while (gpi.hasNext()) {
+                    games2.add(gpi.next());
+                }
+                gameLV.replaceWith(getListViewOfGames(games2));
+            }
+        } catch (NoPlayerFoundException e) {
+            e.printStackTrace();
+        }
+
+        // TODO Show invites
+
+        // TODO Show current games?
+    }
+
+    protected ListView<GamePlayer> getListViewOfGames(List<GamePlayer> games) {
+
+        return new ListView<GamePlayer>("rows", games)
         {
             public void populateItem(final ListItem<GamePlayer> item)
             {
@@ -64,75 +89,22 @@ public class GamesPage extends NavbarPage {
                 item.add(new Label("accepts", "3/4"));
                 Form form = new Form("form");
                 Button button = new Button("button") {
+
                     @Override
                     public void onSubmit() {
-                        System.out.println("whaaat");
+                        String gameIdParamValue = this.getParent().
+                                getParent().
+                                get("gameid").getDefaultModelObjectAsString();
+                        PageParameters params = new PageParameters();
+                        params.add("gameId", gameIdParamValue);
+                        setResponsePage(ActiveGamePage.class,params);
                     }
                 };
                 form.add(button);
                 item.add(form);
             }
         };
-        add(gameLV);
 
-
-        MySession session = (MySession) getSession();
-        try {
-            Player player = preGameInterface.getPlayerByName(session.getPlayerName());
-            if (player.getGames() == null) {
-                gamesFound.setVisible(false);
-            } else if(player.getGames().isEmpty()) {
-                gamesFound.setVisible(false);
-            } else {
-                noGamesFound.setVisible(false);
-                gamesFound.replaceWith(new Label("msg2", player.getGames().size()));
-
-                Set<GamePlayer> g = player.getGames();
-                System.out.println("Size: " + g.size());
-                Iterator<GamePlayer> gpi = g.iterator();
-                List<GamePlayer> games2 = new ArrayList<GamePlayer>();
-                while (gpi.hasNext()) {
-                    games2.add(gpi.next());
-                }
-
-                gameLV.replaceWith(new ListView<GamePlayer>("rows", games2)
-                {
-                    public void populateItem(final ListItem<GamePlayer> item)
-                    {
-                        final GamePlayer gameplayer = item.getModelObject();
-                        item.add(new Label("gameid", gameplayer.getGameId()));
-                        item.add(new Label("status", gameplayer.getGame().getGameStatus()));
-                        item.add(new Label("accepts", "3/4"));
-                        Form form = new Form("form");
-                        Button button = new Button("button") {
-
-                            @Override
-                            public void onSubmit() {
-//                                String id = this.getMarkupAttributes().getString("id");
-//                                System.out.println("ID: " + id);
-                                System.out.println("whaaat");
-                                String test = this.getParent().
-                                        getParent().
-                                        get("gameid").getDefaultModelObjectAsString();
-                                System.out.println(test);
-                                PageParameters params = new PageParameters();
-                                params.add("gameId", test);
-                                setResponsePage(ActiveGamePage.class,params);
-                            }
-                        };
-                        form.add(button);
-
-                        item.add(form);
-                    }
-                });
-            }
-        } catch (NoPlayerFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        // TODO Show invites
-
-        // TODO Show current games?
     }
 
 }

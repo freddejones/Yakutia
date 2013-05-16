@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class CreateGamePage extends NavbarPage {
 
     public String message = "Nada";
 
+    @EJB(name = "pregamebean")
+    private PreGameInterface preGameInterface;
 
 
     public CreateGamePage(PageParameters parameters) throws NamingException {
@@ -34,22 +37,13 @@ public class CreateGamePage extends NavbarPage {
 
         List<Player> list = new ArrayList<Player>();
 
-        InitialContext ctx = null;
-        PreGameInterface preGameBean = null;
 
-        try {
-            ctx = new InitialContext();
-            preGameBean = (PreGameInterface) ctx.lookup("preGameBean");
-            List<Player> listTmp = preGameBean.getPlayers();
-            for (Player p : listTmp) {
-                MySession session = (MySession) getSession();
-                if (!p.getName().equals(session.getPlayerName())) {
-                    list.add(p);
-                }
+        List<Player> listTmp = preGameInterface.getPlayers();
+        for (Player p : listTmp) {
+            MySession session = (MySession) getSession();
+            if (!p.getName().equals(session.getPlayerName())) {
+                list.add(p);
             }
-
-        } catch (NamingException e) {
-            e.printStackTrace();
         }
 
 //        HttpGet request = new HttpGet(RestParameters.GETALLPLAYERS_URL);
