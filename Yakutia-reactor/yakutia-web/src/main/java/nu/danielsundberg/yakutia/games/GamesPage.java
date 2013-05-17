@@ -45,8 +45,8 @@ public class GamesPage extends NavbarPage {
         form.add(button);
         add(form);
 
-        Label noGamesFound = new Label("msg","No games for you");
-        add(noGamesFound);
+        Label infoMessage = new Label("msg","No games for you");
+        add(infoMessage);
 
         List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
         ListView<GamePlayer> gameLV = getListViewOfGames(gamePlayers);
@@ -58,7 +58,7 @@ public class GamesPage extends NavbarPage {
             Player player = preGameInterface.getPlayerByName(session.getPlayerName());
 
             if (!player.getGames().isEmpty()) {
-                noGamesFound.setVisible(false);
+                infoMessage.setVisible(false);
                 Set<GamePlayer> g = player.getGames();
                 Iterator<GamePlayer> gpi = g.iterator();
                 List<GamePlayer> games2 = new ArrayList<GamePlayer>();
@@ -68,12 +68,10 @@ public class GamesPage extends NavbarPage {
                 gameLV.replaceWith(getListViewOfGames(games2));
             }
         } catch (NoPlayerFoundException e) {
-            e.printStackTrace();
+            infoMessage.replaceWith(new Label("msg", "You seem to not exist as a player, wich is weird"));
         }
 
         // TODO Show invites
-
-        // TODO Show current games?
     }
 
     protected ListView<GamePlayer> getListViewOfGames(List<GamePlayer> games) {

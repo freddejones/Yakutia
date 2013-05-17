@@ -2,6 +2,7 @@ package nu.danielsundberg.yakutia.games;
 
 import junit.framework.Assert;
 import nu.danielsundberg.yakutia.SignIn;
+import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.GameStatus;
@@ -146,6 +147,25 @@ public class GamesPageTest {
 
         // Then: user reaches active game page
         tester.assertRenderedPage(ActiveGamePage.class);
+    }
+
+    @Test(expected = NoPlayerFoundException.class)
+    public void noPlayerFoundException() {
+        // Given: user is authorized with 1 game
+        tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
+                new RoleAuthorizationStrategy(new Authorizer("USER")));
+        when(preGameBeanMock.getPlayerByName(any(String.class)))
+                .thenThrow(new NoPlayerFoundException("Could not find player"));
+
+
+        // When: user clicks the game button
+        tester.startPage(GamesPage.class);
+
+        // Then: user reaches active game page
+        tester.assertRenderedPage(ActiveGamePage.class);
+        Assert.assertEquals("You seem to not exist as a player, wich is weird",
+                tester.getTagById("msg").getValue());
+        tester.assertVisible("msg");
     }
 
     @Test
