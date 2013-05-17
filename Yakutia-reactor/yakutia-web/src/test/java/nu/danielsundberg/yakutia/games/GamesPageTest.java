@@ -149,20 +149,17 @@ public class GamesPageTest {
         tester.assertRenderedPage(ActiveGamePage.class);
     }
 
-    @Test(expected = NoPlayerFoundException.class)
+    @Test
     public void noPlayerFoundException() {
-        // Given: user is authorized with 1 game
+        // Given: user is authorized
         tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
                 new RoleAuthorizationStrategy(new Authorizer("USER")));
-        when(preGameBeanMock.getPlayerByName(any(String.class)))
-                .thenThrow(new NoPlayerFoundException("Could not find player"));
 
-
-        // When: user clicks the game button
+        // When: user hits gamePage and do not exist in database
+        doThrow(NoPlayerFoundException.class).when(preGameBeanMock).getPlayerByName(any(String.class));
         tester.startPage(GamesPage.class);
 
-        // Then: user reaches active game page
-        tester.assertRenderedPage(ActiveGamePage.class);
+        // Then: infomessage is displayed
         Assert.assertEquals("You seem to not exist as a player, wich is weird",
                 tester.getTagById("msg").getValue());
         tester.assertVisible("msg");
