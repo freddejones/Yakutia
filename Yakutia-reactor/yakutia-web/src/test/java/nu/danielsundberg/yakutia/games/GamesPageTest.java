@@ -10,17 +10,19 @@ import nu.danielsundberg.yakutia.harness.Authorizer;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.MockFactory;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.PreGameBeanMock;
+import org.apache.wicket.Component;
 import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
+import org.apache.wicket.util.visit.IVisit;
+import org.apache.wicket.util.visit.IVisitor;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 
@@ -67,12 +69,16 @@ public class GamesPageTest {
         // Given: user is authorized with 0 games
         tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
                 new RoleAuthorizationStrategy(new Authorizer("USER")));
+        Set<GamePlayer> gamePlayersSetMock = mock(Set.class);
+        when(preGameBeanMock.getPlayerByName(any(String.class))).thenReturn(playerMock);
+        when(playerMock.getGames()).thenReturn(gamePlayersSetMock);
+        when(gamePlayersSetMock.isEmpty()).thenReturn(true);
+
 
         // When: user hits gamepage
         tester.startPage(GamesPage.class);
 
         // Then: no games are shown
-        System.out.println(tester.getTagById("msg").getValue());
         Assert.assertEquals("No games for you", tester.getTagById("msg").getValue());
         tester.assertVisible("msg");
     }
@@ -97,44 +103,49 @@ public class GamesPageTest {
         when(gamePlayerMock.getGameId()).thenReturn(12L);
         when(gamePlayerMock.getGame()).thenReturn(gameMock);
         when(gameMock.getGameStatus()).thenReturn(GameStatus.ONGOING);
-
-
-//        Set<GamePlayer> setMock = new HashSet<GamePlayer>() {
-//
-//            private Stack<Boolean> booleans;
-//
-//
-//            @Override
-//            public int size() {
-//                booleans = new Stack<Boolean>();
-//                booleans.push(false);
-//                booleans.push(true);
-//                return 1;
-//            }
-//
-//            @Override
-//            public boolean isEmpty() {
-//                return false;
-//            }
-//
-//            @Override
-//            public Iterator iterator() {
-//                return gamePlayersIteratorMock;
-//            }
-//
-//        };
-
-
         when(playerMock.getGames()).thenReturn(gamePlayersSetMock);
 
         // When: user hits gamepage
         tester.startPage(GamesPage.class);
 
-        // Then: number of games are shown
-//        System.out.println(tester.getTagByWicketId("rows:gameid").getValue());
-//        System.out.println(tester.getTagsByWicketId("gameid").get(0).getValue());
-//        System.out.println(tester.getTagById("rows:gameid").getValue());
+        // Then: number of games are shown + correct gameId
+        ListView<GamePlayer> list = (ListView<GamePlayer>)tester.getLastRenderedPage().get("rows");
+        ListItem listItem = (ListItem) list.get(0);
+        GamePlayer gp = (GamePlayer) listItem.getModelObject();
+        Assert.assertEquals(1,list.size());
+        Assert.assertEquals(12L,gp.getGameId());
         tester.assertInvisible("msg");
+    }
+
+    @Test
+    public void clickButtonForCreatedGame() {
+        // Given: user is authorized with 1 game
+        tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
+                new RoleAuthorizationStrategy(new Authorizer("USER")));
+        when(preGameBeanMock.getPlayerByName(any(String.class))).thenReturn(playerMock);
+
+        Iterator<GamePlayer> gamePlayersIteratorMock = mock(Iterator.class);
+        Set<GamePlayer> gamePlayersSetMock = mock(Set.class);
+        GamePlayer gamePlayerMock = mock(GamePlayer.class);
+        Game gameMock = mock(Game.class);
+
+        when(gamePlayersSetMock.isEmpty()).thenReturn(false);
+        when(gamePlayersSetMock.size()).thenReturn(1);
+        when(gamePlayersSetMock.iterator()).thenReturn(gamePlayersIteratorMock);
+        when(gamePlayersIteratorMock.hasNext()).thenReturn(true).thenReturn(false);
+        when(gamePlayersIteratorMock.next()).thenReturn(gamePlayerMock);
+        when(gamePlayerMock.getGameId()).thenReturn(12L);
+        when(gamePlayerMock.getGame()).thenReturn(gameMock);
+        when(gameMock.getGameStatus()).thenReturn(GameStatus.ONGOING);
+        when(playerMock.getGames()).thenReturn(gamePlayersSetMock);
+
+        // When: user clicks the game button
+        tester.startPage(GamesPage.class);
+        FormTester formtester = tester.newFormTester("rows:0:form");
+        formtester.submit("button");
+
+        // Then: user reaches active game page
+        tester.assertRenderedPage(ActiveGamePage.class);
     }
 
     @Test

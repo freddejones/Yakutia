@@ -57,9 +57,8 @@ public class GamesPage extends NavbarPage {
         try {
             Player player = preGameInterface.getPlayerByName(session.getPlayerName());
 
-            if (player.getGames() != null || !player.getGames().isEmpty()) {
+            if (!player.getGames().isEmpty()) {
                 noGamesFound.setVisible(false);
-
                 Set<GamePlayer> g = player.getGames();
                 Iterator<GamePlayer> gpi = g.iterator();
                 List<GamePlayer> games2 = new ArrayList<GamePlayer>();
