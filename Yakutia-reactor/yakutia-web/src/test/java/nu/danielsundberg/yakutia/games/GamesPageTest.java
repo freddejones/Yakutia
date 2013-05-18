@@ -1,28 +1,23 @@
 package nu.danielsundberg.yakutia.games;
 
 import junit.framework.Assert;
-import nu.danielsundberg.yakutia.SignIn;
+import nu.danielsundberg.yakutia.auth.SignIn;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.GameStatus;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.harness.Authorizer;
-import nu.danielsundberg.yakutia.harness.preGameBeanMock.MockFactory;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.PreGameBeanMock;
-import org.apache.wicket.Component;
 import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
-import org.apache.wicket.util.visit.IVisit;
-import org.apache.wicket.util.visit.IVisitor;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.mockito.Mockito.*;

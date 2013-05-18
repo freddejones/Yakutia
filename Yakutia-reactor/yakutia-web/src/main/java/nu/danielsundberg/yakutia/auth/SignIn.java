@@ -1,5 +1,7 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.auth;
 
+import nu.danielsundberg.yakutia.BasePage;
+import nu.danielsundberg.yakutia.CallbackPage;
 import nu.danielsundberg.yakutia.auth.OauthParameters;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -13,19 +15,14 @@ import javax.naming.NamingException;
 
 public class SignIn extends BasePage {
 
-    private Token requestToken;
+    protected Token requestToken;
+    protected OAuthService service;
 
     public SignIn(PageParameters parameters) throws NamingException {
         super(parameters);
         getSession().bind();
 
-        OAuthService service = new ServiceBuilder()
-                .provider(GoogleApi.class)
-                .apiKey(OauthParameters.APIKEY)
-                .apiSecret(OauthParameters.APISECRET)
-                .scope(OauthParameters.SCOPE)
-                .callback(OauthParameters.CALLBACKURL)
-                .build();
+        service = getOAuthService();
 
         requestToken = service.getRequestToken();
         getSession().setAttribute("requestToken", requestToken);
@@ -36,13 +33,13 @@ public class SignIn extends BasePage {
             public void onSubmit() {
                 throw new RedirectToUrlException(authUrl);
             }
-
         };
 
         Form form = new Form("google-form");
         form.add(googleSign);
         add(form);
 
+        // TODO REMOVE when not needed anymore
         Form formAdmin = new Form("admin-form");
         Button adminButton = new Button("admin") {
             @Override
@@ -54,6 +51,15 @@ public class SignIn extends BasePage {
         };
         formAdmin.add(adminButton);
         add(formAdmin);
+    }
 
+    public OAuthService getOAuthService() {
+        return new ServiceBuilder()
+                    .provider(GoogleApi.class)
+                    .apiKey(OauthParameters.APIKEY)
+                    .apiSecret(OauthParameters.APISECRET)
+                    .scope(OauthParameters.SCOPE)
+                    .callback(OauthParameters.CALLBACKURL)
+                    .build();
     }
 }

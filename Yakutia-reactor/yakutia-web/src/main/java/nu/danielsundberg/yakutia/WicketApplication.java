@@ -4,17 +4,16 @@ import de.agilecoders.wicket.Bootstrap;
 import de.agilecoders.wicket.settings.BootstrapSettings;
 import de.agilecoders.wicket.settings.BootswatchThemeProvider;
 import de.agilecoders.wicket.settings.ThemeProvider;
+import nu.danielsundberg.yakutia.auth.SignIn;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.Session;
 import org.apache.wicket.application.IComponentInstantiationListener;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.protocol.http.IRequestLogger;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
-import org.wicketstuff.javaee.naming.global.ModuleJndiNamingStrategy;
 
 /**
  * Application object for your web application. If you want to run this application without deploying, run the Start class.
