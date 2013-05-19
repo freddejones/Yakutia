@@ -174,4 +174,17 @@ public class PreGameBean implements PreGameInterface {
         }
         return p;
     }
+
+    @Override
+    public Player getPlayerByEmail(String email) throws NoPlayerFoundException {
+        Player p;
+        try {
+            p = (Player) em.createNamedQuery("Player.findPlayerByEmail")
+                    .setParameter("pEmail", email)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            throw new NoPlayerFoundException("No player with email " + email + " found.");
+        }
+        return p;
+    }
 }

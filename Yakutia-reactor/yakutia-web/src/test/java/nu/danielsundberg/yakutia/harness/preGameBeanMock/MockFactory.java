@@ -12,7 +12,6 @@ import java.lang.reflect.Field;
  */
 public class MockFactory implements IFieldValueFactory {
 
-//    protected PreGameInterface preGameBean = new PreGameBeanMock();
     protected Object bean;
 
     public MockFactory(Object obj) {
@@ -27,8 +26,8 @@ public class MockFactory implements IFieldValueFactory {
     @Override
     public Object getFieldValue(Field field, Object fieldOwner) {
 
+        // TODO how to fix this generic?
         if (field.getType().isAssignableFrom(PreGameInterface.class)) {
-//            return preGameBean;
             return bean;
         } else {
             return null;

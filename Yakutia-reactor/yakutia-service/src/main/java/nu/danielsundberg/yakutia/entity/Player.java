@@ -16,6 +16,10 @@ import java.util.Set;
                 query = "SELECT p FROM Player p WHERE name=:pName"
         ),
         @NamedQuery(
+                name = "Player.findPlayerByEmail",
+                query = "SELECT p FROM Player p WHERE email=:pEmail"
+        ),
+        @NamedQuery(
                 name = "Player.findPlayerBySearchName",
                 query = "SELECT p FROM Player p WHERE p.name LIKE :pName"
         ),

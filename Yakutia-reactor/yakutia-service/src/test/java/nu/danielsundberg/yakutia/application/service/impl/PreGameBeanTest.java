@@ -291,6 +291,24 @@ public class PreGameBeanTest extends JpaTestCase {
     }
 
     @Test
+    public void getPlayerByEmailTest() throws NoPlayerFoundException {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player
+        createPlayer();
+
+        // When: query a player by email
+        entityManager.refresh(player);
+        Player p = preGameBean.getPlayerByEmail(email);
+
+        // Then: same player id found
+        Assert.assertEquals(player.getPlayerId(), p.getPlayerId());
+        Assert.assertEquals(player.getName(), p.getName());
+        Assert.assertEquals(player.getEmail(), p.getEmail());
+    }
+
+    @Test
     public void getPlayersOneExistsTest() {
         PreGameBean preGameBean = new PreGameBean();
         preGameBean.em = entityManager;

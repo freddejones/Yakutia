@@ -34,8 +34,10 @@
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-auth-roles</artifactId>
-            <version>6.3.0</version>
+            <version>${wicket.version}</version>
         </dependency>
+
+        <!-- WICKET EXTERNAL DEPS -->
         <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>wicketstuff-javaee-inject</artifactId>
@@ -94,6 +96,7 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- TOOO CHECK IF NEEDED? -->
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.ejb</artifactId>

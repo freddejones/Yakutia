@@ -1,6 +1,7 @@
 package nu.danielsundberg.yakutia.games;
 
 import junit.framework.Assert;
+import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.auth.SignIn;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.entity.Game;
@@ -9,7 +10,6 @@ import nu.danielsundberg.yakutia.entity.GameStatus;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.harness.Authorizer;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
-import nu.danielsundberg.yakutia.harness.preGameBeanMock.PreGameBeanMock;
 import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -29,12 +29,12 @@ import static org.mockito.Mockito.*;
 public class GamesPageTest {
 
     private WicketTester tester;
-    private PreGameBeanMock preGameBeanMock;
+    private PreGameInterface preGameBeanMock;
     private Player playerMock;
 
     @Before
-    public void setUp() {
-        preGameBeanMock = mock(PreGameBeanMock.class);
+    public void setUp() throws NoPlayerFoundException {
+        preGameBeanMock = mock(PreGameInterface.class);
         playerMock = mock(Player.class);
         when(playerMock.getName()).thenReturn("any");
         when(preGameBeanMock.getPlayerByName(any(String.class))).thenReturn(playerMock);
@@ -61,7 +61,7 @@ public class GamesPageTest {
     }
 
     @Test
-    public void checkPageWhenNoGamesExists() {
+    public void checkPageWhenNoGamesExists() throws NoPlayerFoundException {
         // Given: user is authorized with 0 games
         tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
                 new RoleAuthorizationStrategy(new Authorizer("USER")));
@@ -80,7 +80,7 @@ public class GamesPageTest {
     }
 
     @Test
-    public void checkPageWhenGamesExist() {
+    public void checkPageWhenGamesExist() throws NoPlayerFoundException {
         // Given: user is authorized with 1 games
         tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
                 new RoleAuthorizationStrategy(new Authorizer("USER")));
@@ -114,7 +114,7 @@ public class GamesPageTest {
     }
 
     @Test
-    public void clickButtonForCreatedGame() {
+    public void clickButtonForCreatedGame() throws NoPlayerFoundException {
         // Given: user is authorized with 1 game
         tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
                 new RoleAuthorizationStrategy(new Authorizer("USER")));
@@ -145,7 +145,7 @@ public class GamesPageTest {
     }
 
     @Test
-    public void noPlayerFoundException() {
+    public void noPlayerFoundException() throws NoPlayerFoundException {
         // Given: user is authorized
         tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
                 new RoleAuthorizationStrategy(new Authorizer("USER")));
