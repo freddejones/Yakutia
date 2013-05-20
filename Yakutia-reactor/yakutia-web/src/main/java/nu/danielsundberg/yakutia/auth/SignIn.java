@@ -2,7 +2,6 @@ package nu.danielsundberg.yakutia.auth;
 
 import nu.danielsundberg.yakutia.BasePage;
 import nu.danielsundberg.yakutia.CallbackPage;
-import nu.danielsundberg.yakutia.auth.OauthParameters;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.request.flow.RedirectToUrlException;

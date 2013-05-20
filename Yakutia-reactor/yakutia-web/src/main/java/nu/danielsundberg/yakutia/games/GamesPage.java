@@ -1,26 +1,18 @@
 package nu.danielsundberg.yakutia.games;
 
-
-
 import nu.danielsundberg.yakutia.*;
-//import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
-import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import java.util.*;

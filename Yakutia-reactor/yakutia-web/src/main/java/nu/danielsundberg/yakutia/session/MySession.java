@@ -2,26 +2,13 @@ package nu.danielsundberg.yakutia.session;
 
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
-import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
-import nu.danielsundberg.yakutia.auth.RestParameters;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.entity.Player;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.request.Request;
-//import wicket.injection.web.InjectorHolder;
-
 import javax.ejb.EJB;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 
 public class MySession extends AuthenticatedWebSession {
@@ -42,9 +29,9 @@ public class MySession extends AuthenticatedWebSession {
 
         if (preGameInterface.playerExists(email)) {
             try {
-                Player seesionPlayer = preGameInterface.getPlayerByEmail(email);
-                setPlayerId(seesionPlayer.getPlayerId());
-                setPlayerName(seesionPlayer.getName());
+                Player sessionPlayer = preGameInterface.getPlayerByEmail(email);
+                setPlayerId(sessionPlayer.getPlayerId());
+                setPlayerName(sessionPlayer.getName());
                 return true;
             } catch (NoPlayerFoundException e) {
                 // TODO just add logging here?

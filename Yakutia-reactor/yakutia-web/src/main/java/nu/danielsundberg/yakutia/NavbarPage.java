@@ -1,7 +1,5 @@
 package nu.danielsundberg.yakutia;
 
-import de.agilecoders.wicket.markup.html.bootstrap.button.dropdown.MenuBookmarkablePageLink;
-import de.agilecoders.wicket.markup.html.bootstrap.extensions.button.DropDownAutoOpen;
 import de.agilecoders.wicket.markup.html.bootstrap.image.IconType;
 import de.agilecoders.wicket.markup.html.bootstrap.navbar.*;
 import nu.danielsundberg.yakutia.friends.FriendsPage;
@@ -9,7 +7,6 @@ import nu.danielsundberg.yakutia.games.GamesPage;
 import nu.danielsundberg.yakutia.session.SignOut;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-
 import javax.naming.NamingException;
 
 
