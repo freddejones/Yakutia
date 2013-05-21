@@ -21,6 +21,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.*;
 import org.eclipse.jetty.http.HttpStatus;
 
+import javax.ejb.EJB;
 import javax.naming.NamingException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ import java.util.List;
 
 public class CreateAccountPage extends BasePage {
 
+    @EJB(name = "pregamebean")
+    private PreGameInterface preGameInterface;
 
     private String playername = "your player name";
     private String email = "";
@@ -53,38 +56,19 @@ public class CreateAccountPage extends BasePage {
 
                 // TODO Save token as well?
 
-                String createPlayer = RestParameters.CREATEPLAYER_URL;
-                HttpPost post = new HttpPost(createPlayer);
-
-                List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-                nvps.add(new BasicNameValuePair("name", getPlayername()));
-                nvps.add(new BasicNameValuePair("email", finalEmail));
-
-                UrlEncodedFormEntity entity1 = new UrlEncodedFormEntity(nvps, Consts.UTF_8);
-                entity1.setContentType("text/html");
-                post.setHeader("Accept","text/html");
-
-                post.addHeader(entity1.getContentType());
-                post.setEntity(entity1);
-                HttpClient client = new DefaultHttpClient();
                 try {
-                    HttpResponse resp = client.execute(post);
+                    preGameInterface.createNewPlayer(getPlayername(), getEmail());
 
-                    if (resp.getStatusLine().getStatusCode() == HttpStatus.OK_200) {
-                        MySession session = (MySession)getSession();
-                        if (session.signIn(finalEmail,""))
-                        {
-                            setResponsePage(WelcomePage.class);
-                        }
-                    } else {
-                        // TODO Redirect to error page?
+                    MySession session = (MySession)getSession();
+                    if (session.signIn(finalEmail,""))
+                    {
+                        setResponsePage(WelcomePage.class);
                     }
 
-                } catch (IOException e) {
-
-                    // TODO How to handle this?
-
+                } catch (PlayerAlreadyExists playerAlreadyExists) {
+                    playerAlreadyExists.printStackTrace();
                 }
+
             }
         };
 

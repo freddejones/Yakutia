@@ -7,11 +7,12 @@
 <body>
 <wicket:extend>
 
+    <center>
     <header class="jumbotron subhead" id="overview">
         <div class="container">
             <h1>Friends</h1>
 
-            <p class="lead">Find your friends!</p>
+            <p class="lead">Manage your friends!</p>
         </div>
     </header>
 
@@ -20,15 +21,41 @@
         <span wicket:id="status2" class="badge badge-success" status="not">[message]</span>
     </form>
 
-    <form class="form-search" wicket:id="form">
-        <input type="text" class="input-medium search-query">
-        <input type="submit" wicket:id="searchButton" class="btn" value="Search player"/>
+    <!--<form class="form-search" wicket:id="form">-->
+        <!--<input type="text" class="input-medium search-query">-->
+        <!--<input type="submit" wicket:id="searchButton" class="btn" value="Search player"/>-->
+    <!--</form>-->
+
+    <form class="form" wicket:id="list-all-players">
+        <input type="submit" wicket:id="list-all-button" class="btn" value="Show all players"/>
     </form>
 
-    <button type="button" class="btn btn-large btn-primary" value="No value needed">Search for friends</button>
-    <button type="button" class="btn btn-large btn-primary" value="No value needed">List friends</button>
+
+    <wicket:enclosure child="rows">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Player name</th>
+                <th>Friend invite status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr wicket:id="rows">
+                <td><span wicket:id="playerid"></span></td>
+                <td>
+                    <form wicket:id="form">
+                        <input type="submit" wicket:id="invite-button" class="btn btn-large btn-primary" value="Invite"/>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </wicket:enclosure>
+    <!--<button type="button" class="btn btn-large btn-primary" value="No value needed">Search for friends</button>-->
+    <!--<button type="button" class="btn btn-large btn-primary" value="No value needed">List friends</button>-->
 
 
+    </center>
 </wicket:extend>
 </body>
 </html>

@@ -15,13 +15,13 @@ import javax.naming.NamingException;
 public class SignIn extends BasePage {
 
     protected Token requestToken;
-    protected OAuthService service;
+//    protected  service;
 
     public SignIn(PageParameters parameters) throws NamingException {
         super(parameters);
         getSession().bind();
 
-        service = getOAuthService();
+        OAuthService service = getOAuthService();
 
         requestToken = service.getRequestToken();
         getSession().setAttribute("requestToken", requestToken);
