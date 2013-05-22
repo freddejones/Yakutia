@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +36,7 @@ public class WelcomePageTest {
         MySession session = (MySession) tester.getSession();
         when(preGameInterfaceMock.playerExists(any(String.class))).thenReturn(true);
         Player p = mock(Player.class);
-        when(preGameInterfaceMock.getPlayerByEmail(any(String.class))).thenReturn(p);
+        when(preGameInterfaceMock.getPlayerByEmail(anyString())).thenReturn(p);
         when(p.getName()).thenReturn("myname");
         when(p.getPlayerId()).thenReturn(10L);
 
