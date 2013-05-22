@@ -9,6 +9,8 @@ import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.request.Request;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 
 public class MySession extends AuthenticatedWebSession {
@@ -34,7 +36,7 @@ public class MySession extends AuthenticatedWebSession {
                 setPlayerName(sessionPlayer.getName());
                 return true;
             } catch (NoPlayerFoundException e) {
-                // TODO just add logging here?
+                e.printStackTrace(); //TODO Fix something here, a page or something
             }
         }
 
@@ -44,6 +46,7 @@ public class MySession extends AuthenticatedWebSession {
                 try {
                     playerId = preGameInterface.createNewPlayer("admin", "admin@jones.com");
                 } catch (PlayerAlreadyExists playerAlreadyExists) {
+                    playerAlreadyExists.printStackTrace();
                     // TODO add logging here?
                 }
             }

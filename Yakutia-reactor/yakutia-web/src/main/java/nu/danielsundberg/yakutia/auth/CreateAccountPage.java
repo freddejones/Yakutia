@@ -5,27 +5,14 @@ import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.WelcomePage;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.session.MySession;
-import org.apache.http.Consts;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.*;
-import org.eclipse.jetty.http.HttpStatus;
-
 import javax.ejb.EJB;
 import javax.naming.NamingException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CreateAccountPage extends BasePage {
 
@@ -54,16 +41,12 @@ public class CreateAccountPage extends BasePage {
             @Override
             public void onSubmit() {
 
-                // TODO Save token as well?
-
                 try {
-                    preGameInterface.createNewPlayer(getPlayername(), getEmail());
+                    preGameInterface.createNewPlayer(getPlayername(), finalEmail);
 
                     MySession session = (MySession)getSession();
                     if (session.signIn(finalEmail,""))
-                    {
-                        setResponsePage(WelcomePage.class);
-                    }
+                    {   setResponsePage(WelcomePage.class); }
 
                 } catch (PlayerAlreadyExists playerAlreadyExists) {
                     playerAlreadyExists.printStackTrace();

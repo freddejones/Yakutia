@@ -22,7 +22,7 @@ public class PreGameBean implements PreGameInterface {
 
     @Override
     public boolean playerExists(String email) {
-        if(em.createNamedQuery("Player.findPlayerBySearchEmail")
+        if(em.createNamedQuery("Player.findPlayerByEmail")
             .setParameter("pEmail", email)
             .getResultList().size() == 0) {
             return false;
@@ -47,7 +47,6 @@ public class PreGameBean implements PreGameInterface {
         return player.getPlayerId();
     }
 
-    // MOVE TO PREGAME INTEFACE
     @Override
     public long createNewGame(long playerId) {
         Game game = new Game();

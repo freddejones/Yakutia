@@ -22,7 +22,7 @@ public class PreGameBeanTest extends JpaTestCase {
     public void createANewPlayerTest() throws PlayerAlreadyExists {
         PreGameBean preGameBean = new PreGameBean();
         preGameBean.em = entityManager;
-        long pId =  preGameBean.createNewPlayer(playerName, "mail");
+        long pId =  preGameBean.createNewPlayer(playerName, "mail@stuff");
         Assert.assertNotNull(pId);
     }
 
