@@ -46,61 +46,6 @@ public class CreateGamePage extends NavbarPage {
             }
         }
 
-//        HttpGet request = new HttpGet(RestParameters.GETALLPLAYERS_URL);
-//        request.setHeader("Accept","application/json");
-//        HttpClient client = new DefaultHttpClient();
-//        HttpResponse response = null;
-//        try {
-//            response = client.execute(request);
-//            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-//            StringBuilder sb = new StringBuilder();
-//            String line = "";
-//            while ((line = rd.readLine()) != null) {
-//                sb.append(line);
-//            }
-//            System.out.println("Single: " + sb.toString());
-//
-//            JSONObject obj = null;
-//            JSONString jstring = null;
-//            try {
-//                obj = new JSONObject(sb.toString());
-//
-//                //JSONObject jsonObject = obj.getJSONObject("playerApi");
-//                //PlayerApi value = GSON.fromJSON(rd.toString(), PlayerApi.class);
-//
-//
-//                JSONArray jsonMainArr = obj.getJSONArray("playerApi");
-//                System.out.println("SIZE=" + jsonMainArr.length());
-//                for (int i = 0; i < jsonMainArr.length(); i++) {  // **line 2**
-//                    JSONObject childJSONObject = jsonMainArr.getJSONObject(i);
-//                    String name = childJSONObject.getString("playerName");
-//                    String id     = childJSONObject.getString("playerId");
-//                    PlayerApi p1 = new PlayerApi();
-//                    p1.setPlayerName(name);
-//                    p1.setPlayerId(Long.parseLong(id));
-//                    list.add(p1 );
-//                }
-//
-////                Gson gson = new Gson();
-////                List<PlayerApi> list = new ArrayList<PlayerApi>();
-//                  for (PlayerApi p : list) {
-//                      System.out.println("Well: " + p.getPlayerName());
-//                  }
-////                GsonBuilder gsonBuilder = new GsonBuilder();
-////                Gson gson = gsonBuilder.create();
-//////                Gson gson = new Gson();
-////                PlayerApi p1 = gson.fromJson(sb.toString(), PlayerApi.class);
-////                System.out.println("p1 stuff: " + p1.getPlayerName());
-//
-//            } catch (JSONException e) {
-//                // TODO handle some exceptions here
-//                e.printStackTrace();
-//            }
-//        } catch (IOException e) {
-//
-//        }
-
-
         List<Player> players = list;
         final ListView<Player> listview = new ListView<Player>("players", players)
         {
@@ -127,28 +72,6 @@ public class CreateGamePage extends NavbarPage {
         test.setOutputMarkupId(true);
 
         Form form = new Form("form1");
-//        group.add(new AjaxFormChoiceComponentUpdatingBehavior()
-//        {
-//            @Override
-//            protected void onUpdate(AjaxRequestTarget target)
-//            {
-//
-//                target.add(new Label("playername","blaa"));
-//
-////                form.remove(alarmLabel);
-////                form.add(alarmLabel);
-////                alarmLabel
-////                        .replaceWith(new Label("status2","fakc?"))
-////                        .add(new AttributeAppender("class", new Model("badge badge-success")))
-////                        .setOutputMarkupId(true);
-////
-////                target.add(form);
-//            }
-//        });
-
-
-
-
         Button button = new Button("submit1") {
 
             @Override
