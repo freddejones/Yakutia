@@ -17,6 +17,8 @@ public class Game implements Serializable {
     @Id @GeneratedValue
     private long gameId;
 
+    private String name;
+
     @OneToMany(mappedBy = "game")
     private Set<GamePlayer> players;
 
@@ -38,6 +40,14 @@ public class Game implements Serializable {
 
     public void setGameId(long gameId) {
         this.gameId = gameId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Set<GamePlayer> getPlayers() {
