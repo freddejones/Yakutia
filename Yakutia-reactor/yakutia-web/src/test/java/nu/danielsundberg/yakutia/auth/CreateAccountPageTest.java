@@ -1,6 +1,7 @@
 package nu.danielsundberg.yakutia.auth;
 
 import junit.framework.Assert;
+import nu.danielsundberg.yakutia.base.ErrorPage;
 import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
@@ -70,5 +71,46 @@ public class CreateAccountPageTest {
 
         // Then: user is directly passed to welcome page
         tester.assertRenderedPage(WelcomePage.class);
+    }
+
+    @Test
+    public void testFailedLoginRedirected() throws PlayerAlreadyExists, NoPlayerFoundException {
+        // Given: user fails to login for some unknown reason
+        PageParameters pg = new PageParameters();
+        pg.add("email","fidde@email.com");
+        tester.startPage(CreateAccountPage.class, pg);
+
+        FormTester formTester = tester.newFormTester("form");
+        formTester.setValue("playername","fidde");
+
+        when(preGameInterfaceMock.createNewPlayer(isA(String.class),isA(String.class))).thenReturn(1L);
+        when(preGameInterfaceMock.playerExists(notNull(String.class))).thenReturn(false);
+
+        // When: clicking the create player button
+        formTester.submit("createButton");
+
+        // Then: user is redirected to exception page
+        tester.assertRenderedPage(ErrorPage.class);
+    }
+
+    @Test
+    public void testPlayerAlreadyExistsSomeHow() throws PlayerAlreadyExists {
+        // Given: user fails to login due to player already exist
+        PageParameters pg = new PageParameters();
+        pg.add("email","fidde@email.com");
+        tester.startPage(CreateAccountPage.class, pg);
+
+        FormTester formTester = tester.newFormTester("form");
+        formTester.setValue("playername","fidde");
+
+        when(preGameInterfaceMock.createNewPlayer(isA(String.class),isA(String.class)))
+                .thenThrow(PlayerAlreadyExists.class);
+
+        // When: clicking the create player button
+        formTester.submit("createButton");
+
+        // Then: user is redirected to exception page
+        tester.assertRenderedPage(ErrorPage.class);
+        System.out.println("reached here ait");
     }
 }

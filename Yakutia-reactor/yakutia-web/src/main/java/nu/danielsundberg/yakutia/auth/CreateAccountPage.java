@@ -2,6 +2,7 @@ package nu.danielsundberg.yakutia.auth;
 
 import nu.danielsundberg.yakutia.base.BasePage;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
+import nu.danielsundberg.yakutia.base.ErrorPage;
 import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.session.MySession;
@@ -45,11 +46,19 @@ public class CreateAccountPage extends BasePage {
                     preGameInterface.createNewPlayer(getPlayername(), finalEmail);
 
                     MySession session = (MySession)getSession();
-                    if (session.signIn(finalEmail,""))
-                    {   setResponsePage(WelcomePage.class); }
+                    if (session.signIn(finalEmail,"")) {
+                        setResponsePage(WelcomePage.class);
+                    } else {
+                        PageParameters pgp = new PageParameters();
+                        pgp.add("message","email not found when signin in");
+                        setResponsePage(ErrorPage.class, pgp);
+                    }
 
-                } catch (PlayerAlreadyExists playerAlreadyExists) {
-                    playerAlreadyExists.printStackTrace();
+                } catch (PlayerAlreadyExists pae) {
+                    pae.printStackTrace();
+                    PageParameters pgp = new PageParameters();
+                    pgp.add("message","player already exists");
+                    setResponsePage(ErrorPage.class, pgp);
                 }
 
             }

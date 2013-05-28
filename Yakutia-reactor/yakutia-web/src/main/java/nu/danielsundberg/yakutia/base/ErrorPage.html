@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Error page</title>
+
+</head>
+
+<body>
+<wicket:extend>
+    <center>
+        <header class="jumbotron subhead" id="overview">
+            <div class="container">
+                <h1>Embarrassingly an error occurred!</h1>
+            </div>
+        </header>
+
+        <span wicket:id="msg">Message here</span>
+        <br>
+        <wicket:link><a wicket:id="homelink" href="">Home</a></wicket:link>
+    </center>
+</wicket:extend>
+</body>
+</html>
