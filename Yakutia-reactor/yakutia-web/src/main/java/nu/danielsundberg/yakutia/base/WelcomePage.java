@@ -1,10 +1,9 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.base;
 
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.util.string.*;
 
 import javax.naming.NamingException;
 

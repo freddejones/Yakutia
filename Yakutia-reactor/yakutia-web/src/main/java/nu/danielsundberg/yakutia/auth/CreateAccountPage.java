@@ -1,8 +1,8 @@
 package nu.danielsundberg.yakutia.auth;
 
-import nu.danielsundberg.yakutia.BasePage;
+import nu.danielsundberg.yakutia.base.BasePage;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
-import nu.danielsundberg.yakutia.WelcomePage;
+import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.markup.html.form.Button;

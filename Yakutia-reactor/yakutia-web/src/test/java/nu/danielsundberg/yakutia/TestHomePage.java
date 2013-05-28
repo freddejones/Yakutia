@@ -1,5 +1,6 @@
 package nu.danielsundberg.yakutia;
 
+import nu.danielsundberg.yakutia.base.NavbarPage;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;

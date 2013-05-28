@@ -17,5 +17,5 @@ public interface GameEngineInterface {
     // TODO add some check that number of players have been reached in gameEngineBEAN
     // Like maximum number of players
 
-    // TODO add logic here like (nr of reinforcements and other game rules)
+    // TODO add logic here like (nr of reinforcements and bleh game rules)
 }

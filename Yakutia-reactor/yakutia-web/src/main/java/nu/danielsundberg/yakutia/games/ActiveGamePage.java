@@ -1,6 +1,6 @@
 package nu.danielsundberg.yakutia.games;
 
-import nu.danielsundberg.yakutia.NavbarPage;
+import nu.danielsundberg.yakutia.base.NavbarPage;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;

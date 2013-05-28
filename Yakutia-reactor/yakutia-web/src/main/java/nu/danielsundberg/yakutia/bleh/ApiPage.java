@@ -1,5 +1,6 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.bleh;
 
+import nu.danielsundberg.yakutia.base.NavbarPage;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;

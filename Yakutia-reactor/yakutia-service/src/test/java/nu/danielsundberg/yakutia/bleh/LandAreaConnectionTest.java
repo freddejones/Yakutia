@@ -1,4 +1,4 @@
-package nu.danielsundberg.yakutia.other;
+package nu.danielsundberg.yakutia.bleh;
 
 import junit.framework.Assert;
 import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;

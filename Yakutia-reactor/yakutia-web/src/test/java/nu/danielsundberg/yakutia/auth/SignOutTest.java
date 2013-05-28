@@ -1,7 +1,7 @@
 package nu.danielsundberg.yakutia.auth;
 
 import junit.framework.Assert;
-import nu.danielsundberg.yakutia.WelcomePage;
+import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Player;

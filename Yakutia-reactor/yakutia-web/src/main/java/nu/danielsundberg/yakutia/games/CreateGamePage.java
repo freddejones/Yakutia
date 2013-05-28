@@ -2,7 +2,7 @@ package nu.danielsundberg.yakutia.games;
 
 
 
-import nu.danielsundberg.yakutia.NavbarPage;
+import nu.danielsundberg.yakutia.base.NavbarPage;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Player;

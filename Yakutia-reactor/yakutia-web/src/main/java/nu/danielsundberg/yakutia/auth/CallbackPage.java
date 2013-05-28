@@ -1,7 +1,7 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.auth;
 
-import nu.danielsundberg.yakutia.auth.CreateAccountPage;
-import nu.danielsundberg.yakutia.auth.OauthParameters;
+import nu.danielsundberg.yakutia.base.BasePage;
+import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.request.mapper.parameter.PageParameters;

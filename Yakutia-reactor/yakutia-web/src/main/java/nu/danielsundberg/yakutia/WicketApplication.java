@@ -5,6 +5,7 @@ import de.agilecoders.wicket.settings.BootstrapSettings;
 import de.agilecoders.wicket.settings.BootswatchThemeProvider;
 import de.agilecoders.wicket.settings.ThemeProvider;
 import nu.danielsundberg.yakutia.auth.SignIn;
+import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.Session;
 import org.apache.wicket.application.IComponentInstantiationListener;

@@ -1,4 +1,4 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.base;
 
 import de.agilecoders.wicket.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
 import de.agilecoders.wicket.markup.html.bootstrap.block.Code;

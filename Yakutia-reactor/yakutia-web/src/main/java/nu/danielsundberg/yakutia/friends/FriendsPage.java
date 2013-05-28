@@ -2,11 +2,8 @@ package nu.danielsundberg.yakutia.friends;
 
 
 
-import nu.danielsundberg.yakutia.NavbarPage;
+import nu.danielsundberg.yakutia.base.NavbarPage;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
-import nu.danielsundberg.yakutia.entity.GamePlayer;
-import nu.danielsundberg.yakutia.games.ActiveGamePage;
-import nu.danielsundberg.yakutia.games.CreateGamePage;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;

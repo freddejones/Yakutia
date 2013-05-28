@@ -1,7 +1,9 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.base;
 
 import de.agilecoders.wicket.markup.html.bootstrap.image.IconType;
 import de.agilecoders.wicket.markup.html.bootstrap.navbar.*;
+import nu.danielsundberg.yakutia.bleh.ApiPage;
+import nu.danielsundberg.yakutia.bleh.JpaPage;
 import nu.danielsundberg.yakutia.friends.FriendsPage;
 import nu.danielsundberg.yakutia.games.GamesPage;
 import nu.danielsundberg.yakutia.session.SignOut;

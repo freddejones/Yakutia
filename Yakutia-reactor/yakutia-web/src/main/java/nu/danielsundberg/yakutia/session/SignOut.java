@@ -1,7 +1,7 @@
 package nu.danielsundberg.yakutia.session;
 
-import nu.danielsundberg.yakutia.BasePage;
-import nu.danielsundberg.yakutia.WelcomePage;
+import nu.danielsundberg.yakutia.base.BasePage;
+import nu.danielsundberg.yakutia.base.WelcomePage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 

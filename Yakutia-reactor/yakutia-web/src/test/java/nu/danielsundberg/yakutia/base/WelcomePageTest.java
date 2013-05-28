@@ -1,7 +1,8 @@
-package nu.danielsundberg.yakutia;
+package nu.danielsundberg.yakutia.base;
 
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
+import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
 import nu.danielsundberg.yakutia.session.MySession;
