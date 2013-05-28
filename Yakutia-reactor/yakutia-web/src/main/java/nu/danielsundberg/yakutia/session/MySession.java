@@ -64,8 +64,13 @@ public class MySession extends AuthenticatedWebSession {
 
         Roles roles = new Roles();
 
-        if ( isSignedIn() )
+        if ( isSignedIn() ) {
             roles.add("USER");
+
+            if (getPlayerName().equals("admin")) {
+                roles.add("ADMIN");
+            }
+        }
 
         return roles;
 
