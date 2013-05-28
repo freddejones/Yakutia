@@ -29,6 +29,12 @@ public class MySession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String email, String s2) {
 
+        if ("admin".equals(email) && s2.equals("bajs")) {
+            setPlayerName("admin");
+            setPlayerId(-1L);
+            return true;
+        }
+
         if (preGameInterface.playerExists(email)) {
             try {
                 Player sessionPlayer = preGameInterface.getPlayerByEmail(email);
@@ -36,24 +42,9 @@ public class MySession extends AuthenticatedWebSession {
                 setPlayerName(sessionPlayer.getName());
                 return true;
             } catch (NoPlayerFoundException e) {
-                e.printStackTrace(); //TODO Fix something here, a page or something
+                e.printStackTrace();
+                return false;
             }
-        }
-
-        if ("admin".equals(email)) {
-
-            if (!preGameInterface.playerExists("admin@jones.com")) {
-                try {
-                    playerId = preGameInterface.createNewPlayer("admin", "admin@jones.com");
-                } catch (PlayerAlreadyExists playerAlreadyExists) {
-                    playerAlreadyExists.printStackTrace();
-                    // TODO add logging here?
-                }
-            }
-
-            setPlayerName("admin");
-            setPlayerId(playerId);
-            return true;
         }
 
         return false;

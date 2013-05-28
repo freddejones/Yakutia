@@ -6,6 +6,7 @@
 </head>
 <body>
 <wicket:extend>
+    <center>
     <header class="jumbotron subhead" id="overview">
         <div class="container">
             <h1>API</h1>
@@ -17,18 +18,14 @@
 
 
     <div class="container">
-        <form wicket:id="form">
-            <input type="text" wicket:id="name" value="" size="50" />
-            <br>
-            <input type="submit" class="btn btn-primary" wicket:id="user" value="set message" />
-        </form>
-        <span wicket:id="msg" id="msg">Message goes here</span>
+        <div>
+            <form wicket:id="testdata">
+                <input type="submit" class="btn btn-primary" wicket:id="testbutton" value="create testdata" />
+            </form>
+        </div>
     </div>
-    <div>
-        <form wicket:id="testdata">
-            <input type="submit" class="btn btn-primary" wicket:id="testbutton" value="create testdata" />
-        </form>
-    </div>
+    </center>
+
 </wicket:extend>
 </body>
 </html>

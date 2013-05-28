@@ -1,6 +1,8 @@
 package nu.danielsundberg.yakutia.auth;
 
 import nu.danielsundberg.yakutia.base.BasePage;
+import nu.danielsundberg.yakutia.base.WelcomePage;
+import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -18,9 +20,12 @@ public class AdminLoginPage extends BasePage {
         Button adminButton = new Button("admin") {
             @Override
             public void onSubmit() {
-                PageParameters param = new PageParameters();
-                param.add("admin","");
-                setResponsePage(CallbackPage.class,param);
+                MySession session = (MySession) getSession();
+
+                if (session.signIn("admin","bajs")) { //TODO fix this with a real form
+                    setResponsePage(WelcomePage.class);
+                }
+
             }
         };
         formAdmin.add(adminButton);

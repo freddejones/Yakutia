@@ -96,4 +96,31 @@ public class MySessionTest {
         Assert.assertEquals(true, roles.isEmpty());
     }
 
+    @Test
+    public void testAuthenticateAdmin() {
+        // Given: a session from applicaton
+        MySession session = (MySession) tester.getSession();
+
+        // When: admin is logging in
+        boolean signedIn = session.signIn("admin","bajs");
+
+        // Then: admin was signed in with correct playername and id
+        Assert.assertTrue(signedIn);
+        Assert.assertEquals("admin",session.getPlayerName());
+        Assert.assertEquals(-1L, (long)session.getPlayerId());
+    }
+
+    @Test
+    public void testGetRolesForAdminWhenSignedIn() {
+        // Given: a session from applicaton
+        MySession session = (MySession) tester.getSession();
+
+        // When: admin is signing in
+        session.signIn("admin", "bajs");
+
+        // Then: session has roles set to USER
+        session = (MySession) tester.getSession();
+        Roles roles = session.getRoles();
+        Assert.assertEquals("ADMIN, USER", roles.toString());
+    }
 }
