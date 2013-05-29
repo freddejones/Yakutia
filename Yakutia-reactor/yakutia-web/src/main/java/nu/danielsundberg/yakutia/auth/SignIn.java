@@ -14,7 +14,6 @@ import javax.naming.NamingException;
 public class SignIn extends BasePage {
 
     protected Token requestToken;
-//    protected  service;
 
     public SignIn(PageParameters parameters) throws NamingException {
         super(parameters);
