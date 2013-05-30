@@ -23,8 +23,6 @@ import java.util.List;
 @AuthorizeInstantiation("USER")
 public class CreateGamePage extends NavbarPage {
 
-    public String message = "Nada";
-
     @EJB(name = "pregamebean")
     private PreGameInterface preGameInterface;
 
@@ -53,20 +51,17 @@ public class CreateGamePage extends NavbarPage {
                 playerName.setOutputMarkupId(true);
 
                 item.add(playerName);
-                Label status = new Label("status", "Invited!");
+                Label status = new Label("status", "Will be Invited!");
                 item.add(new Check<Player>("checkbox", item.getModel()));
                 item.add(status);
             }
         };
-//        final CheckGroup group=new CheckGroup("group",listview.getModel());
+
         final CheckGroup group=new CheckGroup("group",listview.getModel());
         listview.setReuseItems(true);
         listview.setOutputMarkupId(true);
         group.add(listview);
         group.setOutputMarkupId(true);
-
-        final Label test = new Label("msg", message);
-        test.setOutputMarkupId(true);
 
         Form form = new Form("form1");
         final TextField gameNameTextField = new TextField("gamename");
@@ -76,26 +71,16 @@ public class CreateGamePage extends NavbarPage {
             @Override
             public void onSubmit() {
                 List<Player> players = (ArrayList<Player>)group.getDefaultModelObject();
-
                 MySession session = (MySession) getSession();
                 long gameId = preGameInterface.createNewGame(session.getPlayerId(),gameNameTextField.getInput());
                 for (Player p : players) {
                     preGameInterface.invitePlayerToGame(p.getPlayerId(),gameId);
                 }
             }
-        };
+        }.setDefaultFormProcessing(false);
         form.add(button);
         form.add(group);
         add(form);
-        add(test);
 
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 }
