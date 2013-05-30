@@ -4,6 +4,7 @@ import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundExc
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.base.NavbarPage;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
+import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -67,6 +68,8 @@ public class GamesPage extends NavbarPage {
     }
 
     protected ListView<GamePlayer> getListViewOfGames(List<GamePlayer> games) {
+
+
 
         return new ListView<GamePlayer>("rows", games)
         {

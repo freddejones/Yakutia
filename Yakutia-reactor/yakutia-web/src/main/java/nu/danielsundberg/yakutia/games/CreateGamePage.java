@@ -8,10 +8,12 @@ import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import javax.ejb.EJB;
@@ -65,6 +67,7 @@ public class CreateGamePage extends NavbarPage {
 
         Form form = new Form("form1");
         final TextField gameNameTextField = new TextField("gamename");
+        gameNameTextField.add(new AttributeAppender("value", new Model("Enter game name")));
         form.add(gameNameTextField);
         Button button = new Button("submit1") {
 
@@ -76,6 +79,7 @@ public class CreateGamePage extends NavbarPage {
                 for (Player p : players) {
                     preGameInterface.invitePlayerToGame(p.getPlayerId(),gameId);
                 }
+                setResponsePage(GamesPage.class);
             }
         }.setDefaultFormProcessing(false);
         form.add(button);

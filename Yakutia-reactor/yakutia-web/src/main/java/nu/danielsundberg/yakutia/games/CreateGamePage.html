@@ -20,20 +20,33 @@
 
 
         <form class="form-search" wicket:id="form1">
-            <span wicket:id="group">
-                <div class="row" wicket:id="players">
-                    <div class="span1 offset2" wicket:id="playername">Friend name</div>
-                    <div class="span1 offset1">
-                        <label class="checkbox">
-                            <input wicket:id="checkbox" type="checkbox" id="inlineCheckbox1" value="option1">
-                        </label>
-                    </div>
-                    <div class="span1">
-                        <span wicket:id="status" class="badge badge-success">Will be invited</span>
-                    </div>
-                </div>
-            </span>
-            <input type="text" wicket:id="gamename" onclick="this.value='';" value="Enter game name" size="50" />
+            <input type="text" wicket:id="gamename" onclick="this.value='';" value="" size="50" />
+            <br>
+
+            <table class="table table-striped table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>Friend name</th>
+                    <th>Add to game?</th>
+                    <th>?</th>
+                </tr>
+                </thead>
+                <tbody>
+                <span wicket:id="group">
+                    <tr wicket:id="players">
+                        <td><span wicket:id="playername"></span></td>
+                        <td>
+                            <label class="checkbox">
+                                <input wicket:id="checkbox" type="checkbox" id="inlineCheckbox1" value="option1">
+                            </label>
+                        </td>
+                        <td><span wicket:id="status" class="badge badge-success">Will be invited</span></td>
+                    </tr>
+                </span>
+                </tbody>
+            </table>
+
+            <br>
             <input type="submit" wicket:id="submit1" class="btn" value="Create"/>
         </form>
     </center>
