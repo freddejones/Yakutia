@@ -39,7 +39,7 @@ public class MySessionTest {
         when(preGameInterfaceMock.playerExists(any(String.class))).thenReturn(false);
 
         // Then: false is returned
-        Assert.assertFalse(session.authenticate("noEmailExists@blaha.com", "passwd"));
+        Assert.assertFalse(session.signIn("noEmailExists@blaha.com", "passwd"));
     }
 
     @Test
@@ -97,6 +97,20 @@ public class MySessionTest {
     }
 
     @Test
+    public void failedAuthenticationNoPlayerFound() throws NoPlayerFoundException {
+        // Given: no existing player in database
+
+        // When: when no player or admin is found and signing in
+        when(preGameInterfaceMock.playerExists(any(String.class))).thenReturn(true);
+        when(preGameInterfaceMock.getPlayerByEmail(any(String.class))).thenThrow(NoPlayerFoundException.class);
+
+
+        // Then: sign in returns false
+        MySession session = (MySession) tester.getSession();
+        Assert.assertFalse(session.signIn("cant", "findme"));
+    }
+
+    @Test
     public void testAuthenticateAdmin() {
         // Given: a session from applicaton
         MySession session = (MySession) tester.getSession();
@@ -108,6 +122,18 @@ public class MySessionTest {
         Assert.assertTrue(signedIn);
         Assert.assertEquals("admin",session.getPlayerName());
         Assert.assertEquals(-1L, (long)session.getPlayerId());
+    }
+
+    @Test
+    public void testAuthenticateAdminWrongPassword() {
+        // Given: a session from applicaton
+        MySession session = (MySession) tester.getSession();
+
+        // When: admin is logging in
+        boolean signedIn = session.signIn("admin","blauhau");
+
+        // Then: admin was signed in with correct playername and id
+        Assert.assertFalse(signedIn);
     }
 
     @Test

@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.List;
@@ -21,6 +22,8 @@ import java.util.List;
 @AuthorizeInstantiation("ADMIN")
 public class ApiPage extends NavbarPage {
 
+    @EJB(name = "pregamebean")
+    private PreGameInterface preGameInterface;
 
     public ApiPage(PageParameters parameters) throws NamingException {
         super(parameters);
@@ -30,17 +33,11 @@ public class ApiPage extends NavbarPage {
 
             @Override
             public void onSubmit() {
-                InitialContext ctx = null;
-                PreGameInterface test = null;
 
                 try {
-                    ctx = new InitialContext();
-                    test = (PreGameInterface) ctx.lookup("preGameBean");
-                    test.createNewPlayer("apan1","email@email.com");
-                    test.createNewPlayer("apan2","email@email.com");
-                    test.createNewPlayer("apan3","email@email.com");
-                } catch (NamingException e) {
-
+                    preGameInterface.createNewPlayer("apan1","email@email.com");
+                    preGameInterface.createNewPlayer("apan2","email@email.com");
+                    preGameInterface.createNewPlayer("apan3","email@email.com");
                 } catch (PlayerAlreadyExists pae) {
 
                 }
@@ -52,11 +49,7 @@ public class ApiPage extends NavbarPage {
         add(testdataForm);
 
 
-        InitialContext ctx = new InitialContext();
-        PreGameInterface test = (PreGameInterface) ctx.lookup("preGameBean");
-
-
-        List<Player> players = test.getPlayers();
+        List<Player> players = preGameInterface.getPlayers();
         add(new ListView<Player>("rows", players)
         {
             public void populateItem(final ListItem<Player> item)

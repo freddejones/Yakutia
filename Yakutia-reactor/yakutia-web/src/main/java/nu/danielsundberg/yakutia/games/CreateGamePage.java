@@ -9,10 +9,7 @@ import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.Check;
-import org.apache.wicket.markup.html.form.CheckGroup;
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -72,29 +69,18 @@ public class CreateGamePage extends NavbarPage {
         test.setOutputMarkupId(true);
 
         Form form = new Form("form1");
+        final TextField gameNameTextField = new TextField("gamename");
+        form.add(gameNameTextField);
         Button button = new Button("submit1") {
 
             @Override
             public void onSubmit() {
                 List<Player> players = (ArrayList<Player>)group.getDefaultModelObject();
-                System.out.println(players.get(0).getName());
 
-                try {
-                    InitialContext ctx = new InitialContext();
-//                    GameEngineInterface gameBean = (GameEngineInterface) ctx.lookup("kickass");
-                    PreGameInterface preGame = (PreGameInterface) ctx.lookup("preGameBean");
-
-                    // TODO Switch session stuff when fixed player id to session
-                    MySession session = (MySession) getSession();
-                    long gameId = preGame.createNewGame(preGame.getPlayerByName(session.getPlayerName()).getPlayerId());
-                    for (Player p : players) {
-                        preGame.invitePlayerToGame(p.getPlayerId(),gameId);
-                    }
-
-                } catch (NamingException e) {
-                    e.printStackTrace();
-                } catch (NoPlayerFoundException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                MySession session = (MySession) getSession();
+                long gameId = preGameInterface.createNewGame(session.getPlayerId(),gameNameTextField.getInput());
+                for (Player p : players) {
+                    preGameInterface.invitePlayerToGame(p.getPlayerId(),gameId);
                 }
             }
         };

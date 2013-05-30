@@ -10,6 +10,7 @@ import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
 import org.scribe.oauth.OAuthService;
 import javax.naming.NamingException;
+import java.util.logging.Logger;
 
 public class SignIn extends BasePage {
 

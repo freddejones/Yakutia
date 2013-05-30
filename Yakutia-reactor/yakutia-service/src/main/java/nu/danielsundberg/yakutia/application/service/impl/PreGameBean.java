@@ -48,10 +48,11 @@ public class PreGameBean implements PreGameInterface {
     }
 
     @Override
-    public long createNewGame(long playerId) {
+    public long createNewGame(long playerId, String name) {
         Game game = new Game();
         game.setGameStatus(GameStatus.CREATED);
         game.setCreationTime(new Date());
+        game.setName(name);
         em.persist(game);
 
         Player player = em.find(Player.class, playerId);

@@ -11,6 +11,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+import java.util.logging.Logger;
+
 /**
  * User: Fredde
  * Date: 3/26/13 10:54 PM

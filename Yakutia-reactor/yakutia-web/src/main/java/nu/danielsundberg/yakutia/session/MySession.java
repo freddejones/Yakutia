@@ -11,6 +11,7 @@ import org.apache.wicket.request.Request;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.util.logging.Logger;
 
 
 public class MySession extends AuthenticatedWebSession {
@@ -18,6 +19,7 @@ public class MySession extends AuthenticatedWebSession {
     @EJB(name = "pregamebean")
     protected PreGameInterface preGameInterface;
 
+    private Logger log = Logger.getLogger(MySession.class.getName());
     private String playerName = "";
     private Long playerId;
 
@@ -42,7 +44,7 @@ public class MySession extends AuthenticatedWebSession {
                 setPlayerName(sessionPlayer.getName());
                 return true;
             } catch (NoPlayerFoundException e) {
-                e.printStackTrace();
+                log.info(e.getMessage() + "\n" + e.toString());
                 return false;
             }
         }

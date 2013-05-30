@@ -66,7 +66,7 @@ public class PreGameBeanTest extends JpaTestCase {
         createPlayer();
 
         // When: creating a game
-        long gameId = preGameBean.createNewGame(player.getPlayerId());
+        long gameId = preGameBean.createNewGame(player.getPlayerId(),"gamename");
 
         // Then: a game is created
         Assert.assertNotNull(gameId);
