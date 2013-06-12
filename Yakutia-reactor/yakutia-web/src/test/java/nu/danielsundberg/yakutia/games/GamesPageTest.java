@@ -9,6 +9,7 @@ import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.GameStatus;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.harness.Authorizer;
+import nu.danielsundberg.yakutia.harness.OauthMockHarness;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
 import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.*;
  * User: Fredde
  * Date: 5/6/13 11:13 PM
  */
-public class GamesPageTest {
+public class GamesPageTest extends OauthMockHarness {
 
     private WicketTester tester;
     private PreGameInterface preGameBeanMock;
@@ -101,6 +102,9 @@ public class GamesPageTest {
         when(gameMock.getGameStatus()).thenReturn(GameStatus.ONGOING);
         when(playerMock.getGames()).thenReturn(gamePlayersSetMock);
 
+        when(preGameBeanMock.getGameById(anyLong())).thenReturn(gameMock);
+//        when(gameMock.getPlayers()).thenReturn()
+
         // When: user hits gamepage
         tester.startPage(GamesPage.class);
 
@@ -134,6 +138,8 @@ public class GamesPageTest {
         when(gamePlayerMock.getGame()).thenReturn(gameMock);
         when(gameMock.getGameStatus()).thenReturn(GameStatus.ONGOING);
         when(playerMock.getGames()).thenReturn(gamePlayersSetMock);
+
+        when(preGameBeanMock.getGameById(anyLong())).thenReturn(gameMock);
 
         // When: user clicks the game button
         tester.startPage(GamesPage.class);

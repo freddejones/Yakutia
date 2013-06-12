@@ -116,6 +116,7 @@ public class MySessionTest {
         MySession session = (MySession) tester.getSession();
 
         // When: admin is logging in
+        System.setProperty("YAKUTIA_ADMIN_PASSWORD","bajs");
         boolean signedIn = session.signIn("admin","bajs");
 
         // Then: admin was signed in with correct playername and id
@@ -142,6 +143,7 @@ public class MySessionTest {
         MySession session = (MySession) tester.getSession();
 
         // When: admin is signing in
+        System.setProperty("YAKUTIA_ADMIN_PASSWORD","bajs");
         session.signIn("admin", "bajs");
 
         // Then: session has roles set to USER

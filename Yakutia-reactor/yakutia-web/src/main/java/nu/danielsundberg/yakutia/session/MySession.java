@@ -31,7 +31,7 @@ public class MySession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String email, String s2) {
 
-        if ("admin".equals(email) && s2.equals("bajs")) {
+        if ("admin".equals(email) && s2.equals(System.getProperty("YAKUTIA_ADMIN_PASSWORD"))) {
             setPlayerName("admin");
             setPlayerId(-1L);
             return true;

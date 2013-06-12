@@ -5,6 +5,7 @@ import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Player;
+import nu.danielsundberg.yakutia.harness.OauthMockHarness;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
 import nu.danielsundberg.yakutia.session.MySession;
 import nu.danielsundberg.yakutia.session.SignOut;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.when;
  * User: Fredde
  * Date: 5/20/13 10:26 PM
  */
-public class SignOutTest {
+public class SignOutTest extends OauthMockHarness {
 
     private PreGameInterface preGameInterfaceMock;
     private WicketTester tester;

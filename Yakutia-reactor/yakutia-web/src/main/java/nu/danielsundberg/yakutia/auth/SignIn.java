@@ -14,15 +14,13 @@ import java.util.logging.Logger;
 
 public class SignIn extends BasePage {
 
-    protected Token requestToken;
-
     public SignIn(PageParameters parameters) throws NamingException {
         super(parameters);
         getSession().bind();
 
-        OAuthService service = getOAuthService();
+        OAuthService service = OauthParameters.getOAuthService();
 
-        requestToken = service.getRequestToken();
+        Token requestToken = service.getRequestToken();
         getSession().setAttribute("requestToken", requestToken);
         final String authUrl = service.getAuthorizationUrl(requestToken);
 
@@ -38,13 +36,13 @@ public class SignIn extends BasePage {
         add(form);
     }
 
-    public OAuthService getOAuthService() {
-        return new ServiceBuilder()
-                    .provider(GoogleApi.class)
-                    .apiKey(OauthParameters.APIKEY)
-                    .apiSecret(OauthParameters.APISECRET)
-                    .scope(OauthParameters.SCOPE)
-                    .callback(OauthParameters.CALLBACKURL)
-                    .build();
-    }
+//    public OAuthService getOAuthService() {
+//        return new ServiceBuilder()
+//                    .provider(GoogleApi.class)
+//                    .apiKey(OauthParameters.APIKEY)
+//                    .apiSecret(OauthParameters.APISECRET)
+//                    .scope(OauthParameters.SCOPE)
+//                    .callback(OauthParameters.CALLBACKURL)
+//                    .build();
+//    }
 }

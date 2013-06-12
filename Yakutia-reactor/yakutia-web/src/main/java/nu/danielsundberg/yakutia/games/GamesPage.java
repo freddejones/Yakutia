@@ -3,6 +3,7 @@ package nu.danielsundberg.yakutia.games;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.base.NavbarPage;
+import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
 import nu.danielsundberg.yakutia.entity.Player;
@@ -53,10 +54,10 @@ public class GamesPage extends NavbarPage {
             if (!player.getGames().isEmpty()) {
                 infoMessage.setVisible(false);
                 Set<GamePlayer> g = player.getGames();
-                Iterator<GamePlayer> gpi = g.iterator();
+                Iterator<GamePlayer> gamePlayerIterator = g.iterator();
                 List<GamePlayer> games2 = new ArrayList<GamePlayer>();
-                while (gpi.hasNext()) {
-                    games2.add(gpi.next());
+                while (gamePlayerIterator.hasNext()) {
+                    games2.add(gamePlayerIterator.next());
                 }
                 gameLV.replaceWith(getListViewOfGames(games2));
             }
@@ -69,8 +70,6 @@ public class GamesPage extends NavbarPage {
 
     protected ListView<GamePlayer> getListViewOfGames(List<GamePlayer> games) {
 
-
-
         return new ListView<GamePlayer>("rows", games)
         {
             public void populateItem(final ListItem<GamePlayer> item)
@@ -78,7 +77,21 @@ public class GamesPage extends NavbarPage {
                 final GamePlayer gameplayer = item.getModelObject();
                 item.add(new Label("gameid", gameplayer.getGameId()));
                 item.add(new Label("status", gameplayer.getGame().getGameStatus()));
-                item.add(new Label("accepts", "3/4"));
+
+
+                long gameId = gameplayer.getGameId();
+                Game g = preGameInterface.getGameById(gameId);
+                int tot = g.getPlayers().size();
+                Iterator<GamePlayer> iter = g.getPlayers().iterator();
+                int accepted = 0;
+                while(iter.hasNext()) {
+                    GamePlayer gp = iter.next();
+                    if (gp.getGamePlayerStatus().equals(GamePlayerStatus.ACCEPTED)) {
+                        accepted++;
+                    }
+                }
+
+                item.add(new Label("accepts", accepted+"/"+tot));
                 Form form = new Form("form");
                 Button button = new Button("button") {
 

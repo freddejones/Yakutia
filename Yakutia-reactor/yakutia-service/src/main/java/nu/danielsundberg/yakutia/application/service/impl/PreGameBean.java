@@ -72,6 +72,12 @@ public class PreGameBean implements PreGameInterface {
     }
 
     @Override
+    public Game getGameById(long gameId) {
+        Game g = em.find(Game.class, gameId);
+        return g;
+    }
+
+    @Override
     public void invitePlayerToGame(long playerId, long gameId) {
 
         Player playerToInvite = (Player) em.createNamedQuery("Player.findPlayerById")

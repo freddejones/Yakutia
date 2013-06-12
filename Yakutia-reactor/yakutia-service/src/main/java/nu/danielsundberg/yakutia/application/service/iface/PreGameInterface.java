@@ -18,6 +18,8 @@ public interface PreGameInterface {
 
     public long createNewGame(long playerId, String name);
 
+    public Game getGameById(long gameId);
+
     public void invitePlayerToGame(long playerId, long gameId);
 
     public List<Long> getInvites(long playerId);

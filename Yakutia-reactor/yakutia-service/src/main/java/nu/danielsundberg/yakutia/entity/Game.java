@@ -19,7 +19,7 @@ public class Game implements Serializable {
 
     private String name;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
     private Set<GamePlayer> players;
 
     @Enumerated(EnumType.STRING)
