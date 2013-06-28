@@ -36,6 +36,8 @@ public interface PreGameInterface {
 
     public Player getPlayerByEmail(String email) throws  NoPlayerFoundException;
 
+    public void deletePlayerById(long id);
+
     //public void deleteAllPlayers();
 
 

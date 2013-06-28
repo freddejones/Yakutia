@@ -355,6 +355,27 @@ public class PreGameBeanTest extends JpaTestCase {
         Assert.assertEquals(2, players.size());
     }
 
+    @Test
+    public void deletePlayerById() throws NoPlayerFoundException {
+        // Given: a existing player
+        createPlayer();
+
+        // When: deleting a player
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        Player pBefore = preGameBean.getPlayerById(player.getPlayerId());
+        Assert.assertNotNull(pBefore);
+        preGameBean.deletePlayerById(player.getPlayerId());
+
+        // Then: player is deleted
+        try {
+            preGameBean.getPlayerById(player.getPlayerId());
+        } catch (NoPlayerFoundException npfe) {
+            Assert.assertTrue(true);
+        }
+    }
+
     private void createPlayer() {
         player = new Player();
         player.setName(playerName);

@@ -193,4 +193,11 @@ public class PreGameBean implements PreGameInterface {
         }
         return p;
     }
+
+    @Override
+    public void deletePlayerById(long id) {
+        Player p;
+        p = em.find(Player.class, id);
+        em.remove(p);
+    }
 }
