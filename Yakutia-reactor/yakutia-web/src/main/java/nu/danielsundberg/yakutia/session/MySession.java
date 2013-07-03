@@ -21,7 +21,7 @@ public class MySession extends AuthenticatedWebSession {
 
     private Logger log = Logger.getLogger(MySession.class.getName());
     private String playerName = "";
-    private Long playerId;
+    private Long playerId = 0L;
 
     public MySession(Request request) {
         super(request);
@@ -35,9 +35,7 @@ public class MySession extends AuthenticatedWebSession {
             setPlayerName("admin");
             setPlayerId(-1L);
             return true;
-        }
-
-        if (preGameInterface.playerExists(email)) {
+        } else if (preGameInterface.playerExists(email)) {
             try {
                 Player sessionPlayer = preGameInterface.getPlayerByEmail(email);
                 setPlayerId(sessionPlayer.getPlayerId());
@@ -47,6 +45,8 @@ public class MySession extends AuthenticatedWebSession {
                 log.info(e.getMessage() + "\n" + e.toString());
                 return false;
             }
+        } else if (email.equals("temp")) {
+            setPlayerId(-666L);
         }
 
         return false;
@@ -63,10 +63,11 @@ public class MySession extends AuthenticatedWebSession {
             if (getPlayerName().equals("admin")) {
                 roles.add("ADMIN");
             }
+        } else if (getPlayerId().equals(666L)) {
+            roles.add("USER");
         }
 
         return roles;
-
     }
 
     public String getPlayerName() {

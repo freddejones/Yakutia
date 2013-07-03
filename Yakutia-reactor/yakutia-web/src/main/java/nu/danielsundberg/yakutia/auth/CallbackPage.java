@@ -1,6 +1,7 @@
 package nu.danielsundberg.yakutia.auth;
 
 import nu.danielsundberg.yakutia.base.BasePage;
+import nu.danielsundberg.yakutia.base.ErrorPage;
 import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.markup.html.basic.Label;
@@ -53,7 +54,6 @@ public class CallbackPage extends BasePage {
             try {
                 Verifier verifier = new Verifier(oauthVerifier);
                 Token accessToken = service.getAccessToken(requestToken, verifier);
-                // TODO Store this token?
 
                 OAuthRequest request = new OAuthRequest(Verb.GET,
                         OauthParameters.GOOGLE_API_USERINFO);
@@ -66,15 +66,20 @@ public class CallbackPage extends BasePage {
                     obj = new JSONObject(response.getBody().toString());
                     emailExtracted = obj.getString("email");
                 } catch (JSONException e) {
-                    // TODO handle some exceptions here
-                    e.printStackTrace();
+                    PageParameters pgp = new PageParameters();
+                    pgp.add("message","email not found..");
+                    setResponsePage(ErrorPage.class, pgp);
                 }
 
             } catch (RuntimeException re) {
-                re.printStackTrace();
+                PageParameters pgp = new PageParameters();
+                pgp.add("message","failed oauth verification");
+                setResponsePage(ErrorPage.class, pgp);
             }
         } else {
-            System.out.println("NO oath found");
+            PageParameters pgp = new PageParameters();
+            pgp.add("message","no oauth stuff");
+            setResponsePage(ErrorPage.class, pgp);
         }
 
         MySession session = (MySession)getSession();
@@ -83,9 +88,14 @@ public class CallbackPage extends BasePage {
         {
             setResponsePage(WelcomePage.class);
         } else {
-            PageParameters params = new PageParameters();
-            params.set("email",emailExtracted);
-            setResponsePage(CreateAccountPage.class, params);
+            if (session.authenticate("temp","")) {
+                PageParameters params = new PageParameters();
+                params.set("email",emailExtracted);
+                setResponsePage(CreateAccountPage.class, params);
+            } else {
+                // TODO FIX ME
+                System.out.println("COULDNT DO THE CREATE LOGIN STUFF");
+            }
         }
 
         // TODO add some nice message here

@@ -6,6 +6,7 @@ import nu.danielsundberg.yakutia.base.ErrorPage;
 import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.session.MySession;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -15,6 +16,7 @@ import org.apache.wicket.util.string.*;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 
+@AuthorizeInstantiation("USER")
 public class CreateAccountPage extends BasePage {
 
     @EJB(name = "pregamebean")
@@ -50,7 +52,7 @@ public class CreateAccountPage extends BasePage {
                         setResponsePage(WelcomePage.class);
                     } else {
                         PageParameters pgp = new PageParameters();
-                        pgp.add("message","email not found when signin in");
+                        pgp.add("message","email not found when signing in");
                         setResponsePage(ErrorPage.class, pgp);
                     }
 

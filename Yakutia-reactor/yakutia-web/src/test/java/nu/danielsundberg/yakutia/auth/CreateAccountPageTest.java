@@ -7,7 +7,9 @@ import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundExc
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.Player;
+import nu.danielsundberg.yakutia.harness.Authorizer;
 import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
+import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
@@ -36,7 +38,9 @@ public class CreateAccountPageTest {
 
     @Test
     public void testEmailProvidedInPageParametersIsDisplayed() {
-        // Given: page parameter provides email
+        // Given: authorized user and page parameter provides email
+        authorize();
+
         PageParameters pg = new PageParameters();
         pg.add("email","fidde@email.com");
 
@@ -51,7 +55,8 @@ public class CreateAccountPageTest {
 
     @Test
     public void testCreateANewUser() throws PlayerAlreadyExists, NoPlayerFoundException {
-        // Given: user has provided a new player name that does not exist already
+        // Given: authorized user has provided a new player name that does not exist already
+        authorize();
         PageParameters pg = new PageParameters();
         pg.add("email","fidde@email.com");
         tester.startPage(CreateAccountPage.class, pg);
@@ -75,7 +80,8 @@ public class CreateAccountPageTest {
 
     @Test
     public void testFailedLoginRedirected() throws PlayerAlreadyExists, NoPlayerFoundException {
-        // Given: user fails to login for some unknown reason
+        // Given: authorized user user fails to login for some unknown reason
+        authorize();
         PageParameters pg = new PageParameters();
         pg.add("email","fidde@email.com");
         tester.startPage(CreateAccountPage.class, pg);
@@ -95,7 +101,8 @@ public class CreateAccountPageTest {
 
     @Test
     public void testPlayerAlreadyExistsSomeHow() throws PlayerAlreadyExists {
-        // Given: user fails to login due to player already exist
+        // Given: authorized user fails to login due to player already exist
+        authorize();
         PageParameters pg = new PageParameters();
         pg.add("email","fidde@email.com");
         tester.startPage(CreateAccountPage.class, pg);
@@ -112,5 +119,10 @@ public class CreateAccountPageTest {
         // Then: user is redirected to exception page
         tester.assertRenderedPage(ErrorPage.class);
         System.out.println("reached here ait");
+    }
+
+    private void authorize() {
+        tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
+                new RoleAuthorizationStrategy(new Authorizer("USER")));
     }
 }
