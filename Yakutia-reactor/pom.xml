@@ -14,6 +14,7 @@
 		<module>yakutia-service</module>
 		<module>yakutia-web</module>
         <module>yakutia-ear</module>
+        <module>yakutia-selenium</module>
     </modules>
 
 	<properties>

@@ -46,7 +46,8 @@ public class MySession extends AuthenticatedWebSession {
                 return false;
             }
         } else if (email.equals("temp")) {
-            setPlayerId(-666L);
+            setPlayerId(666L);
+            return true;
         }
 
         return false;

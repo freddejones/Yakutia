@@ -88,7 +88,7 @@ public class CallbackPage extends BasePage {
         {
             setResponsePage(WelcomePage.class);
         } else {
-            if (session.authenticate("temp","")) {
+            if (session.signIn("temp","")) {
                 PageParameters params = new PageParameters();
                 params.set("email",emailExtracted);
                 setResponsePage(CreateAccountPage.class, params);

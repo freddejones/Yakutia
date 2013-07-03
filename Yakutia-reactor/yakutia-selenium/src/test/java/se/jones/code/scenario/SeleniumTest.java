@@ -1,4 +1,4 @@
-package nu.danielsundberg.yakutia.scenario;
+package se.jones.code.scenario;
 
 import junit.framework.Assert;
 import org.junit.After;
@@ -9,6 +9,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * User: Fredde
@@ -17,23 +19,24 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class SeleniumTest {
 
     WebDriver driver;
+    String baseUrl;
 
     @Before
     public void setup() {
         driver = new FirefoxDriver();
+        System.out.println("baseurl: " + System.getProperty("BASE_URL"));
+        baseUrl = System.getProperty("BASE_URL");
     }
 
     @After
     public void tearDown() {
         driver.quit();
-
     }
 
     @Test
-    @Ignore
     public void createNewAccount() throws InterruptedException {
 
-        driver.get("localhost:8080/yakutia-web");
+        driver.get(baseUrl);
         WebElement button = driver.findElement(By.id("google2"));
 
         button.click();
@@ -47,7 +50,8 @@ public class SeleniumTest {
         WebElement singInButton = driver.findElement(By.id("signIn"));
         singInButton.click();
 
-        WebElement accept = driver.findElement(By.id("allow"));
+        WebElement accept = (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.id("allow")));
         accept.click();
 
         WebElement newPlayerName = driver.findElement(By.name("playername"));
@@ -70,7 +74,7 @@ public class SeleniumTest {
     }
 
     private void loginYakutia() {
-        driver.get("localhost:8080/yakutia-web");
+        driver.get(baseUrl);
         WebElement button = driver.findElement(By.id("google2"));
         button.click();
 
