@@ -28,7 +28,7 @@ public class AdminPageTest {
     public void setUp() throws NoPlayerFoundException {
         preGameBeanMock = mock(PreGameInterface.class);
         playerMock = mock(Player.class);
-        tester = new WicketTester(new MyMockApplication(preGameBeanMock));
+        tester = new WicketTester(new MyMockApplication(new Object[]{preGameBeanMock}));
     }
 
     @Test

@@ -2,7 +2,7 @@ package nu.danielsundberg.yakutia.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -34,13 +34,21 @@ import java.util.Set;
 })
 public class Player implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long playerId;
     private String name;
     private String email;
+
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     private Set<GamePlayer> games;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @OneToMany(mappedBy = "player", fetch = FetchType.LAZY)
+    private Set<PlayerFriend> friends = new HashSet<PlayerFriend>();
+
+    @OneToMany(mappedBy = "friend", fetch = FetchType.LAZY)
+    private Set<PlayerFriend> friendsReqested = new HashSet<PlayerFriend>();
+
     public long getPlayerId() {
         return playerId;
     }
@@ -57,7 +65,6 @@ public class Player implements Serializable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     public Set<GamePlayer> getGames() {
         return games;
     }
@@ -73,4 +80,34 @@ public class Player implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public Set<PlayerFriend> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<PlayerFriend> friends) {
+        this.friends = friends;
+    }
+
+    public Set<PlayerFriend> getFriendsReqested() {
+        return friendsReqested;
+    }
+
+    public void setFriendsReqested(Set<PlayerFriend> friendsReqested) {
+        this.friendsReqested = friendsReqested;
+    }
+
+    //    @ManyToMany
+//    @JoinTable(name="tbl_friends",
+//            joinColumns=@JoinColumn(name="personId"),
+//            inverseJoinColumns=@JoinColumn(name="friendId")
+//    )
+//    private List<Player> friends;
+//
+//    @ManyToMany
+//    @JoinTable(name="tbl_friends",
+//            joinColumns=@JoinColumn(name="friendId"),
+//            inverseJoinColumns=@JoinColumn(name="personId")
+//    )
+//    private List<Player> friendOf;
 }

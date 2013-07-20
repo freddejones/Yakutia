@@ -2,12 +2,20 @@ package nu.danielsundberg.yakutia.friends;
 
 
 
-import nu.danielsundberg.yakutia.base.NavbarPage;
+import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
+import nu.danielsundberg.yakutia.application.service.iface.FriendManagerInterface;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
+import nu.danielsundberg.yakutia.base.ErrorPage;
+import nu.danielsundberg.yakutia.base.NavbarPage;
+import nu.danielsundberg.yakutia.entity.Player;
+import nu.danielsundberg.yakutia.entity.PlayerFriend;
+import nu.danielsundberg.yakutia.session.MySession;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -19,85 +27,232 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @AuthorizeInstantiation("USER")
 public class FriendsPage extends NavbarPage {
 
-    @EJB(name = "pregamebean")
-    private PreGameInterface preGameInterface;
+    @EJB(name = "friendManagerBean")
+    private FriendManagerInterface friendManager;
+    @EJB(name = "preGameBean")
+    private PreGameInterface preGame;
 
-    Label alarmLabel;
+    private Player p = null;
 
     public FriendsPage(PageParameters parameters) throws NamingException {
         super(parameters);
 
+        MySession session = (MySession) getSession();
 
-        alarmLabel = new Label("status2", "oh well");
-        alarmLabel.add(new AttributeAppender("class", new Model("badge badge-warning")));
-        alarmLabel.setOutputMarkupId(true);
+        try {
+            p = preGame.getPlayerById(session.getPlayerId());
+        } catch (NoPlayerFoundException e) {
+            PageParameters pgp = new PageParameters();
+            pgp.add("message","could not determine your player id");
+            setResponsePage(ErrorPage.class, pgp);
+        }
 
+        final Form superFriendForm = new Form("super-friend-form");
+        final Form containerForm = new Form("container-form");
+        final WebMarkupContainer listPlayersContainer = new WebMarkupContainer("all-players");
+        final WebMarkupContainer invitesContainer = new WebMarkupContainer("invites-container");
+        listPlayersContainer.setOutputMarkupId(true);
+        invitesContainer.setOutputMarkupId(true);
 
-        Form form1 = new Form("ajaxform");
+        final ListView<Player> friendsListView = friendsListView(p);
+        final ListView<Player> allPlayersListView = allPlayersListView(p, containerForm, listPlayersContainer);
+        final ListView<Player> invitesListView = allInvitesListView(p, containerForm, invitesContainer);
 
-        form1.add(new AjaxFallbackButton("button1", form1) {
+        final WebMarkupContainer friendsContainer = new WebMarkupContainer("friends-container");
+        friendsContainer.add(friendsListView);
+        friendsContainer.setVisible(false);
+        containerForm.add(friendsContainer);
+
+        listPlayersContainer.add(allPlayersListView);
+        listPlayersContainer.setVisible(false);
+        containerForm.add(listPlayersContainer);
+
+        invitesContainer.add(invitesListView);
+        invitesContainer.setVisible(false);
+        containerForm.add(invitesContainer);
+
+        final List<WebMarkupContainer> containers = new ArrayList<WebMarkupContainer>();
+        containers.add(friendsContainer);
+        containers.add(invitesContainer);
+        containers.add(listPlayersContainer);
+
+        final List<Button> buttons = new ArrayList<Button>();
+
+        Button invitesButton;
+        invitesButton = new Button("list-all-invites-button") {
             @Override
-            public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                if (target != null ) {
-                    form.remove(alarmLabel);
-                    form.add(alarmLabel);
-                    alarmLabel
-                            .replaceWith(new Label("status2","fakc?"))
-                            .add(new AttributeAppender("class", new Model("badge badge-success")))
-                            .setOutputMarkupId(true);
-
-                    target.add(form);
+            public void onSubmit() {
+                invitesContainer.removeAll();
+                invitesContainer.add(allInvitesListView(p, containerForm, invitesContainer));
+                if (invitesContainer.isVisible()) {
+                    invitesContainer.setVisible(false);
+                    this.add(new AttributeModifier("class", new Model("btn")));
+                } else {
+                    unmarkButtons(buttons);
+                    hideContainers(containers);
+                    invitesContainer.setVisible(true);
+                    this.add(new AttributeModifier("class", new Model("btn btn-primary")));
                 }
-
-
-            }
-        });
-        form1.add(alarmLabel);
-        add(form1);
-
-
-        List<String> test = new ArrayList<String>();
-        test.add("lol");
-        ListView<String> lv = new ListView<String>("rows", test)
-        {
-            public void populateItem(final ListItem<String> item)
-            {
-                add(new Label("playerid","fal"));
-                Form f = new Form("form");
-                f.add(new Button("invite-button"));
-                add(f);
             }
         };
+        invitesButton.setOutputMarkupId(true);
+        superFriendForm.add(invitesButton);
 
-        add(lv);
-        lv.setVisible(false);
-
-
-        Form f2 = new Form("list-all-players");
-        Button b = new Button("list-all-button"){
+        Button listAllPlayerButton = new Button("list-all-button"){
 
             @Override
             public void onSubmit() {
-
+                listPlayersContainer.removeAll();
+                listPlayersContainer.add(allPlayersListView(p, containerForm, listPlayersContainer));
+                if (listPlayersContainer.isVisible()) {
+                    listPlayersContainer.setVisible(false);
+                    this.removeAll();
+                    this.add(new AttributeModifier("class", new Model("btn")));
+                } else {
+                    unmarkButtons(buttons);
+                    hideContainers(containers);
+                    listPlayersContainer.setVisible(true);
+                    this.removeAll();
+                    this.add(new AttributeModifier("class", new Model("btn btn-primary")));
+                }
             }
         };
-        f2.add(b);
-        add(f2);
-//        Form form = new Form("form");
-//        Button searchButton = new Button("searchButton") {
-//
-//            @Override
-//            public void onSubmit() {
-//            }
-//        };
-//
-//        form.add(searchButton);
-//        add(form);
+        listAllPlayerButton.setOutputMarkupId(true);
 
+        superFriendForm.add(listAllPlayerButton);
+
+
+        Button listAllFriendsButton = new Button("list-all-friends-button") {
+
+            @Override
+            public void onSubmit() {
+                friendsContainer.removeAll();
+                friendsContainer.add(friendsListView(p));
+                if (friendsContainer.isVisible()) {
+                    friendsContainer.setVisible(false);
+                    this.removeAll();
+                    this.add(new AttributeModifier("class", new Model("btn")));
+                } else {
+                    unmarkButtons(buttons);
+                    hideContainers(containers);
+                    friendsContainer.setVisible(true);
+                    this.removeAll();
+                    this.add(new AttributeModifier("class", new Model("btn btn-primary")));
+                }
+            }
+        };
+        listAllFriendsButton.setOutputMarkupId(true);
+        superFriendForm.add(listAllFriendsButton);
+
+        add(superFriendForm);
+        add(containerForm);
+
+        // Add buttons to list
+        buttons.add(listAllPlayerButton);
+        buttons.add(listAllFriendsButton);
+        buttons.add(invitesButton);
+    }
+
+    private ListView<Player> friendsListView(Player p) {
+        List<Player> friendsToPlayer = (List) new ArrayList<Player>(friendManager.getFriends(p));
+        return new ListView<Player>("friends-listview", friendsToPlayer)
+        {
+            public void populateItem(final ListItem<Player> item)
+            {
+                Player p = item.getModelObject();
+                item.add(new Label("friend-playerName",p.getName()));
+            }
+        };
+    }
+
+    private ListView<Player> allPlayersListView(final Player p, final Form form, final WebMarkupContainer wmc) {
+        final List<Player> nonFriendPlayers = (List) new ArrayList<Player>(friendManager.getAllNonFriendPlayers(p));
+        return new ListView<Player>("all-players-listview", nonFriendPlayers)
+        {
+            final ListView lv = this;
+            public void populateItem(final ListItem<Player> item)
+            {
+                Player nonFriendPlayer = item.getModelObject();
+                item.add(new Label("playername",nonFriendPlayer.getName()));
+
+                AjaxFallbackButton button = new AjaxFallbackButton("invite-button", form) {
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        Player playerToBeInvited = item.getModelObject();
+                        nonFriendPlayers.remove(playerToBeInvited);
+                        friendManager.sendInvite(p, playerToBeInvited);
+                        lv.removeAll();
+
+                        if (target != null) {
+                            target.add(wmc);
+                        }
+                    }
+                };
+
+                item.add(button);
+            }
+        }.setReuseItems(true);
+    }
+
+    private ListView<Player> allInvitesListView(final Player player, final Form form, final WebMarkupContainer wmc) {
+        final List<Player> invitesFromPlayers = (List) new ArrayList<Player>(friendManager.getAllInvites(player));
+        return new ListView<Player>("invites-listview", invitesFromPlayers)
+        {
+            final ListView lv = this;
+            public void populateItem(final ListItem<Player> item)
+            {
+                Player playerThatInvites = item.getModelObject();
+                item.add(new Label("invited-playerName",playerThatInvites.getName()));
+
+                AjaxFallbackButton acceptButton = new AjaxFallbackButton("accept-invite", form) {
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        Player playerToBeAccepted = item.getModelObject();
+                        invitesFromPlayers.remove(playerToBeAccepted);
+                        friendManager.acceptInvite(player, playerToBeAccepted);
+                        lv.removeAll();
+
+                        if (target != null) {
+                            target.add(wmc);
+                        }
+                    }
+                };
+                item.add(acceptButton);
+
+                AjaxFallbackButton declineButton = new AjaxFallbackButton("decline-invite", form) {
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        Player playerToBeDeclined = item.getModelObject();
+                        invitesFromPlayers.remove(playerToBeDeclined);
+                        friendManager.declineInvite(player, playerToBeDeclined);
+                        lv.removeAll();
+
+                        if (target != null) {
+                            target.add(wmc);
+                        }
+                    }
+                };
+                item.add(declineButton);
+            }
+        }.setReuseItems(true);
+    }
+
+    private void unmarkButtons(List<Button> buttons) {
+        for (Button button : buttons) {
+            button.removeAll();
+            button.add(new AttributeModifier("class", new Model("btn")));
+        }
+    }
+
+    private void hideContainers(List<WebMarkupContainer> containers) {
+        for (WebMarkupContainer container : containers) {
+            container.setVisible(false);
+        }
     }
 }

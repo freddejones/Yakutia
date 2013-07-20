@@ -1,10 +1,13 @@
 package nu.danielsundberg.yakutia.harness.preGameBeanMock;
 
+import nu.danielsundberg.yakutia.application.service.iface.FriendManagerInterface;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import org.apache.wicket.injection.IFieldValueFactory;
 
 import javax.ejb.EJB;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Fredde
@@ -12,10 +15,13 @@ import java.lang.reflect.Field;
  */
 public class MockFactory implements IFieldValueFactory {
 
-    protected Object bean;
+    protected List<Object> beans;
 
-    public MockFactory(Object obj) {
-        bean = obj;
+    public MockFactory(Object[] beanArray) {
+        beans = new ArrayList<Object>();
+        for (Object obj : beanArray) {
+            beans.add(obj);
+        }
     }
 
     @Override
@@ -26,11 +32,21 @@ public class MockFactory implements IFieldValueFactory {
     @Override
     public Object getFieldValue(Field field, Object fieldOwner) {
 
-        // TODO how to fix this generic?
         if (field.getType().isAssignableFrom(PreGameInterface.class)) {
-            return bean;
+            return findBean("PreGameInterface");
+        } else if (field.getType().isAssignableFrom(FriendManagerInterface.class)) {
+            return findBean("FriendManagerInterface");
         } else {
             return null;
         }
+    }
+
+    private Object findBean(String beanName) {
+        for (Object bean : beans) {
+            if (bean.getClass().toString().contains(beanName)) {
+                return bean;
+            }
+        }
+        return null;
     }
 }

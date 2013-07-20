@@ -16,44 +16,66 @@
         </div>
     </header>
 
-    <form class="form" wicket:id="ajaxform">
-        <input type="submit" wicket:id="button1" class="btn" value="Ajax test"/>
-        <span wicket:id="status2" class="badge badge-success" status="not">[message]</span>
+    <form class="form" wicket:id="super-friend-form">
+        <input type="submit" wicket:id="list-all-friends-button" class="btn" value="Show all friends"/>
+        <input type="submit" wicket:id="list-all-button" class="btn" value="Show all non friends"/>
+        <input type="submit" wicket:id="list-all-invites-button" class="btn" value="Show all invites"/>
     </form>
 
-    <!--<form class="form-search" wicket:id="form">-->
-        <!--<input type="text" class="input-medium search-query">-->
-        <!--<input type="submit" wicket:id="searchButton" class="btn" value="Search player"/>-->
-    <!--</form>-->
+    <form class="form" wicket:id="container-form">
+        <table wicket:id="friends-container" class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <center>
+                        <th>Player</th>
+                    </center>
+                </tr>
+                </thead>
+            <tbody>
+                <tr wicket:id="friends-listview">
+                    <td><span wicket:id="friend-playerName"></span></td>
+                </tr>
+            </tbody>
+        </table>
 
-    <form class="form" wicket:id="list-all-players">
-        <input type="submit" wicket:id="list-all-button" class="btn" value="Show all players"/>
-    </form>
-
-
-    <wicket:enclosure child="rows">
-        <table class="table">
+        <table wicket:id="invites-container" class="table table-condensed table-hover">
             <thead>
             <tr>
-                <th>Player name</th>
-                <th>Friend invite status</th>
+                <th>Player</th>
+                <th>Accept?</th>
+                <th>Decline?</th>
             </tr>
             </thead>
             <tbody>
-            <tr wicket:id="rows">
-                <td><span wicket:id="playerid"></span></td>
+                <tr wicket:id="invites-listview">
+                    <td><span wicket:id="invited-playerName"></span></td>
+                    <td>
+                        <input wicket:id="accept-invite" type="submit" class="btn btn-mini btn-success" value="Accept"/>
+                    </td>
+                    <td>
+                        <input wicket:id="decline-invite" type="submit" class="btn btn-mini btn-danger" value="Decline"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table wicket:id="all-players" class="table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th>Player</th>
+                <th>Invite?</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr wicket:id="all-players-listview">
+                <td><span wicket:id="playername"></span></td>
                 <td>
-                    <form wicket:id="form">
-                        <input type="submit" wicket:id="invite-button" class="btn btn-large btn-primary" value="Invite"/>
-                    </form>
+                    <input type="submit" wicket:id="invite-button" class="btn btn-mini btn-primary" value="Invite"/>
                 </td>
             </tr>
             </tbody>
         </table>
-    </wicket:enclosure>
-    <!--<button type="button" class="btn btn-large btn-primary" value="No value needed">Search for friends</button>-->
-    <!--<button type="button" class="btn btn-large btn-primary" value="No value needed">List friends</button>-->
-
+    </form>
 
     </center>
 </wicket:extend>

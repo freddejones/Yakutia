@@ -5,6 +5,7 @@ import nu.danielsundberg.yakutia.testcore.JpaTestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class PlayerTest extends JpaTestCase {
@@ -19,6 +20,19 @@ public class PlayerTest extends JpaTestCase {
     @Test
     public void persistPlayer() {
         entityManager.persist(player1);
+        assertNotNull(player1.getPlayerId());
+    }
+
+    @Test
+    public void testSetAllAttributes() {
+        player1.setName("MyName");
+        GamePlayer gp = new GamePlayer();
+        Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
+        gamePlayers.add(gp);
+        player1.setGames(gamePlayers);
+        player1.setEmail("mymail@gmail.com");
+        entityManager.persist(player1);
+        assertNotNull(player1);
         assertNotNull(player1.getPlayerId());
     }
 

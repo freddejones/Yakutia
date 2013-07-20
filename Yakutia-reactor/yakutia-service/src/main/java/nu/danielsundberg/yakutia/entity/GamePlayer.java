@@ -1,5 +1,7 @@
 package nu.danielsundberg.yakutia.entity;
 
+import nu.danielsundberg.yakutia.entity.statuses.GamePlayerStatus;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;

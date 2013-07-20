@@ -42,7 +42,7 @@ public class RestTest {
         return "false";
     }
 
-    @Path("/getAllPlayers")
+    @Path("/getAllNonFriendPlayers")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

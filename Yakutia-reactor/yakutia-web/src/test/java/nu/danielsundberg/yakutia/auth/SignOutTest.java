@@ -29,7 +29,7 @@ public class SignOutTest extends OauthMockHarness {
     @Before
     public void setup() throws NoPlayerFoundException {
         preGameInterfaceMock = mock(PreGameInterface.class);
-        tester = new WicketTester(new MyMockApplication(preGameInterfaceMock));
+        tester = new WicketTester(new MyMockApplication(new Object[]{preGameInterfaceMock}));
         when(preGameInterfaceMock.playerExists(any(String.class))).thenReturn(true);
         Player p = mock(Player.class);
         when(preGameInterfaceMock.getPlayerByEmail(any(String.class))).thenReturn(p);

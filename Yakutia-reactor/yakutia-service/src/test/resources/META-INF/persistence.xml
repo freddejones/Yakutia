@@ -10,6 +10,7 @@
         <class>nu.danielsundberg.yakutia.entity.Player</class>
         <class>nu.danielsundberg.yakutia.entity.Game</class>
         <class>nu.danielsundberg.yakutia.entity.GamePlayer</class>
+        <class>nu.danielsundberg.yakutia.entity.PlayerFriend</class>
 
         <properties>
             <property name="javax.persistence.validation.mode" value="none"/>

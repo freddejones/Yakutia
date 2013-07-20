@@ -9,14 +9,14 @@ import org.apache.wicket.application.IComponentInstantiationListener;
  */
 public class MyMockApplication extends WicketApplication {
 
-    private Object stuff;
+    private Object[] beans;
 
-    public MyMockApplication(Object bean) {
-        stuff = bean;
+    public MyMockApplication(Object[] beans) {
+        this.beans = beans;
     }
 
     @Override
     protected IComponentInstantiationListener getComponentInstantiationListener() {
-        return new MockInjector(this, stuff);
+        return new MockInjector(this, beans);
     }
 }

@@ -4,7 +4,7 @@ import nu.danielsundberg.yakutia.application.service.exceptions.NotSufficientUni
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerDoNotOwnLandAreaException;
 import nu.danielsundberg.yakutia.application.service.iface.PlayerActionsInterface;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
-import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
+import nu.danielsundberg.yakutia.entity.statuses.GamePlayerStatus;
 import nu.danielsundberg.yakutia.application.service.exceptions.LandIsNotNeighbourException;
 import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.Unit;

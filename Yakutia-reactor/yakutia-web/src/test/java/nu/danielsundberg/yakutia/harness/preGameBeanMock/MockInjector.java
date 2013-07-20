@@ -13,9 +13,9 @@ public class MockInjector extends Injector implements IComponentInstantiationLis
 
     private MockFactory factory;
 
-    public MockInjector(WebApplication webApplication, Object obj) {
+    public MockInjector(WebApplication webApplication, Object[] objects) {
         bind(webApplication);
-        factory = new MockFactory(obj);
+        factory = new MockFactory(objects);
     }
 
     @Override

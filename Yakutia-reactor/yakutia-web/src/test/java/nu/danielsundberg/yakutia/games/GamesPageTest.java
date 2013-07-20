@@ -6,7 +6,7 @@ import nu.danielsundberg.yakutia.auth.SignIn;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
-import nu.danielsundberg.yakutia.entity.GameStatus;
+import nu.danielsundberg.yakutia.entity.statuses.GameStatus;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.harness.Authorizer;
 import nu.danielsundberg.yakutia.harness.OauthMockHarness;
@@ -40,7 +40,7 @@ public class GamesPageTest extends OauthMockHarness {
         when(playerMock.getName()).thenReturn("any");
         when(preGameBeanMock.getPlayerByName(any(String.class))).thenReturn(playerMock);
 
-        tester = new WicketTester(new MyMockApplication(preGameBeanMock));
+        tester = new WicketTester(new MyMockApplication(new Object[]{preGameBeanMock}));
     }
 
     @Test

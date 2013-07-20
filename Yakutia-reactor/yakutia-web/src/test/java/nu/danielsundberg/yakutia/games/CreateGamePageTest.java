@@ -13,6 +13,7 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class CreateGamePageTest {
     public void setUp() throws NoPlayerFoundException {
         preGameBeanMock = mock(PreGameInterface.class);
         playerMock = mock(Player.class);
-        tester = new WicketTester(new MyMockApplication(preGameBeanMock));
+        tester = new WicketTester(new MyMockApplication(new Object[]{preGameBeanMock}));
     }
 
     @Test
@@ -77,8 +78,8 @@ public class CreateGamePageTest {
 
     // TODO change to friends when that exists
     @Test
+    @Ignore
     public void noPlayersExists() {
-
     }
 
     @Test

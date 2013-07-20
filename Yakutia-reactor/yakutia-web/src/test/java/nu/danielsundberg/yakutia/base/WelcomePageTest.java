@@ -27,7 +27,7 @@ public class WelcomePageTest {
     @Before
     public void setup() {
         preGameInterfaceMock = mock(PreGameInterface.class);
-        tester = new WicketTester(new MyMockApplication(preGameInterfaceMock));
+        tester = new WicketTester(new MyMockApplication(new Object[]{preGameInterfaceMock}));
     }
 
     @Test

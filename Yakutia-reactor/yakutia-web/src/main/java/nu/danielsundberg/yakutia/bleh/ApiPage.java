@@ -1,5 +1,7 @@
 package nu.danielsundberg.yakutia.bleh;
 
+import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
+import nu.danielsundberg.yakutia.application.service.iface.FriendManagerInterface;
 import nu.danielsundberg.yakutia.base.NavbarPage;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
@@ -24,6 +26,8 @@ public class ApiPage extends NavbarPage {
 
     @EJB(name = "pregamebean")
     private PreGameInterface preGameInterface;
+    @EJB(name = "friendManagerBean")
+    private FriendManagerInterface friendManager;
 
     public ApiPage(PageParameters parameters) throws NamingException {
         super(parameters);
@@ -35,10 +39,25 @@ public class ApiPage extends NavbarPage {
             public void onSubmit() {
 
                 try {
-                    preGameInterface.createNewPlayer("apan1","email@email.com");
-                    preGameInterface.createNewPlayer("apan2","email@email.com");
-                    preGameInterface.createNewPlayer("apan3","email@email.com");
+                    Long playerOne = preGameInterface.createNewPlayer("apan1","email1@email.com");
+                    Long playerTwo = preGameInterface.createNewPlayer("apan2","email2@email.com");
+                    preGameInterface.createNewPlayer("apan3","email3@email.com");
+                    Long myId = preGameInterface.createNewPlayer("fidde","freddejones@gmail.com");
+
+                    Player myPlayer = preGameInterface.getPlayerById(myId);
+
+                    // Create one invite
+                    Player pToInvite = preGameInterface.getPlayerById(playerOne);
+                    friendManager.sendInvite(pToInvite,myPlayer);
+
+                    // Create a friend
+                    Player pToFriend = preGameInterface.getPlayerById(playerTwo);
+                    friendManager.sendInvite(myPlayer, pToFriend);
+                    friendManager.acceptInvite(pToFriend, myPlayer);
+
                 } catch (PlayerAlreadyExists pae) {
+
+                } catch (NoPlayerFoundException e) {
 
                 }
 

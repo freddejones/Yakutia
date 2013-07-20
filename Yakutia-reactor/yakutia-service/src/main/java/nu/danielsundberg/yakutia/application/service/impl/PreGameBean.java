@@ -5,6 +5,8 @@ import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundExc
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.entity.*;
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerAlreadyExists;
+import nu.danielsundberg.yakutia.entity.statuses.GamePlayerStatus;
+import nu.danielsundberg.yakutia.entity.statuses.GameStatus;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

@@ -5,7 +5,7 @@ import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.base.NavbarPage;
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
-import nu.danielsundberg.yakutia.entity.GamePlayerStatus;
+import nu.danielsundberg.yakutia.entity.statuses.GamePlayerStatus;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;

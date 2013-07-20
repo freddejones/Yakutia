@@ -13,6 +13,8 @@ import nu.danielsundberg.yakutia.application.service.exceptions.NotEnoughPlayers
 import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
 import nu.danielsundberg.yakutia.entity.*;
 import nu.danielsundberg.yakutia.application.service.iface.GameEngineInterface;
+import nu.danielsundberg.yakutia.entity.statuses.GamePlayerStatus;
+import nu.danielsundberg.yakutia.entity.statuses.GameStatus;
 
 
 @Stateless(mappedName = "kickass")
