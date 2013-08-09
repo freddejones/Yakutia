@@ -108,6 +108,7 @@ public class FriendManagerBeanTest extends JpaTestCase {
         pf.setFriendStatus(FriendStatus.INVITED);
         pf.setFriend(invitedPlayer);
         entityManager.persist(pf);
+        entityManager.clear();
 
         // When: getting all players no friend
         Set<Player> playerNo = friendManager.getAllNonFriendPlayers(player);
@@ -133,6 +134,7 @@ public class FriendManagerBeanTest extends JpaTestCase {
         pf.setFriendStatus(FriendStatus.ACCEPTED);
         pf.setFriend(friend);
         entityManager.persist(pf);
+        entityManager.clear();
 
         // When: getting all players no friend
         Set<Player> playerNo = friendManager.getAllNonFriendPlayers(player);
@@ -235,11 +237,17 @@ public class FriendManagerBeanTest extends JpaTestCase {
         // When: p1 send invite to p2
         friendManager.sendInvite(p1, p2);
 
+        entityManager.refresh(p1);
+        entityManager.refresh(p2);
+
         // Then: p2 gets an invite
         Assert.assertEquals(1, friendManager.getAllInvites(p2).size());
 
         // When: p2 accepts invite from p1
         friendManager.acceptInvite(p2, p1);
+
+        entityManager.refresh(p1);
+        entityManager.refresh(p2);
 
         // Then: no players are left in db for p1 to friend or for p2
         Assert.assertEquals(0, friendManager.getAllNonFriendPlayers(p1).size());

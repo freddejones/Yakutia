@@ -211,6 +211,26 @@ public class PlayerActionBeanTest extends JpaTestCase {
         Assert.assertEquals(5, unassignedUnit.getStrength());
     }
 
+    @Test
+    public void playerIsActiveTest() {
+        PlayerActionsBean playerActionsBean = new PlayerActionsBean();
+        playerActionsBean.em = entityManager;
+
+        // Given: two players in one game
+        entityManager.refresh(p);
+        entityManager.refresh(gp);
+        gp.setActivePlayerTurn(false);
+        gp2.setActivePlayerTurn(true);
+
+        // When: checking active player status
+        Boolean isActivePlayer = playerActionsBean.isPlayerTurn(gp.getPlayerId(), gp.getGameId());
+        Boolean isActivePlayer2 = playerActionsBean.isPlayerTurn(gp2.getPlayerId(),gp2.getGameId());
+
+        // Then: one of them is active
+        Assert.assertFalse(isActivePlayer);
+        Assert.assertTrue(isActivePlayer2);
+    }
+
     private void createPreStuff() {
         g = new Game();
         p = new Player();

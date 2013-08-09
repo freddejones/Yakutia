@@ -21,4 +21,6 @@ public interface PlayerActionsInterface {
 
     public boolean endTurn(long playerId, long gameId);
 
+    public boolean isPlayerTurn(long playerId, long gameId);
+
 }

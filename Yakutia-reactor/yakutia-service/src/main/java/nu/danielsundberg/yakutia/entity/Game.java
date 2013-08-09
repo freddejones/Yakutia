@@ -8,11 +8,9 @@ import java.util.Date;
 import java.util.Set;
 //import org.joda.time.DateTime;
 
+
 @Entity
 public class Game implements Serializable {
-
-    // TODO add name of game
-
 
     @Id @GeneratedValue
     private long gameId;

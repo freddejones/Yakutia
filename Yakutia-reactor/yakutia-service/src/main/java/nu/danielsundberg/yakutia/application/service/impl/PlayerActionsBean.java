@@ -4,6 +4,7 @@ import nu.danielsundberg.yakutia.application.service.exceptions.NotSufficientUni
 import nu.danielsundberg.yakutia.application.service.exceptions.PlayerDoNotOwnLandAreaException;
 import nu.danielsundberg.yakutia.application.service.iface.PlayerActionsInterface;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
+import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.entity.statuses.GamePlayerStatus;
 import nu.danielsundberg.yakutia.application.service.exceptions.LandIsNotNeighbourException;
 import nu.danielsundberg.yakutia.application.service.landAreas.LandArea;
@@ -168,5 +169,15 @@ public class PlayerActionsBean implements PlayerActionsInterface {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean isPlayerTurn(long playerId, long gameId) {
+        GamePlayer gamePlayer = (GamePlayer) em.createNamedQuery("GamePlayer.getGamePlayer")
+                .setParameter("gameId",gameId)
+                .setParameter("playerId",playerId)
+                .getSingleResult();
+
+        return gamePlayer.isActivePlayerTurn();
     }
 }

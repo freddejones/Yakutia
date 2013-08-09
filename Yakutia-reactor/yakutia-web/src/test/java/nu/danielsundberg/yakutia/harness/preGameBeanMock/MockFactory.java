@@ -1,6 +1,7 @@
 package nu.danielsundberg.yakutia.harness.preGameBeanMock;
 
 import nu.danielsundberg.yakutia.application.service.iface.FriendManagerInterface;
+import nu.danielsundberg.yakutia.application.service.iface.PlayerActionsInterface;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import org.apache.wicket.injection.IFieldValueFactory;
 
@@ -36,7 +37,10 @@ public class MockFactory implements IFieldValueFactory {
             return findBean("PreGameInterface");
         } else if (field.getType().isAssignableFrom(FriendManagerInterface.class)) {
             return findBean("FriendManagerInterface");
-        } else {
+        } else if (field.getType().isAssignableFrom(PlayerActionsInterface.class)) {
+            return findBean("PlayerActionsInterface");
+        }
+        else {
             return null;
         }
     }

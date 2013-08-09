@@ -1,11 +1,13 @@
 package nu.danielsundberg.yakutia.games;
 
 import junit.framework.Assert;
+import nu.danielsundberg.yakutia.application.service.iface.PlayerActionsInterface;
 import nu.danielsundberg.yakutia.application.service.iface.PreGameInterface;
 import nu.danielsundberg.yakutia.auth.SignIn;
 import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundException;
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
+import nu.danielsundberg.yakutia.entity.PlayerFriend;
 import nu.danielsundberg.yakutia.entity.statuses.GameStatus;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.harness.Authorizer;
@@ -17,6 +19,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -31,16 +34,19 @@ public class GamesPageTest extends OauthMockHarness {
 
     private WicketTester tester;
     private PreGameInterface preGameBeanMock;
+    private PlayerActionsInterface playerActionsInterfaceMock;
     private Player playerMock;
 
     @Before
     public void setUp() throws NoPlayerFoundException {
         preGameBeanMock = mock(PreGameInterface.class);
+        playerActionsInterfaceMock = mock(PlayerActionsInterface.class);
         playerMock = mock(Player.class);
         when(playerMock.getName()).thenReturn("any");
         when(preGameBeanMock.getPlayerByName(any(String.class))).thenReturn(playerMock);
 
-        tester = new WicketTester(new MyMockApplication(new Object[]{preGameBeanMock}));
+        tester = new WicketTester(new MyMockApplication(
+                new Object[]{preGameBeanMock, playerActionsInterfaceMock}));
     }
 
     @Test
@@ -139,7 +145,14 @@ public class GamesPageTest extends OauthMockHarness {
         when(gameMock.getGameStatus()).thenReturn(GameStatus.ONGOING);
         when(playerMock.getGames()).thenReturn(gamePlayersSetMock);
 
-        when(preGameBeanMock.getGameById(anyLong())).thenReturn(gameMock);
+        // mock active game page
+        Game game2 = mock(Game.class);
+        Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
+        gamePlayers.add(gamePlayerMock);
+        when(game2.getPlayers()).thenReturn(gamePlayers);
+        when(preGameBeanMock.getGameById(anyLong())).thenReturn(gameMock).thenReturn(game2);
+
+        when(playerActionsInterfaceMock.isPlayerTurn(anyLong(),anyLong())).thenReturn(true);
 
         // When: user clicks the game button
         tester.startPage(GamesPage.class);
@@ -167,10 +180,14 @@ public class GamesPageTest extends OauthMockHarness {
     }
 
     @Test
-    public void testCreateGameButtonClick() {
+    public void testCreateGameButtonClick() throws NoPlayerFoundException {
         // Given: authorized user
         tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
                 new RoleAuthorizationStrategy(new Authorizer("USER")));
+
+        when(preGameBeanMock.getPlayerById(anyLong())).thenReturn(playerMock);
+        Set<PlayerFriend> friendsSetMock = new HashSet<PlayerFriend>();
+        when(playerMock.getFriends()).thenReturn(friendsSetMock);
 
         // When: clicking create game button
         tester.startPage(GamesPage.class);
@@ -181,6 +198,24 @@ public class GamesPageTest extends OauthMockHarness {
         tester.assertNoErrorMessage();
         tester.assertNoInfoMessage();
         tester.assertRenderedPage(CreateGamePage.class);
+    }
+
+    @Test
+    @Ignore
+    public void acceptGameInvite() {
+
+    }
+
+    @Test
+    @Ignore
+    public void declineGameInvite() {
+
+    }
+
+    @Test
+    @Ignore
+    public void checkDisabledGoButtonForNotStartedGame() {
+
     }
 
 

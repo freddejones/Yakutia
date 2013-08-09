@@ -52,6 +52,7 @@ public class PlayerFriendTest extends JpaTestCase {
         // Then: a relationship is created, and can be retrieved from Player object
         Assert.assertNotNull(pf.getPlayerFriendId());
         PlayerFriend playerFriendVerify = entityManager.find(PlayerFriend.class, pf.getPlayerFriendId());
+        entityManager.refresh(playerWithFriends);
         Player playerVerify = entityManager.find(Player.class, playerWithFriends.getPlayerId());
         Assert.assertNotNull(playerFriendVerify.getPlayer());
         Assert.assertEquals(1, playerVerify.getFriends().size());

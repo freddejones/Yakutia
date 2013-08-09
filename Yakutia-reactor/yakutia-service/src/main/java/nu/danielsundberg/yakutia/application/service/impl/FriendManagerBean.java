@@ -42,7 +42,7 @@ public class FriendManagerBean implements FriendManagerInterface {
         List<Player> playersListCopy = new ArrayList<Player>(playersList);
 
         player = em.find(Player.class, player.getPlayerId());
-        em.refresh(player);
+//        em.refresh(player);
         if (playersList.contains(player))
         { playersListCopy.remove(player); }
 

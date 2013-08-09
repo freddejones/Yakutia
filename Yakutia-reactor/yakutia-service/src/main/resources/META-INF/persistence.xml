@@ -14,8 +14,8 @@
         <class>nu.danielsundberg.yakutia.entity.PlayerFriend</class>
         <properties>
                 <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
-                <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-            <!--<property name="hibernate.hbm2ddl.auto" value="none" />-->
+                <!--<property name="hibernate.hbm2ddl.auto" value="create-drop" />-->
+            <property name="hibernate.hbm2ddl.auto" value="none" />
         </properties>
     </persistence-unit>
 </persistence>
