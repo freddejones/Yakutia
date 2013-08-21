@@ -5,10 +5,9 @@
     <parent>
         <artifactId>yakutia-reactor</artifactId>
         <groupId>nu.danielsundberg.games.yakutia</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <name>Yakutia :: Selenium tests</name>
     <artifactId>yakutia-selenium</artifactId>
 
@@ -26,6 +25,19 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.concordion</groupId>
+            <artifactId>concordion</artifactId>
+            <version>1.4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.concordion</groupId>
+            <artifactId>concordion-extensions</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
