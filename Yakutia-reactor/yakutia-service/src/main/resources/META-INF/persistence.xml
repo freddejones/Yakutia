@@ -6,7 +6,7 @@
 
     <persistence-unit name="yakutiaPU" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <jta-data-source>jdbc/testDB</jta-data-source>
+        <jta-data-source>jdbc/yakutiaDB</jta-data-source>
         <class>nu.danielsundberg.yakutia.entity.Game</class>
         <class>nu.danielsundberg.yakutia.entity.GamePlayer</class>
         <class>nu.danielsundberg.yakutia.entity.Player</class>
