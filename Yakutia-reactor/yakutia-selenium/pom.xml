@@ -5,7 +5,7 @@
     <parent>
         <artifactId>yakutia-reactor</artifactId>
         <groupId>nu.danielsundberg.games.yakutia</groupId>
-        <version>1.0.0-1</version>
+        <version>1.0.0-2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Yakutia :: Selenium tests</name>
