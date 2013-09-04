@@ -51,10 +51,19 @@ public class SeleniumTest {
         singInButton.click();
 
         WebElement accept = (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.id("allow")));
+                .until(ExpectedConditions.presenceOfElementLocated(By.id("submit_approve_access")));
+        for (int i=0; i<10; i++) {
+            if (accept.isEnabled()) {
+                i = 10;
+            } else {
+                Thread.sleep(1000);
+            }
+        }
         accept.click();
 
-        WebElement newPlayerName = driver.findElement(By.name("playername"));
+
+        WebElement newPlayerName = (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.name("playername")));
         newPlayerName.clear();
         newPlayerName.sendKeys("yakutiaName");
         WebElement createButton = driver.findElement(By.name("createButton"));

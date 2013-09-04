@@ -7,6 +7,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * User: Fredde
@@ -15,12 +17,21 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 @RunWith(ConcordionRunner.class)
 public class YakutiaSpecFixtureTest {
 
+    private static String baseUrl;
+
+    static {
+        baseUrl = System.getProperty("BASE_URL");
+    }
+
     public String gotoLoginPageAndGetVerifySignInButton() {
         WebDriver driver;
         driver = new FirefoxDriver();
-        driver.get("http://localhost:8080/yakutia-web");
-        WebElement button = driver.findElement(By.id("google2"));
-        return button.getText();
+        driver.get(baseUrl);
+        WebElement button = (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.id("google2")));
+        String returnValue = button.getAttribute("value");
+        driver.close();
+        return returnValue;
     }
 
 }
