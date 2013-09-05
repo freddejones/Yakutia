@@ -31,6 +31,9 @@ public class SeleniumTest {
     @After
     public void tearDown() {
         driver.quit();
+
+        // Clean up testdata
+
     }
 
     @Test
@@ -62,15 +65,15 @@ public class SeleniumTest {
         accept.click();
 
 
-        WebElement newPlayerName = (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.name("playername")));
-        newPlayerName.clear();
-        newPlayerName.sendKeys("yakutiaName");
-        WebElement createButton = driver.findElement(By.name("createButton"));
-        createButton.click();
-
-        WebElement header = driver.findElement(By.xpath("//h1[contains(.,'yakutiaName')]"));
-        Assert.assertEquals("Welcome to Yakutia, yakutiaName",header.getText());
+//        WebElement newPlayerName = (new WebDriverWait(driver, 10))
+//                .until(ExpectedConditions.presenceOfElementLocated(By.name("playername")));
+//        newPlayerName.clear();
+//        newPlayerName.sendKeys("yakutiaName");
+//        WebElement createButton = driver.findElement(By.name("createButton"));
+//        createButton.click();
+//
+//        WebElement header = driver.findElement(By.xpath("//h1[contains(.,'yakutiaName')]"));
+//        Assert.assertEquals("Welcome to Yakutia, yakutiaName",header.getText());
     }
 
     @Test

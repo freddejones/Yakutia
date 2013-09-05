@@ -7,7 +7,7 @@
     <parent>
         <groupId>nu.danielsundberg.games.yakutia</groupId>
         <artifactId>yakutia-reactor</artifactId>
-        <version>1.0.0-2</version>
+        <version>1.0.0-3</version>
     </parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>nu.danielsundberg.games.yakutia</groupId>
             <artifactId>yakutia-services</artifactId>
-            <version>1.0.0-2</version>
+            <version>1.0.0-3</version>
             <scope>compile</scope>
         </dependency>
 

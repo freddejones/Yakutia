@@ -1,0 +1,42 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+
+    <head>
+        <link href="concordion.css" rel="stylesheet" type="text/css" />
+    </head>
+
+
+    <body>
+        <h1>Login/Sign in specification</h1>
+
+        <p>
+            User are redirected to google to grant yakutia web app to read email-adress
+        </p>
+
+        <br/><br/>
+        <div class="scenario">
+            <h3>Sign in button</h3>
+            <p>
+                <b>Given:</b> any user<br/>
+                <b>When:</b> hitting Yakuita home page<br/>
+                <b>Then:</b> it will contain a button saying:
+                <span concordion:assertEquals="gotoLoginPageAndGetVerifySignInButton()">Sign in with google account</span>
+            </p>
+        </div>
+
+        <br/><br/>
+        <div class="scenario">
+            <h3>Redirect to google and back to yakutia for a non registred player</h3>
+            <p>
+                <b>Given:</b> a non yakutia registered user, not signed in to google<br/>
+                <b>When:</b> clicking sign in button in yakutia, signs in to google and approves access<br/>
+                <b>Then:</b> user is redirected to create account page with heading
+                <span concordion:assertEquals="yakutiaSignInGoogleSignInApproveGet()">Create account</span><br/>
+                <br/>
+                <b>Given:</b> a non yakutia registered user, signed in to google<br/>
+                <b>When:</b> clicking sign in button in yakutia, approves access<br/>
+                <b>Then:</b> user is redirected to create account page with heading
+                <span concordion:assertEquals="yakutiaSignInAlreadySignedInApproveGet()">Create account</span><br/>
+            </p>
+        </div>
+    </body>
+</html>
