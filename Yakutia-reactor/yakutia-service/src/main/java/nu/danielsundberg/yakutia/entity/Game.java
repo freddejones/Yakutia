@@ -32,6 +32,8 @@ public class Game implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date finshedTime;
 
+    private long gameCreatorPlayerId;
+
     public long getGameId() {
         return gameId;
     }
@@ -86,5 +88,13 @@ public class Game implements Serializable {
 
     public void setFinshedTime(Date finshedTime) {
         this.finshedTime = finshedTime;
+    }
+
+    public long getGameCreatorPlayerId() {
+        return gameCreatorPlayerId;
+    }
+
+    public void setGameCreatorPlayerId(long gameCreatorPlayerId) {
+        this.gameCreatorPlayerId = gameCreatorPlayerId;
     }
 }

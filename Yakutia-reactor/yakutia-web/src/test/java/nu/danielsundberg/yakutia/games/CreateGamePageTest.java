@@ -10,6 +10,7 @@ import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
 import nu.danielsundberg.yakutia.session.MySession;
 import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
@@ -143,7 +144,6 @@ public class CreateGamePageTest {
         // Given: a friend is added to list with added players
         addFriendToGameList();
 
-        tester.debugComponentTrees();
         List<Player> actualFriendsBefore =
                 (List<Player>)tester.getComponentFromLastRenderedPage("form1:wmc-friends:friends").getDefaultModelObject();
         Assert.assertEquals(0, actualFriendsBefore.size());
@@ -153,7 +153,6 @@ public class CreateGamePageTest {
         formtester.submit("wmc:playersAdded:0:delPlayer");
 
         // Then: friend is back to friends list
-        tester.debugComponentTrees();
         List<Player> actualFriendsAfter =
                 (List<Player>)tester.getComponentFromLastRenderedPage("form1:wmc-friends:friends").getDefaultModelObject();
         Assert.assertEquals(1, actualFriendsAfter.size());
@@ -181,7 +180,8 @@ public class CreateGamePageTest {
         formTester.submit("submit1");
 
         // Then: a help message is shown
-        tester.assertLabel("wmc-message:message","you need to add at least 2 players to create a game");
+        MultiLineLabel label = (MultiLineLabel)tester.getComponentFromLastRenderedPage("wmc-message:message");
+        Assert.assertEquals("you need to be at least 2 players to create a game\n",label.getDefaultModelObjectAsString());
         tester.assertVisible("wmc-message:message");
     }
 
@@ -210,7 +210,6 @@ public class CreateGamePageTest {
         formtester.submit("wmc:playersAdded:0:delPlayer");
 
         // Then: player is still in the list
-        tester.debugComponentTrees();
         List<Player> actualAddedPlayersAfter = (List<Player>)tester.getComponentFromLastRenderedPage("form1:wmc:playersAdded").getDefaultModelObject();
         Assert.assertEquals(1, actualAddedPlayersAfter.size());
 
@@ -249,8 +248,9 @@ public class CreateGamePageTest {
         formtester.submit("submit1");
 
         // Then: a information message is shown
+        MultiLineLabel label = (MultiLineLabel)tester.getComponentFromLastRenderedPage("wmc-message:message");
+        Assert.assertEquals("you need to specify a game name\n",label.getDefaultModelObjectAsString());
         tester.assertVisible("wmc-message:message");
-        tester.assertLabel("wmc-message:message", "you need to specify a game name");
     }
 
     @Test
@@ -290,8 +290,52 @@ public class CreateGamePageTest {
     }
 
     @Test
-    public void checkThatMessageIsRemoved() {
+    public void checkThatMessageIsRemovedWhenAddingAPlayer() throws NoPlayerFoundException {
+        // Given: a error message has been triggered
+        cannotCreateGameWithOnlyOnePlayer();
 
+        // When: correcting the error
+        FormTester formtester = tester.newFormTester("form1");
+        formtester.submit("webmarkupcontainer:players:0:addPlayer");
+
+        // Then: the message label should not be visible
+        tester.assertInvisible("wmc-message:message");
+    }
+
+    @Test
+    public void checkThatMessageIsRemovedWhenAddingAFriend() throws NoPlayerFoundException {
+        // Given: a error message has been triggered
+        tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
+                new RoleAuthorizationStrategy(new Authorizer("USER")));
+
+        ((MySession)tester.getSession()).setPlayerName("PLAYER");
+
+        when(preGameBeanMock.getPlayerById(anyLong())).thenReturn(playerMock);
+
+        PlayerFriend playerFriendMock = mock(PlayerFriend.class);
+        Set<PlayerFriend> friendsSetMock = new HashSet<PlayerFriend>();
+        friendsSetMock.add(playerFriendMock);
+        when(playerMock.getFriends()).thenReturn(friendsSetMock);
+        Player p = new Player();
+        p.setPlayerId(3L);
+        p.setName("PLAYER_FRIEND");
+        when(playerFriendMock.getFriend()).thenReturn(p);
+
+        List<Player> allPlayers = getPlayerList();
+        allPlayers.add(p);
+        when(preGameBeanMock.getPlayers()).thenReturn(allPlayers);
+        tester.startPage(CreateGamePage.class);
+
+        FormTester formTester = tester.newFormTester("form1");
+        formTester.setValue("gamename","a game name");
+        formTester.submit("submit1");
+
+        // When: correcting the error
+        FormTester formtester = tester.newFormTester("form1");
+        formtester.submit("wmc-friends:friends:0:addFriendPlayer");
+
+        // Then: the message label should not be visible
+        tester.assertInvisible("wmc-message:message");
     }
 
     @Test
@@ -301,11 +345,14 @@ public class CreateGamePageTest {
 
         // When: triggerering a new message
         FormTester formTester = tester.newFormTester("form1");
-        formTester.setValue("gamename","a game name");
+        formTester.setValue("gamename","");
         formTester.submit("submit1");
 
-        // Then: message will be shown
-
+        // Then: message containing two error messages will be shown
+        tester.assertVisible("wmc-message:message");
+        MultiLineLabel label = (MultiLineLabel)tester.getComponentFromLastRenderedPage("wmc-message:message");
+        Assert.assertEquals("you need to be at least 2 players to create a game\n" +
+                "you need to specify a game name\n",label.getDefaultModelObjectAsString());
     }
 
 

@@ -1,8 +1,11 @@
 package se.jones.code.scenario;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * User: Fredde
@@ -40,6 +43,11 @@ public class DriverHandler {
 
     public void resetDriverHandler() {
         instance = null;
+    }
+
+    public WebElement waitExplicitForElement(By byType) {
+        return (new WebDriverWait(getDriver(), 10))
+                .until(ExpectedConditions.presenceOfElementLocated(byType));
     }
 
     public void waitForEnabledElement(WebElement element) {

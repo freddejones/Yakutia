@@ -22,7 +22,11 @@
         <form class="form-search" wicket:id="form1">
 
             <input type="text" wicket:id="gamename" onclick="this.value='';" value="" size="50" />
+            <br>
+            <br>
+            <input type="submit" wicket:id="submit1" class="btn btn-large btn-primary" value="Create"/>
 
+            <br>
             <br>
             <table wicket:id="wmc" class="table table-striped table-hover table-condensed">
                 <thead>
@@ -36,7 +40,7 @@
                     <tr wicket:id="playersAdded">
                         <td><div wicket:id="playernameAdded"></div></td>
                         <td>
-                            <input type="submit" wicket:id="delPlayer" class="btn btn-danger" value="Remove player/friend"/>
+                            <input type="submit" wicket:id="delPlayer" class="btn btn-mini btn-danger" value="Remove"/>
                         </td>
                     </tr>
                 </tbody>
@@ -53,7 +57,7 @@
                 <tr wicket:id="friends">
                     <td><div wicket:id="friendname"></div></td>
                     <td>
-                        <input type="submit" wicket:id="addFriendPlayer" class="btn btn-mini btn-success" value="Add friend to game"/>
+                        <input type="submit" wicket:id="addFriendPlayer" class="btn btn-mini btn-success" value="Add"/>
                     </td>
                 </tr>
                 </tbody>
@@ -70,14 +74,11 @@
                 <tr wicket:id="players">
                     <td><div wicket:id="playername"></div></td>
                     <td>
-                        <input type="submit" wicket:id="addPlayer" class="btn" value="Add player"/>
+                        <input type="submit" wicket:id="addPlayer" class="btn btn-mini btn-success" value="Add"/>
                     </td>
                 </tr>
                 </tbody>
             </table>
-
-            <br>
-            <input type="submit" wicket:id="submit1" class="btn" value="Create"/>
         </form>
     </center>
 

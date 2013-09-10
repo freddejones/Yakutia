@@ -38,5 +38,21 @@
                 <span concordion:assertEquals="yakutiaSignInAlreadySignedInApproveGet()">Create account</span><br/>
             </p>
         </div>
+
+        <br/><br/>
+        <div class="scenario">
+            <h3>Create new account for unregistered yakutia player</h3>
+            <p>
+                <b>Given:</b> a non yakutia registered player<br/>
+                <b>When:</b> approves yakutia app<br/>
+                <b>Then:</b> user is redirected to create account page with email populated
+                <span concordion:assertEquals="approveCheckPopulatedEmail()">yakutia.test@gmail.com</span><br/>
+                <br/>
+                <b>Given:</b> a non yakutia registered player redirected to create account page<br/>
+                <b>When:</b> filling in a player name and hitting create button<br/>
+                <b>Then:</b> user gets logged in and are welcomed by it's player name:
+                <span concordion:assertEquals="createAccount()">yakutia-tester</span><br/>
+            </p>
+        </div>
     </body>
 </html>

@@ -6,10 +6,10 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
 
-
+    <!--file="/Users/Fredde/Java/git/Yakutia/Yakutia-reactor/yakutia-service/src/main/resources/db/testdata/tables/player.csv"-->
     <changeSet author="ninja-tester" id="testdata-01" runAlways="true">
         <loadUpdateData encoding="UTF-8"
-                  file="/Users/Fredde/Java/git/Yakutia/Yakutia-reactor/yakutia-service/src/main/resources/db/testdata/tables/player.csv"
+                  file="db/testdata/tables/player.csv"
                   separator=","
                   primaryKey="PLAYERID"
                   tableName="PLAYER">
@@ -19,7 +19,7 @@
         </loadUpdateData>
 
         <loadUpdateData encoding="UTF-8"
-                        file="/Users/Fredde/Java/git/Yakutia/Yakutia-reactor/yakutia-service/src/main/resources/db/testdata/tables/game.csv"
+                        file="db/testdata/tables/game.csv"
                         separator=","
                         primaryKey="GAMEID"
                         tableName="GAME">
@@ -29,10 +29,11 @@
             <column name="GAMESTATUS" header="GAMESTATUS" type="STRING"/>
             <column name="NAME" header="NAME" type="STRING"/>
             <column name="STARTEDTIME" header="STARTEDTIME" type="TIMESTAMP"/>
+            <column name="GAMECREATORPLAYERID" header="GAMECREATORPLAYERID" type="NUMERIC"/>
         </loadUpdateData>
 
         <loadUpdateData encoding="UTF-8"
-                        file="/Users/Fredde/Java/git/Yakutia/Yakutia-reactor/yakutia-service/src/main/resources/db/testdata/tables/gameplayer.csv"
+                        file="db/testdata/tables/gameplayer.csv"
                         separator=","
                         primaryKey="GAMEPLAYERID"
                         tableName="GAMEPLAYER">
@@ -49,7 +50,7 @@
 
     <changeSet author="ninja-tester" id="testdata-02" runAlways="true">
         <loadUpdateData encoding="UTF-8"
-                        file="/Users/Fredde/Java/git/Yakutia/Yakutia-reactor/yakutia-service/src/main/resources/db/testdata/tables/playerfriend.csv"
+                        file="db/testdata/tables/playerfriend.csv"
                         separator=","
                         primaryKey="PLAYERFRIENDID"
                         tableName="PLAYERFRIEND">

@@ -73,6 +73,24 @@ public class PreGameBeanTest extends JpaTestCase {
     }
 
     @Test
+    public void createNewGameWithAPlayerId() {
+        PreGameBean preGameBean = new PreGameBean();
+        preGameBean.em = entityManager;
+
+        // Given: a player
+        createPlayer();
+        long validatePlayerId = player.getPlayerId();
+
+        // When: creating a game
+        long gameId = preGameBean.createNewGame(player.getPlayerId(),"gamename2");
+
+        // Then: the game entity contains the player id
+        Game g = preGameBean.getGameById(gameId);
+        entityManager.refresh(g);
+        Assert.assertEquals(validatePlayerId, g.getGameCreatorPlayerId());
+    }
+
+    @Test
     public void invitePlayerToGame() {
         PreGameBean preGameBean = new PreGameBean();
         preGameBean.em = entityManager;

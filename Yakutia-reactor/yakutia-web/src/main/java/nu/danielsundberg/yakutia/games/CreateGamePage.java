@@ -14,6 +14,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -170,14 +171,16 @@ public class CreateGamePage extends NavbarPage {
 
                     @Override
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//                        wmcMessage.removeAll();
-//
+
+                        wmcMessage.replace(messageLabel);
+
                         Player selected = item.getModelObject();
                         friends.remove(selected);
                         addedPlayers.add(selected);
                         lv.removeAll();
 
                         if (target != null) {
+                            target.add(wmcMessage);
                             target.add(wmcTheGame);
                             target.add(wmcFriends);
                         }
@@ -207,12 +210,16 @@ public class CreateGamePage extends NavbarPage {
                     @Override
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 
+
+                        wmcMessage.replace(messageLabel);
+
                         Player selected = item.getModelObject();
                         players.remove(selected);
                         addedPlayers.add(selected);
                         lv.removeAll();
 
                         if (target != null) {
+                            target.add(wmcMessage);
                             target.add(wmcTheGame);
                             target.add(wmc);
                         }
@@ -234,15 +241,14 @@ public class CreateGamePage extends NavbarPage {
             public void onSubmit() {
                 List<Player> players = (ArrayList<Player>)addedPlayersListview.getDefaultModelObject();
 
-                if (players.size() < 2) {
+
+                if (getErrorMessages(players, getGameName()).size() > 0) {
                     wmcMessage.removeAll();
-                    wmcMessage.add(new Label("message", "you need to add at least 2 players to create a game"));
-                    return;
-                } else if ("Enter game name".equals(getGameName())
-                        || "".equals(getGameName())
-                        || getGameName() == null) {
-                    wmcMessage.removeAll();
-                    wmcMessage.add(new Label("message", "you need to specify a game name"));
+                    String errorMessage = "";
+                    for (String error : getErrorMessages(players, getGameName())) {
+                        errorMessage += error + "\n";
+                    }
+                    wmcMessage.add(new MultiLineLabel("message",errorMessage));
                     return;
                 }
 
@@ -259,6 +265,21 @@ public class CreateGamePage extends NavbarPage {
         form.add(button);
         add(form);
 
+    }
+
+    private List<String> getErrorMessages(List<Player> players, String gameName) {
+        List<String> errors = new ArrayList<String>();
+
+        if (players.size() < 2) {
+            errors.add("you need to be at least 2 players to create a game");
+        }
+
+        if ("Enter game name".equals(getGameName())
+                        || "".equals(getGameName())
+                        || getGameName() == null) {
+            errors.add("you need to specify a game name");
+        }
+        return errors;
     }
 
     private boolean isMatchedPlayerFriend(long playerId, List<Player> friends) {

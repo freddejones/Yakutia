@@ -8,6 +8,7 @@ import nu.danielsundberg.yakutia.application.service.exceptions.NoPlayerFoundExc
 import nu.danielsundberg.yakutia.entity.Game;
 import nu.danielsundberg.yakutia.entity.GamePlayer;
 import nu.danielsundberg.yakutia.entity.PlayerFriend;
+import nu.danielsundberg.yakutia.entity.statuses.GamePlayerStatus;
 import nu.danielsundberg.yakutia.entity.statuses.GameStatus;
 import nu.danielsundberg.yakutia.entity.Player;
 import nu.danielsundberg.yakutia.harness.Authorizer;
@@ -16,12 +17,14 @@ import nu.danielsundberg.yakutia.harness.preGameBeanMock.MyMockApplication;
 import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import javax.naming.NamingException;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -43,7 +46,9 @@ public class GamesPageTest extends OauthMockHarness {
         playerActionsInterfaceMock = mock(PlayerActionsInterface.class);
         playerMock = mock(Player.class);
         when(playerMock.getName()).thenReturn("any");
+        when(playerMock.getPlayerId()).thenReturn(1L);
         when(preGameBeanMock.getPlayerByName(any(String.class))).thenReturn(playerMock);
+        when(preGameBeanMock.getPlayerById(anyLong())).thenReturn(playerMock);
 
         tester = new WicketTester(new MyMockApplication(
                 new Object[]{preGameBeanMock, playerActionsInterfaceMock}));
@@ -83,7 +88,7 @@ public class GamesPageTest extends OauthMockHarness {
 
         // Then: no games are shown
         Assert.assertEquals("No games for you", tester.getTagById("msg").getValue());
-        tester.assertVisible("msg");
+        tester.assertVisible("CreateGame:msg");
     }
 
     @Test
@@ -97,7 +102,7 @@ public class GamesPageTest extends OauthMockHarness {
         Set<GamePlayer> gamePlayersSetMock = mock(Set.class);
         GamePlayer gamePlayerMock = mock(GamePlayer.class);
         Game gameMock = mock(Game.class);
-
+        when(gamePlayerMock.getGamePlayerStatus()).thenReturn(GamePlayerStatus.ACCEPTED);
         when(gamePlayersSetMock.isEmpty()).thenReturn(false);
         when(gamePlayersSetMock.size()).thenReturn(1);
         when(gamePlayersSetMock.iterator()).thenReturn(gamePlayersIteratorMock);
@@ -109,18 +114,17 @@ public class GamesPageTest extends OauthMockHarness {
         when(playerMock.getGames()).thenReturn(gamePlayersSetMock);
 
         when(preGameBeanMock.getGameById(anyLong())).thenReturn(gameMock);
-//        when(gameMock.getPlayers()).thenReturn()
 
         // When: user hits gamepage
         tester.startPage(GamesPage.class);
 
         // Then: number of games are shown + correct gameId
-        ListView<GamePlayer> list = (ListView<GamePlayer>)tester.getLastRenderedPage().get("rows");
+        ListView<GamePlayer> list = (ListView<GamePlayer>)tester.getLastRenderedPage().get("CreateGame:wmc-current-games:rows");
         ListItem listItem = (ListItem) list.get(0);
         GamePlayer gp = (GamePlayer) listItem.getModelObject();
         Assert.assertEquals(1,list.size());
         Assert.assertEquals(12L,gp.getGameId());
-        tester.assertInvisible("msg");
+        tester.assertInvisible("CreateGame:msg");
     }
 
     @Test
@@ -134,7 +138,7 @@ public class GamesPageTest extends OauthMockHarness {
         Set<GamePlayer> gamePlayersSetMock = mock(Set.class);
         GamePlayer gamePlayerMock = mock(GamePlayer.class);
         Game gameMock = mock(Game.class);
-
+        when(gamePlayerMock.getGamePlayerStatus()).thenReturn(GamePlayerStatus.ACCEPTED);
         when(gamePlayersSetMock.isEmpty()).thenReturn(false);
         when(gamePlayersSetMock.size()).thenReturn(1);
         when(gamePlayersSetMock.iterator()).thenReturn(gamePlayersIteratorMock);
@@ -156,8 +160,8 @@ public class GamesPageTest extends OauthMockHarness {
 
         // When: user clicks the game button
         tester.startPage(GamesPage.class);
-        FormTester formtester = tester.newFormTester("rows:0:form");
-        formtester.submit("button");
+        FormTester formtester = tester.newFormTester("CreateGame");
+        formtester.submit("wmc-current-games:rows:0:button");
 
         // Then: user reaches active game page
         tester.assertRenderedPage(ActiveGamePage.class);
@@ -170,13 +174,13 @@ public class GamesPageTest extends OauthMockHarness {
                 new RoleAuthorizationStrategy(new Authorizer("USER")));
 
         // When: user hits gamePage and do not exist in database
-        doThrow(NoPlayerFoundException.class).when(preGameBeanMock).getPlayerByName(any(String.class));
+        doThrow(NoPlayerFoundException.class).when(preGameBeanMock).getPlayerById(anyLong());
         tester.startPage(GamesPage.class);
 
         // Then: infomessage is displayed
         Assert.assertEquals("You seem to not exist as a player, wich is weird",
                 tester.getTagById("msg").getValue());
-        tester.assertVisible("msg");
+        tester.assertVisible("CreateGame:msg");
     }
 
     @Test
@@ -201,15 +205,89 @@ public class GamesPageTest extends OauthMockHarness {
     }
 
     @Test
-    @Ignore
-    public void acceptGameInvite() {
+    public void checkInvitedGamesArePopulated() throws NoPlayerFoundException {
+        // Given: authorized user that has a invited game
+        tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
+                new RoleAuthorizationStrategy(new Authorizer("USER")));
 
+        setupInviteMock();
+
+        // When: hitting GamesPage
+        tester.startPage(GamesPage.class);
+
+        // Then: Table is populated correctly
+        tester.assertLabel("CreateGame:wmc-invited-games:inviteRows:0:invitedGameId","12");
+        tester.assertLabel("CreateGame:wmc-invited-games:inviteRows:0:invitedGameName","INVITED GAME NAME");
+        tester.assertVisible("CreateGame:wmc-invited-games:inviteRows:0:invitedGameId");
     }
 
     @Test
-    @Ignore
-    public void declineGameInvite() {
+    public void acceptGameInvite() throws NoPlayerFoundException {
+        // Given: authorized user that has a invited game
+        tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
+                new RoleAuthorizationStrategy(new Authorizer("USER")));
 
+        setupInviteMock();
+
+        // add mock when accepting invite
+        when(preGameBeanMock.acceptInvite(anyLong(),anyLong())).thenReturn(true);
+
+        tester.startPage(GamesPage.class);
+
+        ListView<GamePlayer> invitedGamesBefore = (ListView<GamePlayer>)
+                tester.getComponentFromLastRenderedPage("CreateGame:wmc-invited-games:inviteRows");
+        ListView<GamePlayer> currentGamesBefore = (ListView<GamePlayer>)
+                tester.getComponentFromLastRenderedPage("CreateGame:wmc-current-games:rows");
+        Assert.assertEquals(0,currentGamesBefore.size());
+        Assert.assertEquals(1,invitedGamesBefore.size());
+
+        // When: clicks invite button
+        FormTester formtester = tester.newFormTester("CreateGame");
+        formtester.submit("wmc-invited-games:inviteRows:0:acceptbutton");
+
+        // Then: invite row is removed and active game increased with one
+        tester.debugComponentTrees();
+        ListView<GamePlayer> invitedGamesAfter = (ListView<GamePlayer>)
+                tester.getComponentFromLastRenderedPage("CreateGame:wmc-invited-games:inviteRows");
+        ListView<GamePlayer> currentGamesAfter = (ListView<GamePlayer>)
+                tester.getComponentFromLastRenderedPage("CreateGame:wmc-current-games:rows");
+
+        Assert.assertEquals(0,invitedGamesAfter.size());
+        Assert.assertEquals(1,currentGamesAfter.size());
+    }
+
+    @Test
+    public void declineGameInvite() throws NoPlayerFoundException {
+        // Given: authorized user that has a invited game
+        tester.getApplication().getSecuritySettings().setAuthorizationStrategy(
+                new RoleAuthorizationStrategy(new Authorizer("USER")));
+
+        setupInviteMock();
+
+        // add mock when declining invite
+        when(preGameBeanMock.declineInvite(anyLong(), anyLong())).thenReturn(true);
+
+        tester.startPage(GamesPage.class);
+
+        ListView<GamePlayer> invitedGamesBefore = (ListView<GamePlayer>)
+                tester.getComponentFromLastRenderedPage("CreateGame:wmc-invited-games:inviteRows");
+        ListView<GamePlayer> currentGamesBefore = (ListView<GamePlayer>)
+                tester.getComponentFromLastRenderedPage("CreateGame:wmc-current-games:rows");
+        Assert.assertEquals(0,currentGamesBefore.size());
+        Assert.assertEquals(1,invitedGamesBefore.size());
+
+        // When: clicks decline button
+        FormTester formtester = tester.newFormTester("CreateGame");
+        formtester.submit("wmc-invited-games:inviteRows:0:declinebutton");
+
+        // Then: decline row is removed and current game does not get added
+        ListView<GamePlayer> invitedGamesAfter = (ListView<GamePlayer>)
+                tester.getComponentFromLastRenderedPage("CreateGame:wmc-invited-games:inviteRows");
+        ListView<GamePlayer> currentGamesAfter = (ListView<GamePlayer>)
+                tester.getComponentFromLastRenderedPage("CreateGame:wmc-current-games:rows");
+
+        Assert.assertEquals(0,invitedGamesAfter.size());
+        Assert.assertEquals(0,currentGamesAfter.size());
     }
 
     @Test
@@ -218,5 +296,36 @@ public class GamesPageTest extends OauthMockHarness {
 
     }
 
+    @Test
+    @Ignore
+    public void testTotalCount() {
+
+    }
+
+    @Test
+    @Ignore
+    public void testAcceptCount() {
+
+    }
+
+    private void setupInviteMock() throws NoPlayerFoundException {
+        when(preGameBeanMock.getPlayerByName(any(String.class))).thenReturn(playerMock);
+        Iterator<GamePlayer> gamePlayersIteratorMock = mock(Iterator.class);
+        Set<GamePlayer> gamePlayersSetMock = mock(Set.class);
+        GamePlayer gamePlayerMock = mock(GamePlayer.class);
+        Game gameMock = mock(Game.class);
+        when(gameMock.getName()).thenReturn("INVITED GAME NAME");
+        when(gamePlayersSetMock.isEmpty()).thenReturn(false);
+        when(gamePlayersSetMock.size()).thenReturn(1);
+        when(gamePlayersSetMock.iterator()).thenReturn(gamePlayersIteratorMock);
+        when(gamePlayersIteratorMock.hasNext()).thenReturn(true).thenReturn(false);
+        when(gamePlayersIteratorMock.next()).thenReturn(gamePlayerMock);
+        when(gamePlayerMock.getGameId()).thenReturn(12L);
+        when(gamePlayerMock.getGame()).thenReturn(gameMock);
+        when(gamePlayerMock.getGamePlayerStatus()).thenReturn(GamePlayerStatus.INVITED);
+        when(gameMock.getGameStatus()).thenReturn(GameStatus.CREATED);
+        when(playerMock.getGames()).thenReturn(gamePlayersSetMock);
+        when(preGameBeanMock.getGameById(anyLong())).thenReturn(gameMock);
+    }
 
 }

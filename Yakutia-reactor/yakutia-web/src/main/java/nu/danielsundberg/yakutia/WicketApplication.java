@@ -7,6 +7,8 @@ import de.agilecoders.wicket.settings.ThemeProvider;
 import nu.danielsundberg.yakutia.auth.SignIn;
 import nu.danielsundberg.yakutia.base.WelcomePage;
 import nu.danielsundberg.yakutia.session.MySession;
+import org.apache.wicket.Application;
+import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
 import org.apache.wicket.application.IComponentInstantiationListener;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
@@ -73,6 +75,13 @@ public class WicketApplication extends AuthenticatedWebApplication
     @Override
     protected Class<? extends WebPage> getSignInPageClass() {
         return SignIn.class;
+    }
+
+    @Override
+    public RuntimeConfigurationType getConfigurationType() {
+
+        return RuntimeConfigurationType.DEPLOYMENT;
+
     }
 
 }

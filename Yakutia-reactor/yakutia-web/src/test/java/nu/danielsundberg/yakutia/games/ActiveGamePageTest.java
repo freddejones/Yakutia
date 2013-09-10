@@ -101,7 +101,6 @@ public class ActiveGamePageTest extends OauthMockHarness {
 
         // And Then:
         tester.assertInvisible("wmc-actionform");
-        tester.debugComponentTrees();
     }
 
     @Test

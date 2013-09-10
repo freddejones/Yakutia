@@ -55,6 +55,7 @@ public class PreGameBean implements PreGameInterface {
         game.setGameStatus(GameStatus.CREATED);
         game.setCreationTime(new Date());
         game.setName(name);
+        game.setGameCreatorPlayerId(playerId);
         em.persist(game);
 
         Player player = em.find(Player.class, playerId);
