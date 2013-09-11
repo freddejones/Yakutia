@@ -111,7 +111,7 @@ public class YakutiaSpecAuthenticationFeatureTest {
         // Do the sign in
         signInAndApprove(dh);
 
-        WebElement emailElement = dh.getDriver().findElement(By.name("email"));
+        WebElement emailElement = dh.waitExplicitForElement(By.name("email"));
         String email = emailElement.getAttribute("value");
         tearDown();
         return email;

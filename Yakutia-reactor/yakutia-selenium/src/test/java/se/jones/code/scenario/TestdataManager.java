@@ -27,7 +27,6 @@ public class TestdataManager {
             ClassNotFoundException, DatabaseException {
         Class.forName("org.apache.derby.jdbc.ClientDriver");
 
-        //"jdbc:derby://localhost:1527/yakutiaDB";
         String connectionUrl = System.getProperty("DB_CONN_URL");
         conn = DriverManager.getConnection(connectionUrl, "APP", "APP");
 
