@@ -3,7 +3,7 @@
     <parent>
         <artifactId>yakutia-reactor</artifactId>
         <groupId>nu.danielsundberg.games.yakutia</groupId>
-        <version>1.0.0-5</version>
+        <version>1.0.0-6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>yakutia-ear</artifactId>
