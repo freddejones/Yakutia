@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>nu.danielsundberg.games.yakutia</groupId>
+    <groupId>se.freddejones.yakutia</groupId>
     <artifactId>yakutia-reactor</artifactId>
-    <version>1.0.0-6</version>
+    <version>1.0.0-7</version>
     <name>Yakutia :: Reactor</name>
     <description>A totally awesome risk clone</description>
     <packaging>pom</packaging>
@@ -94,39 +94,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <developers>
-        <developer>
-            <id>dansun</id>
-            <name>Daniel Sundberg</name>
-            <email>daniel@danielsundberg.nu</email>
-            <organization>danielsundberg.nu</organization>
-            <organizationUrl>http://www.danielsundberg.nu</organizationUrl>
-            <properties>
-                <gtalk>daniel@danielsundberg.nu</gtalk>
-            </properties>
-            <roles>
-                <role>Architect</role>
-                <role>Developer</role>
-            </roles>
-            <timezone>GMT +1</timezone>
-        </developer>
-        <developer>
-            <id>dansun</id>
-            <name>Fredrik Jones</name>
-            <email>freddejones@gmail.com</email>
-            <organization>danielsundberg.nu</organization>
-            <organizationUrl>http://www.danielsundberg.nu</organizationUrl>
-            <properties>
-                <gtalk>freddejones@gmail.com</gtalk>
-            </properties>
-            <roles>
-                <role>Architect</role>
-                <role>Developer</role>
-            </roles>
-            <timezone>GMT +1</timezone>
-        </developer>
-    </developers>
-
     <inceptionYear>2012</inceptionYear>
 
     <licenses>
@@ -176,7 +143,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jdepend-maven-plugin</artifactId>
-                <version>${jdepende.version}</version>
+                <version>${jdepend.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -190,49 +157,18 @@
         </plugins>
     </reporting>
 
-    <issueManagement>
-        <system>github</system>
-        <url>https://github.com/dansun/Yakutia/issues</url>
-    </issueManagement>
-    <ciManagement>
-        <notifiers>
-            <notifier>
-                <address>daniel@danielsundberg.nu</address>
-                <sendOnError>true</sendOnError>
-                <sendOnFailure>true</sendOnFailure>
-                <sendOnSuccess>true</sendOnSuccess>
-                <sendOnWarning>true</sendOnWarning>
-                <type>mail</type>
-            </notifier>
-            <notifier>
-                <address>freddejones@gmail.com</address>
-                <sendOnError>true</sendOnError>
-                <sendOnFailure>true</sendOnFailure>
-                <sendOnSuccess>true</sendOnSuccess>
-                <sendOnWarning>true</sendOnWarning>
-                <type>mail</type>
-            </notifier>
-        </notifiers>
-        <system>jenkins</system>
-        <url>http://jenkins.danielsundberg.nu/job/Yakutia</url>
-    </ciManagement>
 
-    <scm>
-        <connection>scm:git:git@github.com:dansun/Yakutia.git</connection>
-        <url>scm:git:git@github.com:dansun/Yakutia.git</url>
-        <developerConnection>scm:git:git@github.com:dansun/Yakutia.git</developerConnection>
-    </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>repo.danielsundberg.nu</id>
-            <url>http://repo.danielsundberg.nu/nexus/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>repo.danielsundberg.nu</id>
-            <url>http://repo.danielsundberg.nu/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <!--FIX THIS SOMETIME-->
+    <!--<distributionManagement>-->
+        <!--<repository>-->
+            <!--<id>repo.danielsundberg.nu</id>-->
+            <!--<url>http://repo.danielsundberg.nu/nexus/content/repositories/releases</url>-->
+        <!--</repository>-->
+        <!--<snapshotRepository>-->
+            <!--<id>repo.danielsundberg.nu</id>-->
+            <!--<url>http://repo.danielsundberg.nu/nexus/content/repositories/snapshots</url>-->
+        <!--</snapshotRepository>-->
+    <!--</distributionManagement>-->
 
     <build>
         <plugins>

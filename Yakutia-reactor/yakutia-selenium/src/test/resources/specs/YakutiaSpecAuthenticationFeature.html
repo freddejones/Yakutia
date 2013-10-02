@@ -1,4 +1,5 @@
-<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+<html xmlns:concordion="http://www.concordion.org/2007/concordion"
+        xmlns:cp="http://www.agileinsider.org/concordion/plus">
 
     <head>
         <link href="concordion.css" rel="stylesheet" type="text/css" />
@@ -13,7 +14,7 @@
         </p>
 
         <br/><br/>
-        <div class="scenario">
+        <div class="scenario" cp:scenario="Sign in button">
             <h3>Sign in button</h3>
             <p>
                 <b>Given:</b> any user<br/>
@@ -24,14 +25,20 @@
         </div>
 
         <br/><br/>
-        <div class="scenario">
-            <h3>Redirect to google and back to yakutia for a non registred player</h3>
+        <div class="scenario" cp:scenario="Google redirect #1">
+            <h3>Redirect to google and back to yakutia for a non signed in and non registred player</h3>
             <p>
                 <b>Given:</b> a non yakutia registered user, not signed in to google<br/>
                 <b>When:</b> clicking sign in button in yakutia, signs in to google and approves access<br/>
                 <b>Then:</b> user is redirected to create account page with heading
                 <span concordion:assertEquals="yakutiaSignInGoogleSignInApproveGet()">Create account</span><br/>
-                <br/>
+            </p>
+        </div>
+
+        <br/><br/>
+        <div class="scenario" cp:scenario="Google redirect #2">
+            <h3>Redirect to google and back to yakutia for a google signed in non registred player</h3>
+            <p>
                 <b>Given:</b> a non yakutia registered user, signed in to google<br/>
                 <b>When:</b> clicking sign in button in yakutia, approves access<br/>
                 <b>Then:</b> user is redirected to create account page with heading
@@ -40,14 +47,20 @@
         </div>
 
         <br/><br/>
-        <div class="scenario">
-            <h3>Create new account for unregistered yakutia player</h3>
+        <div class="scenario" cp:scenario="Create new account - email is populated">
+            <h3>Create new account and email is correctly extracted</h3>
             <p>
                 <b>Given:</b> a non yakutia registered player<br/>
                 <b>When:</b> approves yakutia app<br/>
                 <b>Then:</b> user is redirected to create account page with email populated
                 <span concordion:assertEquals="approveCheckPopulatedEmail()">yakutia.test@gmail.com</span><br/>
-                <br/>
+            </p>
+        </div>
+
+        <br/><br/>
+        <div class="scenario" cp:scenario="Create new account for unregistred player">
+            <h3>Create new account for unregistered yakutia player</h3>
+            <p>
                 <b>Given:</b> a non yakutia registered player redirected to create account page<br/>
                 <b>When:</b> filling in a player name and hitting create button<br/>
                 <b>Then:</b> user gets logged in and are welcomed by it's player name:

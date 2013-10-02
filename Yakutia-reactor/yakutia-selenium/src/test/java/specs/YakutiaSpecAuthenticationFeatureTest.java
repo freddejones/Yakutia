@@ -2,19 +2,18 @@ package specs;
 
 import junit.framework.Assert;
 import liquibase.exception.LiquibaseException;
+import org.agileinsider.concordion.junit.ConcordionPlus;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import se.jones.code.scenario.DriverHandler;
-import se.jones.code.scenario.TestdataManager;
+import se.freddejones.yakutia.scenario.DriverHandler;
+import se.freddejones.yakutia.scenario.TestdataManager;
 
 import java.sql.SQLException;
 
@@ -22,7 +21,7 @@ import java.sql.SQLException;
  * User: Fredde
  * Date: 8/19/13 11:06 PM
  */
-@RunWith(ConcordionRunner.class)
+@RunWith(ConcordionPlus.class)
 public class YakutiaSpecAuthenticationFeatureTest {
 
     private static String baseUrl;
@@ -32,6 +31,7 @@ public class YakutiaSpecAuthenticationFeatureTest {
         baseUrl = System.getProperty("BASE_URL");
     }
 
+    @Before
     public void setup() {
         try {
             TestdataManager.resetAndRebuild();
@@ -42,30 +42,31 @@ public class YakutiaSpecAuthenticationFeatureTest {
         } catch (LiquibaseException e) {
             Assert.fail(e.getMessage());
         }
-        dh = DriverHandler.getInstance();
+        dh = new DriverHandler();
     }
 
+    @After
     public void tearDown() {
-        dh.clearCookies();
-        dh.closeDriver();
+
+        if (dh != null) {
+            dh.clearCookies();
+            dh.closeDriver();
+        }
+
         dh.resetDriverHandler();
+        dh = null;
     }
 
     public String gotoLoginPageAndGetVerifySignInButton() {
-        setup();
-
         WebDriver driver = dh.getDriver();
         driver.get(baseUrl);
         WebElement button = (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.name("google")));
         String returnValue = button.getAttribute("value");
-        tearDown();
         return returnValue;
     }
 
     public String yakutiaSignInGoogleSignInApproveGet() {
-        setup();
-
         // Sign in when redirected to google
         signInAndApprove(dh);
 
@@ -73,12 +74,10 @@ public class YakutiaSpecAuthenticationFeatureTest {
         WebElement header = (new WebDriverWait(dh.getDriver(), 10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"overview\"]/div/h1")));
         String headerText = header.getText();
-        tearDown();
         return headerText;
     }
 
     public String yakutiaSignInAlreadySignedInApproveGet(){
-        setup();
         dh.getDriver().get("https://accounts.google.com");
 
         // Google sign in
@@ -96,29 +95,25 @@ public class YakutiaSpecAuthenticationFeatureTest {
 
         // Approve access
         WebElement accept = dh.waitExplicitForElement(By.id("submit_approve_access"));
-        DriverHandler.getInstance().waitForEnabledElement(accept);
+        dh.waitForEnabledElement(accept);
         accept.click();
 
         // Get header from yakutia create account page
         WebElement header = dh.waitExplicitForElement(By.xpath("//*[@id=\"overview\"]/div/h1"));
         String headerText = header.getText();
-        tearDown();
         return headerText;
     }
 
     public String approveCheckPopulatedEmail() throws InterruptedException {
-        setup();
         // Do the sign in
         signInAndApprove(dh);
 
         WebElement emailElement = dh.waitExplicitForElement(By.name("email"));
         String email = emailElement.getAttribute("value");
-        tearDown();
         return email;
     }
 
     public String createAccount() throws LiquibaseException, SQLException, ClassNotFoundException {
-        setup();
         // Do the sign in
         signInAndApprove(dh);
 
@@ -132,10 +127,13 @@ public class YakutiaSpecAuthenticationFeatureTest {
         WebElement header = dh.getDriver().findElement(By.xpath("//h1[contains(.,'yakutia-tester')]"));
         String fullHeader = header.getText();
         String playerName = fullHeader.split(",")[1].replace(" ","");
-        tearDown();
         return playerName;
     }
 
+    /**
+     * Helper methods
+     * @param dh
+     */
     protected void signInAndApprove(DriverHandler dh) {
         dh.getDriver().get(baseUrl);
 
@@ -155,7 +153,7 @@ public class YakutiaSpecAuthenticationFeatureTest {
         // Approve access
         WebElement accept = (new WebDriverWait(dh.getDriver(), 10))
                 .until(ExpectedConditions.presenceOfElementLocated(By.id("submit_approve_access")));
-        DriverHandler.getInstance().waitForEnabledElement(accept);
+        dh.waitForEnabledElement(accept);
         accept.click();
     }
 }

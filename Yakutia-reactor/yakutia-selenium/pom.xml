@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>yakutia-reactor</artifactId>
-        <groupId>nu.danielsundberg.games.yakutia</groupId>
-        <version>1.0.0-6</version>
+        <groupId>se.freddejones.yakutia</groupId>
+        <version>1.0.0-7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Yakutia :: Selenium tests</name>
@@ -38,12 +38,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.h2database</groupId>-->
-            <!--<artifactId>h2</artifactId>-->
-            <!--<version>1.3.168</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.agileinsider</groupId>
+            <artifactId>concordion-plus</artifactId>
+            <version>1.1.2</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.derby</groupId>
@@ -60,7 +60,7 @@
         </dependency>
 
         <dependency>
-            <groupId>nu.danielsundberg.games.yakutia</groupId>
+            <groupId>se.freddejones.yakutia</groupId>
             <artifactId>yakutia-services</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

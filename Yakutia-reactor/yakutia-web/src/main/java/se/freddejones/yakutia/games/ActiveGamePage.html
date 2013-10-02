@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>HomePage</title>
+</head>
+<body>
+<wicket:head>
+    <!--<script type="text/javascript" src="scripts/jquery.imagemapster.js"></script>-->
+    <!--<script type="text/javascript" src="scripts/informationbox.js"></script>-->
+    <script type="text/javascript" src="scripts/jquery.maphilight.js"></script>
+    <wicket:link>
+        <!--<link rel="stylesheet" type="text/css" href="test.css"/>-->
+    </wicket:link>
+</wicket:head>
+<wicket:extend>
+    <center>
+        <header class="jumbotron subhead" id="overview">
+            <div class="container">
+                <h1>Active game</h1>
+
+                <p class="lead">Current game page</p>
+            </div>
+        </header>
+
+        <div><a wicket:id="tooltip-top" href="#">Tooltip on top</a></div>
+
+        <div wicket:id="wmc-actionform">
+            <form class="form" wicket:id="form-action">
+                <table wicket:id="wmc-action" class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>Choose one action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr>
+                        <td>
+                            <input type="submit" wicket:id="action-attack" class="btn" value="AttackCountry"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div>
+            <span wicket:id="message">Message goes here</span>
+        </div>
+
+        <br>
+        <div>
+            <!--<map wicket:id="imageMap"></map>-->
+            <!--<img class="yakimg" border="0" wicket:id="imageForMap" src="yakutiav2-1.png"/>-->
+
+
+            <map name="gamemap">
+                <area shape="poly" href="#" class="sweden"
+                coords="209,130,196,131,158,158,144,175,142,225,157,254,220,263,257,266,289,237,291,219,279,208,259,195,246,191,246,180,263,169,273,151,272,133,266,112,245,109,242,113,229,115,220,119,217,129,214,129"
+                alt=""/>
+                <area shape="poly" href="#" class="norway"
+                coords="357,31,327,48,291,78,280,86,262,107,263,112,278,120,278,139,275,144,275,151,270,160,271,167,274,173,281,176,291,188,295,186,298,175,305,168,312,171,357,207,348,192,356,170,381,147,383,143,380,131,360,106,360,84,394,77,418,64,420,48,412,34,402,26,382,24,365,27,360,29"
+                alt=""/>
+                <area shape="poly" href="#" class="finland" wicket:id="finland"
+                coords="95,52,85,62,75,75,63,100,64,118,79,127,98,134,99,153,92,167,92,187,121,204,143,205,145,177,152,164,177,143,191,137,213,129,218,127,227,112,227,99,214,84,192,78,161,78,155,81,135,80,121,56,99,51"
+                alt="" />
+            </map>
+            <img class="yakimg" border="0" src="yakutiav2-1.png" usemap="#gamemap"/>
+
+            <!--data-maphilight='{"alwaysOn":true,"stroke":false,"fillColor":"FC0303"}'-->
+
+            <div class="FIN">
+                <span>finland</span>
+                <br>
+                <small>no information</small>
+            </div>
+            <div class="SWE">
+                <span>sweden</span>
+                <br>
+                <span>5 brave soldiers</span>
+            </div>
+            <div class="NOR">
+                <span>norway</span>
+                <br>
+                <small>3 brave soldiers</small>
+            </div>
+
+
+            <!--<div id="image">-->
+                <!--<img src="yakutiav2-1.png" alt="gamemap1" id="gamemap1" usemap="#gamemap"/>-->
+            <!--</div>-->
+
+            <!--<map name="gamemap" wicket:id="imageMap">-->
+                <!--&lt;!&ndash;<area shape="poly" href="#" data-key="sverige"&ndash;&gt;-->
+                    <!--&lt;!&ndash;coords="209,130,196,131,158,158,144,175,142,225,157,254,220,263,257,266,289,237,291,219,279,208,259,195,246,191,246,180,263,169,273,151,272,133,266,112,245,109,242,113,229,115,220,119,217,129,214,129"&ndash;&gt;-->
+                    <!--&lt;!&ndash;alt=""/>&ndash;&gt;-->
+                <!--<area shape="poly" href="#" data-key="finland"-->
+                    <!--coords="357,31,327,48,291,78,280,86,262,107,263,112,278,120,278,139,275,144,275,151,270,160,271,167,274,173,281,176,291,188,295,186,298,175,305,168,312,171,357,207,348,192,356,170,381,147,383,143,380,131,360,106,360,84,394,77,418,64,420,48,412,34,402,26,382,24,365,27,360,29"-->
+                    <!--alt=""/>-->
+                <!--<area shape="poly" href="#" data-key="norge"-->
+                    <!--coords="95,52,85,62,75,75,63,100,64,118,79,127,98,134,99,153,92,167,92,187,121,204,143,205,145,177,152,164,177,143,191,137,213,129,218,127,227,112,227,99,214,84,192,78,161,78,155,81,135,80,121,56,99,51"-->
+                    <!--alt="" />-->
+            <!--</map>-->
+        </div>
+    </center>
+</wicket:extend>
+
+</body>
+</html>

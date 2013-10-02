@@ -6,11 +6,11 @@
 
     <persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>nu.danielsundberg.yakutia.entity.Unit</class>
-        <class>nu.danielsundberg.yakutia.entity.Player</class>
-        <class>nu.danielsundberg.yakutia.entity.Game</class>
-        <class>nu.danielsundberg.yakutia.entity.GamePlayer</class>
-        <class>nu.danielsundberg.yakutia.entity.PlayerFriend</class>
+        <class>se.freddejones.yakutia.entity.Unit</class>
+        <class>se.freddejones.yakutia.entity.Player</class>
+        <class>se.freddejones.yakutia.entity.Game</class>
+        <class>se.freddejones.yakutia.entity.GamePlayer</class>
+        <class>se.freddejones.yakutia.entity.PlayerFriend</class>
 
         <properties>
             <property name="javax.persistence.validation.mode" value="none"/>

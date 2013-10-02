@@ -2,12 +2,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>nu.danielsundberg.games.yakutia</groupId>
+		<groupId>se.freddejones.yakutia</groupId>
 		<artifactId>yakutia-reactor</artifactId>
-        <version>1.0.0-6</version>
+        <version>1.0.0-7</version>
 	</parent>
 
-	<groupId>nu.danielsundberg.games.yakutia</groupId>
+	<groupId>se.freddejones.yakutia</groupId>
 	<artifactId>yakutia-services</artifactId>
 	<name>Yakutia :: Services</name>
 	<packaging>jar</packaging>
