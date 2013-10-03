@@ -3,7 +3,6 @@ package specs;
 import junit.framework.Assert;
 import liquibase.exception.LiquibaseException;
 import org.agileinsider.concordion.junit.ConcordionPlus;
-import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -12,8 +11,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import se.freddejones.yakutia.scenario.DriverHandler;
-import se.freddejones.yakutia.scenario.TestdataManager;
+import se.freddejones.yakutia.harness.DriverHandler;
+import se.freddejones.yakutia.harness.TestdataManager;
 
 import java.sql.SQLException;
 

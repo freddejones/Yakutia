@@ -1,0 +1,34 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion"
+        xmlns:cp="http://www.agileinsider.org/concordion/plus">
+
+    <head>
+        <link href="concordion.css" rel="stylesheet" type="text/css" />
+    </head>
+
+
+    <body>
+        <h1>Create games specification</h1>
+
+        <p>
+            Users must be able to create games
+        </p>
+
+        <br/><br/>
+        <div class="scenario" cp:scenario="createGameNormalScenario">
+            <h3>A created game is shown in the active game list</h3>
+            <p>
+                <b>Given:</b> user yakuita.test have logged in and is on games page<br/>
+                <b>When:</b> clicking create game button on games page<br/>
+                <b>Then:</b> create game page shows up with header
+                <span concordion:assertEquals="gotoCreateGamePageGetH1()">Create game</span><br/>
+                <b>And when:</b> user adds a friend to game<br/>
+                <b>Then: </b> list size is:
+                <span concordion:assertEquals="addFriendToListAndGetSize()">2</span><br/>
+                <b>And when:</b> user add a game name and click the create game button<br/>
+                <b>Then: </b> user is redirected to games page with game list size:
+                <span concordion:assertEquals="addGameNameAndClickCreateGameGetGamesSize()">1</span><br/>
+            </p>
+        </div>
+
+    </body>
+</html>

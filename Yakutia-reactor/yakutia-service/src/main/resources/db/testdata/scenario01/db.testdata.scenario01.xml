@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+    <!--file="/Users/Fredde/Java/git/Yakutia/Yakutia-reactor/yakutia-service/src/main/resources/db/testdata/tables/player.csv"-->
+    <changeSet author="ninja-tester" id="testdata-scenario01" runAlways="true">
+        <loadUpdateData encoding="UTF-8"
+                  file="db/testdata/scenario01/tables/player.csv"
+                  separator=","
+                  primaryKey="PLAYERID"
+                  tableName="PLAYER">
+            <column name="PLAYERID" header="PLAYERID" type="NUMERIC"/>
+            <column name="EMAIL" header="EMAIL" type="STRING"/>
+            <column name="NAME" header="NAME" type="STRING"/>
+        </loadUpdateData>
+
+        <loadUpdateData encoding="UTF-8"
+                        file="db/testdata/scenario01/tables/game.csv"
+                        separator=","
+                        primaryKey="GAMEID"
+                        tableName="GAME">
+            <column name="GAMEID" header="GAMEID" type="NUMERIC"/>
+            <column name="CREATIONTIME" header="CREATIONTIME" type="TIMESTAMP"/>
+            <column name="FINSHEDTIME" header="FINSHEDTIME" type="TIMESTAMP"/>
+            <column name="GAMESTATUS" header="GAMESTATUS" type="STRING"/>
+            <column name="NAME" header="NAME" type="STRING"/>
+            <column name="STARTEDTIME" header="STARTEDTIME" type="TIMESTAMP"/>
+            <column name="GAMECREATORPLAYERID" header="GAMECREATORPLAYERID" type="NUMERIC"/>
+        </loadUpdateData>
+
+        <loadUpdateData encoding="UTF-8"
+                        file="db/testdata/scenario01/tables/gameplayer.csv"
+                        separator=","
+                        primaryKey="GAMEPLAYERID"
+                        tableName="GAMEPLAYER">
+            <column name="GAMEPLAYERID" header="GAMEPLAYERID" type="NUMERIC"/>
+            <column name="ACTIVEPLAYERTURN" header="ACTIVEPLAYERTURN" type="NUMERIC"/>
+            <column name="GAMEID" header="GAMEID" type="NUMERIC"/>
+            <column name="GAMEPLAYERSTATUS" header="GAMEPLAYERSTATUS" type="STRING"/>
+            <column name="NEXTGAMEPLAYERIDTURN" header="NEXTGAMEPLAYERIDTURN" type="NUMERIC"/>
+            <column name="PLAYERID" header="PLAYERID" type="NUMERIC"/>
+        </loadUpdateData>
+
+        <loadUpdateData encoding="UTF-8"
+                        file="db/testdata/scenario01/tables/playerfriend.csv"
+                        separator=","
+                        primaryKey="PLAYERFRIENDID"
+                        tableName="PLAYERFRIEND">
+            <column name="PLAYERFRIENDID" header="PLAYERFRIENDID" type="NUMERIC"/>
+            <column name="FRIENDSTATUS" header="FRIENDSTATUS" type="STRING"/>
+            <column name="FRIENDID" header="FRIENDID" type="NUMERIC"/>
+            <column name="PLAYERID" header="PLAYERID" type="NUMERIC"/>
+        </loadUpdateData>
+    </changeSet>
+
+
+</databaseChangeLog>

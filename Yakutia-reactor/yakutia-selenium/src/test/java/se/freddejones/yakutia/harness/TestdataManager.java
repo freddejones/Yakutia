@@ -1,4 +1,4 @@
-package se.freddejones.yakutia.scenario;
+package se.freddejones.yakutia.harness;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -49,7 +49,18 @@ public class TestdataManager {
         liquibase.update(null);
     }
 
-    public static void loadTestdataSet1() throws LiquibaseException, SQLException, ClassNotFoundException {
+    public static void loadTestdataScenario01() throws LiquibaseException, SQLException, ClassNotFoundException {
+
+        if (database == null) {
+            setupConnection();
+        }
+
+        liquibase = new Liquibase("db/testdata/scenario01/db.testdata.scenario01.xml",
+                new ClassLoaderResourceAccessor(), database);
+        liquibase.update(null);
+    }
+
+    public static void loadTestdataDummy() throws LiquibaseException, SQLException, ClassNotFoundException {
 
         if (database == null) {
             setupConnection();

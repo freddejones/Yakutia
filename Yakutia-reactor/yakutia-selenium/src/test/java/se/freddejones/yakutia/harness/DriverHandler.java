@@ -1,4 +1,4 @@
-package se.freddejones.yakutia.scenario;
+package se.freddejones.yakutia.harness;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,15 +15,6 @@ public class DriverHandler {
 
     private static DriverHandler instance;
     private WebDriver driver;
-
-//    public static synchronized DriverHandler getInstance() {
-//        if (instance == null) {
-//            instance = new DriverHandler();
-//        }
-//
-//
-//        return instance;
-//    }
 
     public DriverHandler() {
         driver = new FirefoxDriver();
