@@ -50,6 +50,9 @@ public class CreatingGamesFeatureTest extends YakutiaSeleniumBaseTestCase {
         // assert that we have games h1:
         dh.waitExplicitForElement(By.xpath("//*[@id=\"overview\"]/div/h1"));
 
+        // Verify zero created games
+        Assert.assertEquals(0, dh.getDriver().findElements(By.xpath("//input[contains(@name,'wmc-current-games:rows')]")).size());
+
         // Click the create game button
         dh.getDriver().findElement(By.name("createGameButton")).click();
 
@@ -57,7 +60,13 @@ public class CreatingGamesFeatureTest extends YakutiaSeleniumBaseTestCase {
     }
 
     public String addFriendToListAndGetSize() {
+        Assert.assertEquals(1,dh.getDriver().findElements(By.xpath("//div[contains(@id,'playernameAdded')]")).size());
         dh.getDriver().findElement(By.name("wmc-friends:friends:0:addFriendPlayer")).click();
+        try {
+            Thread.sleep(1000L);
+        } catch (InterruptedException e) {
+            // No op
+        }
         return Integer.toString(dh.getDriver().findElements(By.xpath("//div[contains(@id,'playernameAdded')]")).size());
     }
 
