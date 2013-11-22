@@ -1,9 +1,9 @@
 package se.freddejones.yakutia.harness;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -17,7 +17,11 @@ public class DriverHandler {
     private WebDriver driver;
 
     public DriverHandler() {
-        driver = new FirefoxDriver();
+//        driver = new FirefoxDriver();
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability("phantomjs.binary.path","/Users/Fredde/Java/phantomjs/phantomjs-1.9.2-macosx/bin/phantomjs");
+        driver = new PhantomJSDriver(caps);
+        driver.manage().window().setSize(new Dimension(1280, 1024));
     }
 
     public void clearCookies() {
@@ -37,6 +41,7 @@ public class DriverHandler {
     }
 
     public WebElement waitExplicitForElement(By byType) {
+//        System.out.println("TEST: " + getDriver().findElement(byType).getText());
         return (new WebDriverWait(getDriver(), 10))
                 .until(ExpectedConditions.presenceOfElementLocated(byType));
     }

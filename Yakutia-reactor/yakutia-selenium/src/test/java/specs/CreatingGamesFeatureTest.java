@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -34,9 +35,6 @@ public class CreatingGamesFeatureTest extends YakutiaSeleniumBaseTestCase {
         } catch (LiquibaseException e) {
             Assert.fail(e.getMessage());
         }
-
-        // demand fullscreen
-        dh.getDriver().manage().window().maximize();
     }
 
     public String gotoCreateGamePageGetH1() throws LiquibaseException, SQLException, ClassNotFoundException {

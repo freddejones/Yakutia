@@ -3,7 +3,7 @@
 
     <groupId>se.freddejones.yakutia</groupId>
     <artifactId>yakutia-reactor</artifactId>
-    <version>1.0.0-9</version>
+    <version>1.0.0-10-SNAPSHOT</version>
     <name>Yakutia :: Reactor</name>
     <description>A totally awesome risk clone</description>
     <packaging>pom</packaging>
