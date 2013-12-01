@@ -10,7 +10,7 @@
 	<groupId>se.freddejones.yakutia</groupId>
 	<artifactId>yakutia-services</artifactId>
 	<name>Yakutia :: Services</name>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 		<dependencies>
 
@@ -122,7 +122,6 @@
                     <ejbVersion>3.0</ejbVersion>
                 </configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	
