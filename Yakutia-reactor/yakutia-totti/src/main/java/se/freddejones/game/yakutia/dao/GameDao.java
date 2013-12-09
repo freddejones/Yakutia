@@ -1,0 +1,17 @@
+package se.freddejones.game.yakutia.dao;
+
+import se.freddejones.game.yakutia.entity.Game;
+import se.freddejones.game.yakutia.model.dto.GameDTO;
+
+import java.util.List;
+
+/**
+ * User: Fredde
+ * Date: 12/5/13 11:26 PM
+ */
+public interface GameDao {
+
+    public Long createNewGame(Long playerId, String gameName);
+
+    public Game getGameByGameId(long gameId);
+}

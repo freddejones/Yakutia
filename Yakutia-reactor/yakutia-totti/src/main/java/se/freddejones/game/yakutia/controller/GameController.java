@@ -2,49 +2,37 @@ package se.freddejones.game.yakutia.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import se.freddejones.game.yakutia.entity.Player;
-import se.freddejones.game.yakutia.model.YakutiaModel;
-import se.freddejones.game.yakutia.model.YakutiaSuperModel;
-import se.freddejones.game.yakutia.service.SomeService;
+import org.springframework.web.bind.annotation.*;
+import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
+import se.freddejones.game.yakutia.model.dto.GameDTO;
+import se.freddejones.game.yakutia.service.GameService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping(value = "/game")
 public class GameController {
 
+    private Logger log = Logger.getLogger(GameController.class.getName());
+
     @Autowired
-    private SomeService someService;
+    private GameService gameService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value  = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public YakutiaSuperModel getPlayers() {
-        YakutiaModel model1 = new YakutiaModel("sweden", 7, true);
-        YakutiaModel model2 = new YakutiaModel("finland", 2, true);
-        YakutiaModel model3 = new YakutiaModel("norway", 12, false);
-        List<YakutiaModel> list = new ArrayList<YakutiaModel>();
-        list.add(model1);
-        list.add(model2);
-        list.add(model3);
-
-        YakutiaSuperModel model = new YakutiaSuperModel();
-        model.setLandAreas(list);
-
-        return model;
+    public Long createNewGame(@RequestBody final CreateGameDTO createGameDTO) {
+        log.info("Received CreateGameDTO: " + createGameDTO.toString());
+        return gameService.createNewGame(createGameDTO);
     }
 
-    @RequestMapping(value  = "/create/player", method = RequestMethod.GET)
+    @RequestMapping(value = "/get/{playerId}", method = RequestMethod.GET)
     @ResponseBody
-    public String addRandomPlayer() {
-        someService.doSomething();
-        Player p = new Player();
-        p.setEmail("fiddetest@gmail.apa");
-        p.setName("tjoho");
-        someService.savePlayer(p);
-        return "200";
+    public List<GameDTO> getAllGamesById(@PathVariable("playerId") Long playerid) {
+        log.info("Getting games for playerId: " + playerid);
+        List<GameDTO> list = gameService.getGamesForPlayerById(playerid);
+        log.info("Fetched " + list.size() + " number of games");
+        return list;
     }
 }
