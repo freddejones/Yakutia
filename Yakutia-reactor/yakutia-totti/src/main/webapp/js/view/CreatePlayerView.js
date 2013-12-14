@@ -29,18 +29,16 @@ function(Backbone, _, CreatePlayerTemplate) {
             this.$el.html(this.template(this.model.attributes));
             return this;
         },
-//        handleKeyUp: function() {
-////            var textInput = $('#gameName').val();
-////            if(_.isNull(textInput) || _.isEmpty(textInput)) {
-////                $('#createNewGame').attr('disabled', 'disabled');
-////            } else {
-////                $('#createNewGame').removeAttr("disabled");
-////            }
-//        },
         createNewPlayer: function() {
             this.model.set('playerName', $('#playerName').val());
             this.model.set('email', $('#email').val());
-            this.model.save();
+//            this.model.save();
+            this.model.save(null, {
+                success: function (model, response) {
+                    console.log(response);
+                    window.playerId=response;
+                }
+            });
         }
 
     });

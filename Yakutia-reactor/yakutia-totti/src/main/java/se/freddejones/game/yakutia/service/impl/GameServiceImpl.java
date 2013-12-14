@@ -7,6 +7,7 @@ import se.freddejones.game.yakutia.dao.GameDao;
 import se.freddejones.game.yakutia.dao.GamePlayerDao;
 import se.freddejones.game.yakutia.entity.Game;
 import se.freddejones.game.yakutia.entity.GamePlayer;
+import se.freddejones.game.yakutia.model.YakutiaModel;
 import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
 import se.freddejones.game.yakutia.service.GameService;
@@ -47,5 +48,18 @@ public class GameServiceImpl implements GameService {
             gamesForPlayer.add(gameDto);
         }
         return gamesForPlayer;
+    }
+
+    @Override
+    public List<YakutiaModel> getGameModelForPlayerAndGameId(Long playerId, Long gameId) {
+        GamePlayer gp = gamePlayerDao.getGamePlayerByGameIdAndPlayerId(playerId, gameId);
+        if (gp != null) {
+            gameDao.getGameByGameId(gp.getGameId());
+        }
+        ArrayList<YakutiaModel> yakutiaModels = new ArrayList<YakutiaModel>();
+        yakutiaModels.add(new YakutiaModel("sweden", 12, true));
+        yakutiaModels.add(new YakutiaModel("norway", 5, true));
+        yakutiaModels.add(new YakutiaModel("finland", 45, false));
+        return yakutiaModels;
     }
 }

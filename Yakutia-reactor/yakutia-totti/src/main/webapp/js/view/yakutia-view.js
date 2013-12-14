@@ -1,4 +1,4 @@
-define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/yakutia-land-view'], function(Backbone, ImageMapster, _, YakutiaLandView) {
+define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/YakutiaLandView'], function(Backbone, ImageMapster, _, YakutiaLandView) {
 
     // Some default settings for the imagemap
     var defaultMapSettings = {
@@ -29,19 +29,18 @@ define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/yakutia-land
 
     var YakutiaColl = Backbone.Collection.extend({
         model: YakutiaModel,
-        url: '/game',
+        url: '/game/get/game/1',
         parse: function(response){
 
-            var lands = response.landAreas;
-            for (var i=0, length = lands.length; i< length; i++) {
-                console.log(lands[i].landName);
-                var landName = lands[i].landName;
+            for (var i=0; i< response.length; i++) {
+                console.log(response[i].landName);
+                var landName = response[i].landName;
                 this.push(new  YakutiaModel({
                     coords: YakutiaMapCoords(landName),
                     className: landName,
                     id: landName,
-                    units: lands[i].units,
-                    ownedByPlayer: lands[i].ownedByPlayer,
+                    units: response[i].units,
+                    ownedByPlayer: response[i].ownedByPlayer,
                 }));
             }
 
@@ -60,6 +59,7 @@ define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/yakutia-land
             _.bindAll(this, 'render');
             var self = this;
             self.render();
+            tCollect.reset({});
             tCollect.fetch().complete(function() {
                 self.render();
             });

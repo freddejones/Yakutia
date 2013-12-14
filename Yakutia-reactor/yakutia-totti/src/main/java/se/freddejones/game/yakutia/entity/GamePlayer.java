@@ -11,6 +11,10 @@ import java.io.Serializable;
         @NamedQuery(
                 name = "GamePlayer.getGamePlayersFromPlayerId",
                 query = "SELECT gp FROM GamePlayer gp WHERE gp.playerId =:playerId"
+        ),
+        @NamedQuery(
+                name = "GamePlayer.getGamePlayersFromPlayerIdAndGameId",
+                query = "SELECT gp FROM GamePlayer gp WHERE gp.playerId =:playerId AND gp.gameId =:gameId"
         )
 })
 public class GamePlayer implements Serializable {

@@ -7,12 +7,13 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-//@NamedQueries({
-//        @NamedQuery(name="Unit.getUnitsByLandArea",
-//                query = "SELECT u FROM Unit u where landArea = :laName"),
-//        @NamedQuery(name="Unit.getUnitsByLandAreaAndGamePlayer",
-//                query = "SELECT u FROM Unit u where landArea =:laName and gamePlayer=:gp")
-//})
+@Table(name = "UNITS")
+@NamedQueries({
+        @NamedQuery(name="Unit.getUnitsByLandArea",
+                query = "SELECT u FROM Unit u where landArea = :laName"),
+        @NamedQuery(name="Unit.getUnitsByLandAreaAndGamePlayer",
+                query = "SELECT u FROM Unit u where landArea =:laName and gamePlayer=:gp")
+})
 public class Unit implements Serializable {
 
 	private int id;

@@ -35,6 +35,7 @@ function(Backbone, _, ListMyGamesTmpl, options) {
             this.template = _.template(ListMyGamesTmpl);
             this.model = Backbone.Model.extend({});
             var self = this;
+            gamesCollection = new GamesCollection();
             gamesCollection.fetch({
                 url: '/game/get/'+window.playerId
             }).complete(function() {
@@ -52,9 +53,11 @@ function(Backbone, _, ListMyGamesTmpl, options) {
                         +'<td>'+'A button here'+'</td>'
                         +'</tr>');
                 } else {
-                    $("#nonActiveGameTable").append('<tr><td>'+gameObject.get('name')+
-                        '</td><td>'+gameObject.get('status')+
-                        '</td><td>'+gameObject.get('date')+'</td></tr>');
+                    $("#nonActiveGameTable").append('<tr><td>'+gameObject.get('name')+'</td>'
+                        +'<td>'+gameObject.get('status')+'</td>'
+                        +'<td>'+gameObject.get('date')+'</td>'
+                        +'<td>NO BUTTON HERE</td>'
+                        +'</tr>');
                 }
             });
             return this;

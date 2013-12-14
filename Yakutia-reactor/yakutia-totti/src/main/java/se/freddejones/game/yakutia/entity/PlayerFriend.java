@@ -6,12 +6,13 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-//@NamedQueries({
-//@NamedQuery(
-//        name = "PlayerFriend.getInvitesForFriend",
-//        query = "SELECT pf from PlayerFriend pf WHERE friendId=:fid " +
-//                "AND FRIENDSTATUS='INVITED'")
-//})
+@Table(name = "PLAYER_FRIEND")
+@NamedQueries({
+@NamedQuery(
+        name = "PlayerFriend.getInvitesForFriend",
+        query = "SELECT pf from PlayerFriend pf WHERE friendId=:fid " +
+                "AND FRIENDSTATUS='INVITED'")
+})
 public class PlayerFriend implements Serializable {
 
     @Id

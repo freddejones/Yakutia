@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface GamePlayerDao {
 
-    List<GamePlayer> getGamePlayersByPlayerId(Long playerid);
+    List<GamePlayer> getGamePlayersByPlayerId(Long playerId);
+    GamePlayer getGamePlayerByGameIdAndPlayerId(Long playerId, Long gameId);
 
 }

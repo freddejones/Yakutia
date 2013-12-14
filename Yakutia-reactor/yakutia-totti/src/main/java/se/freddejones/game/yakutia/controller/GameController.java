@@ -3,6 +3,7 @@ package se.freddejones.game.yakutia.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import se.freddejones.game.yakutia.model.YakutiaModel;
 import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
 import se.freddejones.game.yakutia.service.GameService;
@@ -16,9 +17,12 @@ import java.util.logging.Logger;
 public class GameController {
 
     private Logger log = Logger.getLogger(GameController.class.getName());
+    GameService gameService;
 
     @Autowired
-    private GameService gameService;
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
+    }
 
     @RequestMapping(value  = "/create", method = RequestMethod.POST)
     @ResponseBody
@@ -34,5 +38,13 @@ public class GameController {
         List<GameDTO> list = gameService.getGamesForPlayerById(playerid);
         log.info("Fetched " + list.size() + " number of games");
         return list;
+    }
+
+    @RequestMapping(value = "/get/{playerId}/game/{gameId}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<YakutiaModel> getGame(@PathVariable("playerId") Long playerId,
+                                       @PathVariable("gameId") Long gameId) {
+        log.info("Getting game information for gameId: " + gameId + " and playerId: " + playerId);
+        return gameService.getGameModelForPlayerAndGameId(playerId, gameId);
     }
 }

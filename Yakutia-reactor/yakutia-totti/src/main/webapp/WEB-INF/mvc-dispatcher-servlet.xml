@@ -17,24 +17,4 @@
     <mvc:annotation-driven />
 
     <mvc:resources mapping="/**" location="/" />
-
-    <!--<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">-->
-        <!--<property name="favorPathExtension" value="false" />-->
-    <!--</bean>-->
-    <!--<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"/>-->
-
-
-    <!--<bean id="jsonConverter"-->
-          <!--class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
-        <!--<property name="prefixJson" value="false" />-->
-        <!--<property name="supportedMediaTypes" value="application/json" />-->
-    <!--</bean>-->
-
-    <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">-->
-        <!--<property name="messageConverters">-->
-            <!--<list>-->
-                <!--<ref bean="jsonConverter" />-->
-            <!--</list>-->
-        <!--</property>-->
-    <!--</bean>-->
 </beans>
