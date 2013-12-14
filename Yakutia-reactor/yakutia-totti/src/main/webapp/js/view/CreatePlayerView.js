@@ -32,7 +32,6 @@ function(Backbone, _, CreatePlayerTemplate) {
         createNewPlayer: function() {
             this.model.set('playerName', $('#playerName').val());
             this.model.set('email', $('#email').val());
-//            this.model.save();
             this.model.save(null, {
                 success: function (model, response) {
                     console.log(response);
