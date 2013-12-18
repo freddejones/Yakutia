@@ -1,25 +1,41 @@
-define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/YakutiaLandView'], function(Backbone, ImageMapster, _, YakutiaLandView) {
+define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/YakutiaLandView'],
+function(Backbone, ImageMapster, _, YakutiaLandView) {
 
     // Some default settings for the imagemap
     var defaultMapSettings = {
-       stroke: true,
-       strokeColor: '000000',
-       fillColor: 'FFAA00',
-       render_highlight: {
-            fillOpacity: 0.6
-       },
-       render_select: {
-        fillOpacity: 0.1
-       }
+        stroke: true,
+        strokeColor: '000000',
+        fillColor: 'FFAA00',
+        singleSelect: true,
+        render_highlight: {
+            fillColor: '2aff00',
+            fillOpacity: 0.4
+        },
+        render_select: {
+            fillOpacity: 0.7
+        },
+        mapKey: 'data-state',
+        areas: [{
+            key: 'NOT_YOURS',
+            selected: false,
+            isSelectable: false,
+        },
+        {
+            key: 'YOURS',
+            selected: true,
+            isSelectable: false,
+            highlight: false,
+        }
+        ]
     };
 
     // The poly coords settings
     var YakutiaMapCoords = function(land) {
-        if (land === 'sweden') {
+        if (land === 'SWEDEN') {
             return "209,130,196,131,158,158,144,175,142,225,157,254,220,263,257,266,289,237,291,219,279,208,259,195,246,191,246,180,263,169,273,151,272,133,266,112,245,109,242,113,229,115,220,119,217,129,214,129";
-        } else if (land === 'finland') {
+        } else if (land === 'FINLAND') {
             return "95,52,85,62,75,75,63,100,64,118,79,127,98,134,99,153,92,167,92,187,121,204,143,205,145,177,152,164,177,143,191,137,213,129,218,127,227,112,227,99,214,84,192,78,161,78,155,81,135,80,121,56,99,51";
-        } else if (land === 'norway') {
+        } else if (land === 'NORWAY') {
             return "357,31,327,48,291,78,280,86,262,107,263,112,278,120,278,139,275,144,275,151,270,160,271,167,274,173,281,176,291,188,295,186,298,175,305,168,312,171,357,207,348,192,356,170,381,147,383,143,380,131,360,106,360,84,394,77,418,64,420,48,412,34,402,26,382,24,365,27,360,29";
         }
         return '';
@@ -29,7 +45,6 @@ define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/YakutiaLandV
 
     var YakutiaColl = Backbone.Collection.extend({
         model: YakutiaModel,
-        url: '/game/get/game/1',
         parse: function(response){
 
             for (var i=0; i< response.length; i++) {
@@ -43,24 +58,27 @@ define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/YakutiaLandV
                     ownedByPlayer: response[i].ownedByPlayer,
                 }));
             }
-
             return this.models;
         }
     });
-
-    var tCollect = new YakutiaColl();
 
     var YakuitaMapView = Backbone.View.extend({
         tagName: 'map',
         id: "test",
         name: 'gamemap',
 
+        events: {
+            'click area': 'clickedOnArea'
+        },
+
         initialize: function() {
             _.bindAll(this, 'render');
+            this.collection = new YakutiaColl();
             var self = this;
-            self.render();
-            tCollect.reset({});
-            tCollect.fetch().complete(function() {
+            this.collection.reset({});
+            this.collection.fetch({
+                    url: '/game/get/'+window.playerId+'/game/'+window.gameId
+                }).complete(function() {
                 self.render();
             });
 
@@ -68,21 +86,26 @@ define(['backbone', 'lib/jquery.imagemapster2', 'underscore', 'view/YakutiaLandV
 
         render: function() {
             $('#yakutia-map-container').append(this.el);
-            this.$el.prop('name', this.name);
+            this.$el.prop('name', this.name);   // <- wtf is this?
 
-            $('#attackButton').prop('disabled','disabled');
-            $('#moveUnitButton').prop('disabled','disabled');
+            this.collection.each(function(yakutiaLandModel) {
+                var yakutiaLandView = new YakutiaLandView({ model: yakutiaLandModel });
+                this.$el.append(yakutiaLandView.render().el);
 
-            tCollect.each(function(landArea) {
-                var yakutiaLand = new YakutiaLandView({ model: landArea });
-                this.$el.append(yakutiaLand.render().el)
+                // Set logic for imagemapster here
+                if (yakutiaLandModel.get('ownedByPlayer') === true) {
+                    $('#'+yakutiaLandModel.get('id')).attr('data-state','YOURS');
+                } else {
+                    $('#'+yakutiaLandModel.get('id')).attr('data-state','NOT_YOURS');
+                }
             }, this);
 
-            // Image mapster stuff
             $('img').mapster(defaultMapSettings);
-            $('#finland').mapster('select');
-            $('#sweden').mapster('select');
         },
+
+        clickedOnArea: function(e) {
+            console.log("Well clicked on " + $(e.currentTarget).attr("class"));
+        }
 
     });
 

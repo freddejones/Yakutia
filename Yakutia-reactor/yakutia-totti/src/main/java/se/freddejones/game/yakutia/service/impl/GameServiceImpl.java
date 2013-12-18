@@ -7,6 +7,9 @@ import se.freddejones.game.yakutia.dao.GameDao;
 import se.freddejones.game.yakutia.dao.GamePlayerDao;
 import se.freddejones.game.yakutia.entity.Game;
 import se.freddejones.game.yakutia.entity.GamePlayer;
+import se.freddejones.game.yakutia.entity.Unit;
+import se.freddejones.game.yakutia.model.LandArea;
+import se.freddejones.game.yakutia.model.UnitType;
 import se.freddejones.game.yakutia.model.YakutiaModel;
 import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
@@ -41,25 +44,63 @@ public class GameServiceImpl implements GameService {
         List<GamePlayer> gamePlayersList = gamePlayerDao.getGamePlayersByPlayerId(playerid);
         for(GamePlayer gamePlayer : gamePlayersList) {
             Game game = gameDao.getGameByGameId(gamePlayer.getGameId());
-            GameDTO gameDto = new GameDTO();
-            gameDto.setName(game.getName());
-            gameDto.setDate(game.getCreationTime().toString());
-            gameDto.setStatus(game.getGameStatus().toString());
+            GameDTO gameDto = buildGameDTO(playerid, game);
             gamesForPlayer.add(gameDto);
         }
         return gamesForPlayer;
     }
 
+    private GameDTO buildGameDTO(Long playerid, Game game) {
+        GameDTO gameDto = new GameDTO();
+        gameDto.setId(game.getGameId());
+        gameDto.setCanStartGame((playerid == game.getGameCreatorPlayerId()));
+        gameDto.setName(game.getName());
+        gameDto.setDate(game.getCreationTime().toString());
+        gameDto.setStatus(game.getGameStatus().toString());
+        return gameDto;
+    }
+
     @Override
     public List<YakutiaModel> getGameModelForPlayerAndGameId(Long playerId, Long gameId) {
+        List<YakutiaModel> yakutiaModels = new ArrayList<YakutiaModel>();
         GamePlayer gp = gamePlayerDao.getGamePlayerByGameIdAndPlayerId(playerId, gameId);
         if (gp != null) {
-            gameDao.getGameByGameId(gp.getGameId());
+            for (Unit unit : gp.getUnits()) {
+                yakutiaModels.add(new YakutiaModel(unit.getLandArea().toString(), unit.getStrength(), true));
+            }
+
         }
-        ArrayList<YakutiaModel> yakutiaModels = new ArrayList<YakutiaModel>();
-        yakutiaModels.add(new YakutiaModel("sweden", 12, true));
-        yakutiaModels.add(new YakutiaModel("norway", 5, true));
-        yakutiaModels.add(new YakutiaModel("finland", 45, false));
         return yakutiaModels;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void setGameToStarted(Long gameId) {
+
+        List<GamePlayer> gamePlayers = gamePlayerDao.getGamePlayersByGameId(gameId);
+
+        // TODO throw exception
+//        if (gamePlayers.isEmpty() || gamePlayers.size() <= 1) {
+//
+//        }
+        List<LandArea> landAreas = getLandAreas();
+
+        for(LandArea landArea : landAreas) {
+            Unit u = new Unit();
+            u.setLandArea(landArea);
+            u.setStrength(5);
+            u.setTypeOfUnit(UnitType.TANK);
+            gamePlayerDao.setUnitsToGamePlayer(gamePlayers.get(0).getGamePlayerId(), u);
+        }
+
+        gameDao.startGame(gameId);
+    }
+
+    private List<LandArea> getLandAreas() {
+        List<LandArea> landAreas = new ArrayList<LandArea>();
+        landAreas.add(LandArea.SWEDEN);
+        landAreas.add(LandArea.FINLAND);
+        landAreas.add(LandArea.NORWAY);
+        return landAreas;
     }
 }

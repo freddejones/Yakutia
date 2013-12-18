@@ -17,7 +17,8 @@ function(Backbone, _, CreatePlayerTemplate) {
 
         events: {
             "keyup #gameName" : "handleKeyUp",
-            "click #createPlayerButton" : "createNewPlayer"
+            "click #createPlayerButton" : "createNewPlayer",
+            "click #createAScenario" : "createScenario"
         },
 
         initialize: function() {
@@ -39,7 +40,6 @@ function(Backbone, _, CreatePlayerTemplate) {
                 }
             });
         }
-
     });
     return CreatePlayerView;
 });

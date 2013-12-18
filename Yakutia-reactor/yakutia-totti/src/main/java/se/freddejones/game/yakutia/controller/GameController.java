@@ -3,10 +3,12 @@ package se.freddejones.game.yakutia.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import se.freddejones.game.yakutia.entity.Player;
 import se.freddejones.game.yakutia.model.YakutiaModel;
 import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
 import se.freddejones.game.yakutia.service.GameService;
+import se.freddejones.game.yakutia.service.PlayerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,5 +48,12 @@ public class GameController {
                                        @PathVariable("gameId") Long gameId) {
         log.info("Getting game information for gameId: " + gameId + " and playerId: " + playerId);
         return gameService.getGameModelForPlayerAndGameId(playerId, gameId);
+    }
+
+    @RequestMapping(value = "/start/{gameId}", method = RequestMethod.PUT)
+    @ResponseBody
+    public void startGame(@PathVariable("gameId") Long gameId) {
+        log.info("Starting game for gameId: " + gameId);
+        gameService.setGameToStarted(gameId);
     }
 }

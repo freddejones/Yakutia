@@ -2,9 +2,9 @@ package se.freddejones.game.yakutia.model;
 
 
 public enum LandArea {
-    NORGE ("NORGE"),
-    SVERIGE ("SVERIGE"),
-    FINLAND ("FINLAND"),
+    NORWAY("NORWAY"),
+    SWEDEN("SWEDEN"),
+    FINLAND("FINLAND"),
     UNASSIGNEDLAND("UNASSIGNEDLAND");
 
     private String landArea;

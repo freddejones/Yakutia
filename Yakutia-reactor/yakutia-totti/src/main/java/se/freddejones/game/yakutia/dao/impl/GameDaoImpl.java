@@ -6,12 +6,10 @@ import se.freddejones.game.yakutia.dao.GameDao;
 import se.freddejones.game.yakutia.entity.Game;
 import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Player;
-import se.freddejones.game.yakutia.model.dto.GameDTO;
 import se.freddejones.game.yakutia.model.statuses.GamePlayerStatus;
 import se.freddejones.game.yakutia.model.statuses.GameStatus;
 
 import java.util.Date;
-import java.util.List;
 
 @Repository
 public class GameDaoImpl extends AbstractDaoImpl implements GameDao {
@@ -48,5 +46,14 @@ public class GameDaoImpl extends AbstractDaoImpl implements GameDao {
     @Override
     public Game getGameByGameId(long gameId) {
         return (Game)getCurrentSession().get(Game.class, gameId);
+    }
+
+    @Override
+    public void startGame(long gameId) {
+        Session session = getCurrentSession();
+        Game realGame = (Game)session.get(Game.class, gameId);
+        realGame.setGameStatus(GameStatus.ONGOING);
+        realGame.setStartedTime(new Date());
+        session.saveOrUpdate(realGame);
     }
 }

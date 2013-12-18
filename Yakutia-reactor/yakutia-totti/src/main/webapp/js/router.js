@@ -16,7 +16,6 @@ CreatePlayerView) {
             "listgames" : "listGames",
             "createGames" : "createGames",
             "game/play/:gameId" : "playGame",
-//            "player/create" : "createPlayer",
             '*path':  'defaultRoute'
         },
         listGames: function() {

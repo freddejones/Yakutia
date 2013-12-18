@@ -4,6 +4,7 @@ import se.freddejones.game.yakutia.model.statuses.GamePlayerStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "GAMES_PLAYER_CON")
@@ -15,6 +16,10 @@ import java.io.Serializable;
         @NamedQuery(
                 name = "GamePlayer.getGamePlayersFromPlayerIdAndGameId",
                 query = "SELECT gp FROM GamePlayer gp WHERE gp.playerId =:playerId AND gp.gameId =:gameId"
+        ),
+        @NamedQuery(
+                name = "GamePlayer.getGamePlayersForGameId",
+                query = "SELECT gp FROM GamePlayer gp WHERE gp.gameId =:gameId"
         )
 })
 public class GamePlayer implements Serializable {
@@ -48,8 +53,8 @@ public class GamePlayer implements Serializable {
     @JoinColumn(name = "PLAYER_ID", insertable = false, updatable = false)
     private Player player;
 
-//    @OneToMany(mappedBy = "gamePlayer")
-//    private List<Unit> units;
+    @OneToMany(mappedBy = "gamePlayer")
+    private List<Unit> units;
 
     public long getGamePlayerId() {
         return gamePlayerId;
@@ -115,11 +120,11 @@ public class GamePlayer implements Serializable {
         this.player = player;
     }
 
-//    public List<Unit> getUnits() {
-//        return units;
-//    }
-//
-//    public void setUnits(List<Unit> units) {
-//        this.units = units;
-//    }
+    public List<Unit> getUnits() {
+        return units;
+    }
+
+    public void setUnits(List<Unit> units) {
+        this.units = units;
+    }
 }

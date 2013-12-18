@@ -1,5 +1,5 @@
-define(['backbone', 'underscore', 'text!templates/gameMap.html','view/yakutia-view'],
-function(Backbone, _, GameMapTemplate, YakutiaView) {
+define(['backbone', 'underscore', 'text!templates/gameMap.html','view/YakutiaMapUberView'],
+function(Backbone, _, GameMapTemplate, YakutiaMapUberView) {
 
     var ActiveGameView = Backbone.View.extend({
 
@@ -13,14 +13,16 @@ function(Backbone, _, GameMapTemplate, YakutiaView) {
             this.template = _.template(GameMapTemplate);
             this.model = Backbone.Model.extend({});
             this.render();
+            new YakutiaMapUberView();                   // TODO where to attach the view?
         },
         render: function() {
             this.$el.html(this.template(this.model.attributes));
+            $('#attackButton').prop('disabled','disabled');
+            $('#moveUnitButton').prop('disabled','disabled');
             return this;
         },
         openYakutiaStuff: function() {
-            console.log("Clicking");
-            new YakutiaView();
+            console.log("Well insert place unit button logic here")
         }
 
     });

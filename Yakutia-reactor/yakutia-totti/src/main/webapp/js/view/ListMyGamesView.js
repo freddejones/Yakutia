@@ -1,10 +1,10 @@
 define([
-'backbone', 'underscore', 'text!templates/ListMyGames.html'],
-function(Backbone, _, ListMyGamesTmpl, options) {
+'backbone', 'underscore', 'text!templates/ListMyGames.html', 'router'],
+function(Backbone, _, ListMyGamesTmpl, options, router) {
 
     var Game = Backbone.Model.extend({
         defaults: {
-            id: 12,
+            id: 0,
             name: "",
             status: "",
             canStartGame: false,
@@ -22,52 +22,57 @@ function(Backbone, _, ListMyGamesTmpl, options) {
                     name: response[i].name,
                     status: response[i].status,
                     date: response[i].date,
-                    canStartGame: response[i].canStartGames
+                    canStartGame: response[i].canStartGame
                 }));
             }
             return this.models;
         }
     });
 
-    var gamesCollection = new GamesCollection();
-
     var ListMyGamesView = Backbone.View.extend({
 
         el: "#game-container",
 
         events: {
-            'click .StartGame' : 'startGame'
+            'click .StartGame' : 'startGame',
+            'click .OpenGame' : 'openGame'
         },
 
         initialize: function() {
-            _.bindAll(this, 'render', 'startGame');
+            _.bindAll(this, 'render', 'startGame', 'openGame');
             this.template = _.template(ListMyGamesTmpl);
             this.model = Backbone.Model.extend({});
             var self = this;
-            gamesCollection = new GamesCollection();
-            gamesCollection.fetch({
+            this.collection = new GamesCollection();
+            this.listenTo(this.collection, "change reset add remove", this.render)
+            this.collection.fetch({
                 url: '/game/get/'+window.playerId
             }).complete(function() {
                 self.render();
             });
-
         },
         startGame: function(e) {
-            var clickedEl = $(e.currentTarget);
-            var id = clickedEl.attr("value");
-            console.log(JSON.stringify(gamesCollection.get(id)));
-            console.log("starting game fo id: "+id);
-            this.render();
+            var self = this;
+            var gameId = $(e.currentTarget).attr("value");
+            this.collection.get(gameId).save({status: 'ONGOING'}, {url: '/game/start/'+gameId});
+        },
+        openGame: function(e) {
+            var gameId = $(e.currentTarget).attr("value");
+            window.gameId=gameId;
+            window.router.navigate("#/game/play/"+gameId,{trigger:true});
         },
         render: function() {
             this.$el.html(this.template(this.model.attributes));
             console.log("render");
-            gamesCollection.each( function(gameObject) {
+            this.collection.each( function(gameObject) {
                 if (gameObject.get('status') === 'ONGOING') {
-                    $("#activeGameTable").append('<tr><td>'+gameObject.get('name')+'</td>'
+                    $("#activeGameTable").append(
+                        '<tr><td>'+gameObject.get('name')+'</td>'
                         +'<td>'+gameObject.get('status')+'</td>'
                         +'<td>'+gameObject.get('date')+'</td>'
-                        +'<td>'+'A button here'+'</td>'
+                        +'<td>'
+                        +'<button value="'+gameObject.get('id')+'" type="button" class="btn btn-primary OpenGame">Go!</button>'
+                        +'</td>'
                         +'</tr>');
                 } else if (gameObject.get('canStartGame') === true) {
                     $("#nonActiveGameTable").append('<tr><td>'+gameObject.get('name')+'</td>'

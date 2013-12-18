@@ -15,7 +15,7 @@ import java.util.List;
 public interface GameService {
 
     public Long createNewGame(CreateGameDTO createGameDTO);
-
-    List<GameDTO> getGamesForPlayerById(Long playerid);
-    List<YakutiaModel> getGameModelForPlayerAndGameId(Long playerId, Long gameId);
+    public List<GameDTO> getGamesForPlayerById(Long playerid);
+    public List<YakutiaModel> getGameModelForPlayerAndGameId(Long playerId, Long gameId);
+    public void setGameToStarted(Long gameId);
 }
