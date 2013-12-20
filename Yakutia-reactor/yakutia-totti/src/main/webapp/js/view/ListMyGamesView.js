@@ -44,12 +44,9 @@ function(Backbone, _, ListMyGamesTmpl, options, router) {
             this.model = Backbone.Model.extend({});
             var self = this;
             this.collection = new GamesCollection();
+            this.render();
             this.listenTo(this.collection, "change reset add remove", this.render)
-            this.collection.fetch({
-                url: '/game/get/'+window.playerId
-            }).complete(function() {
-                self.render();
-            });
+            this.collection.fetch({ url: '/game/get/'+window.playerId });
         },
         startGame: function(e) {
             var self = this;
@@ -62,7 +59,7 @@ function(Backbone, _, ListMyGamesTmpl, options, router) {
             window.router.navigate("#/game/play/"+gameId,{trigger:true});
         },
         render: function() {
-            this.$el.html(this.template(this.model.attributes));
+            this.$el.html(this.template);
             console.log("render");
             this.collection.each( function(gameObject) {
                 if (gameObject.get('status') === 'ONGOING') {

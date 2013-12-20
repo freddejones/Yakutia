@@ -2,11 +2,12 @@ package se.freddejones.game.yakutia.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "PLAYER")
-//@NamedQueries({
+@NamedQueries({
 //        @NamedQuery(
 //                name = "Player.findPlayerById",
 //                query = "SELECT p FROM Player p WHERE playerId=:pId"
@@ -27,11 +28,11 @@ import java.util.Set;
 //                name = "Player.findPlayerBySearchEmail",
 //                query = "SELECT p FROM Player p WHERE p.email LIKE :pEmail"
 //        ),
-//        @NamedQuery(
-//                name = "Player.getAllPlayers",
-//                query = "SELECT p FROM Player p"
-//        )
-//})
+        @NamedQuery(
+                name = "Player.getAllPlayers",
+                query = "SELECT p FROM Player p"
+        )
+})
 public class Player implements Serializable {
 
     @Id
@@ -45,12 +46,12 @@ public class Player implements Serializable {
 
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     private Set<GamePlayer> games;
-//
-//    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
-//    private Set<PlayerFriend> friends = new HashSet<PlayerFriend>();
-//
-//    @OneToMany(mappedBy = "friend", fetch = FetchType.EAGER)
-//    private Set<PlayerFriend> friendsReqested = new HashSet<PlayerFriend>();
+
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
+    private Set<PlayerFriend> friends = new HashSet<PlayerFriend>();
+
+    @OneToMany(mappedBy = "friend", fetch = FetchType.EAGER)
+    private Set<PlayerFriend> friendsReqested = new HashSet<PlayerFriend>();
 
     public long getPlayerId() {
         return playerId;
@@ -84,20 +85,20 @@ public class Player implements Serializable {
         this.email = email;
     }
 
-//    public Set<PlayerFriend> getFriends() {
-//        return friends;
-//    }
-//
-//    public void setFriends(Set<PlayerFriend> friends) {
-//        this.friends = friends;
-//    }
-//
-//    public Set<PlayerFriend> getFriendsReqested() {
-//        return friendsReqested;
-//    }
-//
-//    public void setFriendsReqested(Set<PlayerFriend> friendsReqested) {
-//        this.friendsReqested = friendsReqested;
-//    }
+    public Set<PlayerFriend> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<PlayerFriend> friends) {
+        this.friends = friends;
+    }
+
+    public Set<PlayerFriend> getFriendsReqested() {
+        return friendsReqested;
+    }
+
+    public void setFriendsReqested(Set<PlayerFriend> friendsReqested) {
+        this.friendsReqested = friendsReqested;
+    }
 
 }

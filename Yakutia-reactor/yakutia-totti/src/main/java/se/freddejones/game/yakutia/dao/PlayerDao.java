@@ -11,10 +11,8 @@ public interface PlayerDao {
 
     public Long createPlayer(Player p) throws PlayerAlreadyExistsException;
 
-    public List<Long> getAllPlayerIds();
+    public List<Player> getAllPlayers();
 
-    public PlayerDTO getPlayerById(Long playerId);
-
-    public PlayerDTO getPlayerByEmail(String email);
+    public Player getPlayerById(Long playerId);
 
 }

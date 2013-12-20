@@ -8,6 +8,7 @@ import se.freddejones.game.yakutia.entity.Player;
 import se.freddejones.game.yakutia.exception.PlayerAlreadyExistsException;
 import se.freddejones.game.yakutia.service.PlayerService;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @Service("playerservice")
@@ -23,6 +24,16 @@ public class PlayerServiceImpl implements PlayerService {
     @Transactional(readOnly = false)
     public Long createNewPlayer(Player p) throws PlayerAlreadyExistsException {
         return playerDao.createPlayer(p);
+    }
+
+    @Override
+    public List<Player> getAllPlayers() {
+        return playerDao.getAllPlayers();
+    }
+
+    @Override
+    public Player getPlayerById(Long playerId) {
+        return playerDao.getPlayerById(playerId);
     }
 
 

@@ -13,7 +13,7 @@ function(Backbone, _, CreatePlayerTemplate) {
 
     var CreatePlayerView = Backbone.View.extend({
 
-        el: "#player-container",
+        el: "#slask-container",
 
         events: {
             "keyup #gameName" : "handleKeyUp",

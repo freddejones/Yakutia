@@ -24,17 +24,13 @@ public class PlayerDaoImpl extends AbstractDaoImpl implements PlayerDao {
     }
 
     @Override
-    public List<Long> getAllPlayerIds() {
-        return null;
+    public List<Player> getAllPlayers() {
+        return (List<Player>) getCurrentSession().getNamedQuery("Player.getAllPlayers").list();
     }
 
     @Override
-    public PlayerDTO getPlayerById(Long playerId) {
-        return null;
+    public Player getPlayerById(Long playerId) {
+        return (Player) getCurrentSession().get(Player.class, playerId);
     }
 
-    @Override
-    public PlayerDTO getPlayerByEmail(String email) {
-        return null;
-    }
 }

@@ -1,10 +1,9 @@
 define([
     'router',
     'bootstrap',
-    'view/main-view'],
-    function(YakutiaRouter,
-    Bootstrap,
-    MenuView) {
+    'view/MainView'
+    ],
+function(YakutiaRouter, Bootstrap, MenuView) {
 
     window.playerId = 1;
     var route = new YakutiaRouter();
