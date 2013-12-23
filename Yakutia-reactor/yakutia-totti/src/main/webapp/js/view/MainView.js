@@ -1,4 +1,4 @@
-define(['backbone', 'underscore', 'text!templates/menu.html'],
+define(['backbone', 'underscore', 'text!templates/Menu.html'],
 function(Backbone, _, MenuTemplate) {
 
     var MenuView = Backbone.View.extend({

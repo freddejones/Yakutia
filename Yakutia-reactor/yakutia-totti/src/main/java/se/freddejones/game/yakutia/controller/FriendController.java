@@ -7,6 +7,7 @@ import se.freddejones.game.yakutia.entity.Player;
 import se.freddejones.game.yakutia.entity.PlayerFriend;
 import se.freddejones.game.yakutia.model.dto.FriendDTO;
 import se.freddejones.game.yakutia.model.dto.PlayerDTO;
+import se.freddejones.game.yakutia.model.statuses.FriendStatus;
 import se.freddejones.game.yakutia.service.FriendService;
 import se.freddejones.game.yakutia.service.PlayerService;
 
@@ -27,8 +28,46 @@ public class FriendController {
 
     @RequestMapping(value  = "/invite", method = RequestMethod.POST)
     @ResponseBody
-    public void createNewGame(@RequestBody final FriendDTO friendDTO) {
+    public void inviteFriend(@RequestBody final FriendDTO friendDTO) {
         friendService.inviteFriend(friendDTO.getPlayerId(), friendDTO.getFriendId());
+    }
+
+    @RequestMapping(value = "/accept", method = RequestMethod.POST)
+    @ResponseBody
+    public FriendDTO acceptFriendInvite(@RequestBody final FriendDTO friendDTO) {
+        return friendService.acceptFriendInvite(friendDTO.getPlayerId(), friendDTO.getFriendId());
+    }
+
+    @RequestMapping(value = "/decline", method = RequestMethod.POST)
+    @ResponseBody
+    public Boolean declineFriendInvite(@RequestBody final FriendDTO friendDTO) {
+        friendService.declineFriendInvite(friendDTO.getPlayerId(), friendDTO.getFriendId());
+        return true;
+    }
+
+    @RequestMapping(value = "/get/all/{playerId}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<FriendDTO> getAllFriends(@PathVariable("playerId") Long playerid) {
+        // TODO extract this to the service bean, pretty please
+        List<FriendDTO> friendDTOs = new ArrayList<FriendDTO>();
+        List<Player> invites = friendService.getFriendInvites(playerid);
+        List<Player> friends = friendService.getFriends(playerid);
+
+        mapFriendDto(friendDTOs, playerid, invites, FriendStatus.INVITED);
+        mapFriendDto(friendDTOs, playerid, friends, FriendStatus.ACCEPTED);
+        return friendDTOs;
+    }
+
+    private void mapFriendDto(List<FriendDTO> friendDTOs, Long playerid,
+                              List<Player> playersList, FriendStatus status) {
+        for (Player invitedPlayer : playersList) {
+            FriendDTO friendDTO = new FriendDTO();
+            friendDTO.setPlayerId(playerid);
+            friendDTO.setFriendId(invitedPlayer.getPlayerId());
+            friendDTO.setPlayerName(invitedPlayer.getName());
+            friendDTO.setFriendStatus(status);
+            friendDTOs.add(friendDTO);
+        }
     }
 
     @RequestMapping(value  = "/non/friends/{playerId}", method = RequestMethod.GET)

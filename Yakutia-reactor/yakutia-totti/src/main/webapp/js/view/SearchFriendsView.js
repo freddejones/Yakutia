@@ -50,7 +50,7 @@ function(Backbone, _, FriendSearchTemplate) {
         sendFriendRequest: function(e) {
             var self = this;
             var friendId = $(e.currentTarget).attr("value");
-            var invite = new FriendInviteModel( );
+            var invite = new FriendInviteModel();
             console.log("Trying to save " + friendId);
             invite.save({
                 playerId: window.playerId,

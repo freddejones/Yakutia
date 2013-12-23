@@ -9,9 +9,9 @@ import java.io.Serializable;
 @Table(name = "PLAYER_FRIEND")
 @NamedQueries({
 @NamedQuery(
-        name = "PlayerFriend.getInvitesForFriend",
-        query = "SELECT pf from PlayerFriend pf WHERE friendId=:fid " +
-                "AND FRIENDSTATUS='INVITED'")
+        name = "PlayerFriend.GetPlayerFriendByFriendIdAndPlayerId",
+        query = "SELECT pf from PlayerFriend pf WHERE friendId=:friendId " +
+                "AND playerId=:playerId AND FRIENDSTATUS='INVITED'")
 })
 public class PlayerFriend implements Serializable {
 
