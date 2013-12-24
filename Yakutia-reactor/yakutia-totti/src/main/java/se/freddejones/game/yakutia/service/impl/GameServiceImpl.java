@@ -34,8 +34,7 @@ public class GameServiceImpl implements GameService {
     @Override
     @Transactional(readOnly = false)
     public Long createNewGame(CreateGameDTO createGameDTO) {
-        return gameDao.createNewGame(createGameDTO.getCreatedByPlayerId(),
-                createGameDTO.getGameName());
+        return gameDao.createNewGame(createGameDTO);
     }
 
     @Override

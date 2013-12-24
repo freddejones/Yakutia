@@ -26,7 +26,7 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @RequestMapping(value  = "/create", method = RequestMethod.POST)
+    @RequestMapping(value  = "/create", method = RequestMethod.POST, headers = {"content-type=application/json"})
     @ResponseBody
     public Long createNewGame(@RequestBody final CreateGameDTO createGameDTO) {
         log.info("Received CreateGameDTO: " + createGameDTO.toString());
