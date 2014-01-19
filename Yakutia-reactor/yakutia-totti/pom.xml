@@ -110,6 +110,12 @@
             <artifactId>fest-assert</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
 
 
     </dependencies>
