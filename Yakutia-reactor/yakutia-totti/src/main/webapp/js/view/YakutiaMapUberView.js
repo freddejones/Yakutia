@@ -62,6 +62,14 @@ function(Backbone, ImageMapster, _, YakutiaLandView) {
         }
     });
 
+    var YakutiaGameStateModel = Backbone.Model.extend({
+        defaults: {
+            state: 'NONE',
+            playerId: window.playerId,
+            gameId: window.gameId
+        }
+    });
+
     var YakuitaMapView = Backbone.View.extend({
         tagName: 'map',
         id: "test",
@@ -72,19 +80,32 @@ function(Backbone, ImageMapster, _, YakutiaLandView) {
         },
 
         initialize: function() {
-            _.bindAll(this, 'render');
+            _.bindAll(this, 'render', 'clickedOnArea', 'clickPlaceUnitButton');
             this.collection = new YakutiaColl();
             var self = this;
+            this.model = new YakutiaGameStateModel();
+            this.model.fetch({
+                url: '/game/state/'+window.gameId+'/'+window.playerId
+            });
             this.collection.reset({});
             this.collection.fetch({
                     url: '/game/get/'+window.playerId+'/game/'+window.gameId
                 }).complete(function() {
                 self.render();
             });
-
+            $('#placeUnitButton').bind('click', this.clickPlaceUnitButton);
+            this.listenTo(this.model, 'change', this.render);
         },
-
         render: function() {
+            if (this.model.get('state') === 'PLACE_UNITS') {
+                $('#placeUnitButton').slideDown();
+            } else if (this.model.get('state') === 'ATTACK') {
+                $('#placeUnitButton').slideUp();
+                $('#attackButton').slideDown();
+            } else if (this.model.get('state') === 'MOVE_UNITS') {
+
+            }
+
             $('#yakutia-map-container').append(this.el);
             this.$el.prop('name', this.name);   // <- wtf is this?
 
@@ -102,9 +123,25 @@ function(Backbone, ImageMapster, _, YakutiaLandView) {
 
             $('img').mapster(defaultMapSettings);
         },
-
         clickedOnArea: function(e) {
-            console.log("Well clicked on " + $(e.currentTarget).attr("class"));
+            var self = this;
+            console.log('clicked on area');
+            if (this.model.get('state') === 'PLACE_UNITS') {
+                var land = $(e.currentTarget).attr("class");
+                this.model.set('placeUnitUpdate', {numberOfUnits: 1, landArea: land});
+                this.model.save({}, {
+                    url: '/game/state/update/',
+                    success: function() {
+                        var numberOfUnits = self.collection.get(land).get('units');
+                        self.collection.get(land).set('units', numberOfUnits+1);
+                    }
+                });
+            }
+        },
+        clickPlaceUnitButton: function() {
+            if (this.model.get('state') === 'PLACE_UNITS') {
+                console.log('what to do with this one');
+            }
         }
 
     });

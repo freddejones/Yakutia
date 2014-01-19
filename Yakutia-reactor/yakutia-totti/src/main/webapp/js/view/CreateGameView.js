@@ -66,7 +66,9 @@ function(Backbone, _, CreateGameTemplate, FriendsCollection) {
         createNewGame: function() {
             this.model.set('gameName', $('#gameName').val());
             this.model.set('createdByPlayerId', window.playerId);   // TODO remove this playerId dependency
-            this.model.save();
+            this.model.save({}, {success: function() {
+                window.router.navigate("#/listgames",{trigger:true});
+            }});
         },
         renderPossibleGamePlayers: function(player) {
             $('#inviteToGame').append('<tr><td>'+player.get('name')+'</td>'

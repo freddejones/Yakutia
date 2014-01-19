@@ -16,5 +16,6 @@ public interface GamePlayerDao {
     List<GamePlayer> getGamePlayersByGameId(Long gameId);
     GamePlayer getGamePlayerByGameIdAndPlayerId(Long playerId, Long gameId);
     void setUnitsToGamePlayer(Long gamePlayerId, Unit unit);
+    Unit getUnassignedLand(Long gamePlayerId);
 
 }

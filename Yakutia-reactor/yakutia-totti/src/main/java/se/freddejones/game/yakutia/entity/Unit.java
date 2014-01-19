@@ -10,9 +10,7 @@ import java.io.Serializable;
 @Table(name = "UNITS")
 @NamedQueries({
         @NamedQuery(name="Unit.getUnitsByLandArea",
-                query = "SELECT u FROM Unit u where landArea = :laName"),
-        @NamedQuery(name="Unit.getUnitsByLandAreaAndGamePlayer",
-                query = "SELECT u FROM Unit u where landArea =:laName and gamePlayer=:gp")
+                query = "SELECT u FROM Unit u where landArea = :laName")
 })
 public class Unit implements Serializable {
 

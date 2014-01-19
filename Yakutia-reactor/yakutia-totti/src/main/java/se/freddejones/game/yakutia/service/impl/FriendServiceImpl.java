@@ -77,7 +77,7 @@ public class FriendServiceImpl implements FriendService {
         playerFriend.setFriendStatus(FriendStatus.ACCEPTED);
         playerFriendDao.mergePlayerFriendEntity(playerFriend);
         friendDTO.setFriendStatus(FriendStatus.ACCEPTED);
-        friendDTO.setPlayerName(playerFriend.getFriend().getName());
+        friendDTO.setPlayerName(playerFriend.getPlayer().getName());
         friendDTO.setFriendId(playerWhoInvited);
 
         PlayerFriend playerFriendReplicateLeg = new PlayerFriend();

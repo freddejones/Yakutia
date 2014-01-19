@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import se.freddejones.game.yakutia.dao.GamePlayerDao;
 import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Unit;
+import se.freddejones.game.yakutia.model.LandArea;
 
 import java.util.List;
 
@@ -40,5 +41,17 @@ public class GamePlayerDaoImpl extends AbstractDaoImpl implements GamePlayerDao 
         unit.setGamePlayer(gamePlayer);
         session.saveOrUpdate(unit);
     }
+
+    @Override
+    public Unit getUnassignedLand(Long gamePlayerId) {
+        GamePlayer gamePlayer = (GamePlayer) getCurrentSession().get(GamePlayer.class, gamePlayerId);
+        for (Unit unit : gamePlayer.getUnits()) {
+            if (unit.getLandArea() == LandArea.UNASSIGNEDLAND) {
+                return unit;
+            }
+        }
+        return new Unit();
+    }
+
 
 }

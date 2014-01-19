@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import se.freddejones.game.yakutia.entity.Player;
+import se.freddejones.game.yakutia.exception.NotEnoughUnitsException;
 import se.freddejones.game.yakutia.model.YakutiaModel;
 import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
+import se.freddejones.game.yakutia.model.dto.GameStateModelDTO;
 import se.freddejones.game.yakutia.service.GameService;
 import se.freddejones.game.yakutia.service.PlayerService;
 
@@ -52,8 +54,27 @@ public class GameController {
 
     @RequestMapping(value = "/start/{gameId}", method = RequestMethod.PUT)
     @ResponseBody
-    public void startGame(@PathVariable("gameId") Long gameId) {
+    public void startGame(@PathVariable("gameId") Long gameId) throws Exception {
         log.info("Starting game for gameId: " + gameId);
         gameService.setGameToStarted(gameId);
+    }
+
+    @RequestMapping(value = "/state/{gameId}/{playerId}", method = RequestMethod.GET)
+    @ResponseBody
+    public GameStateModelDTO getCurrentGameState(@PathVariable("gameId") Long gameId,
+                                                 @PathVariable("playerId") Long playerId)
+            throws Exception {
+
+        log.info("Fetching game state for playerId: "
+                + playerId + " and gameid: "
+                + gameId);
+
+        return gameService.getGameStateModel(gameId, playerId);
+    }
+
+    @RequestMapping(value = "/state/update", method = RequestMethod.POST)
+    @ResponseBody
+    public GameStateModelDTO updateGameStateModel(@RequestBody GameStateModelDTO gameStateModelDTO) throws NotEnoughUnitsException {
+        return gameService.updateStateModel(gameStateModelDTO);
     }
 }

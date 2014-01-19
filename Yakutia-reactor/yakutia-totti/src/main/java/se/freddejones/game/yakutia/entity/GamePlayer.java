@@ -1,5 +1,6 @@
 package se.freddejones.game.yakutia.entity;
 
+import se.freddejones.game.yakutia.model.statuses.ActionStatus;
 import se.freddejones.game.yakutia.model.statuses.GamePlayerStatus;
 
 import javax.persistence.*;
@@ -38,6 +39,9 @@ public class GamePlayer implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private GamePlayerStatus gamePlayerStatus;
+
+    @Enumerated(EnumType.STRING)
+    private ActionStatus actionStatus;
 
     @Column(name = "NEXT_GAME_PLAYER_ID")
     private long nextGamePlayerIdTurn;
@@ -126,5 +130,13 @@ public class GamePlayer implements Serializable {
 
     public void setUnits(List<Unit> units) {
         this.units = units;
+    }
+
+    public ActionStatus getActionStatus() {
+        return actionStatus;
+    }
+
+    public void setActionStatus(ActionStatus actionStatus) {
+        this.actionStatus = actionStatus;
     }
 }

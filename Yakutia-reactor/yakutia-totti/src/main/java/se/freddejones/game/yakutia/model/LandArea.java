@@ -17,4 +17,18 @@ public enum LandArea {
     public String toString() {
         return landArea;
     }
+
+    public static LandArea translateLandArea(String landArea) {
+        if (landArea.equals(NORWAY.toString())) {
+            return NORWAY;
+        } else if (landArea.equals(FINLAND.toString())) {
+            return FINLAND;
+        } else if (landArea.equals(SWEDEN.toString())) {
+            return SWEDEN;
+        } else if (landArea.equals(UNASSIGNEDLAND.toString())) {
+            return UNASSIGNEDLAND;
+        }
+
+        return null;
+    }
 }
