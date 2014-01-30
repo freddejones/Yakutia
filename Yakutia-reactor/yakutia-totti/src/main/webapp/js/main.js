@@ -57,9 +57,9 @@ require.config({
         underscore: 'lib/underscore',
         'underscore-string': 'lib/underscore-string',
         backbone: 'lib/backbone',
-
         text: 'lib/text',
         i18n: 'lib/i18n',
+        kinetic: 'lib/kinetic',
         'bootstrap': 'lib/bootstrap',
         'backbone-validation-orig': 'lib/backbone-validation',
         'backbone-validation': 'lib/resthub/backbone-validation-ext',
