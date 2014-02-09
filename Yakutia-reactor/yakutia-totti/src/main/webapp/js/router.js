@@ -7,10 +7,11 @@ define([
 'view/CreatePlayerView',
 'view/SearchFriendsView',
 'view/MyFriendsView'],
-function(Backbone, JQuery, CreateGameView, ActiveGameView, ListMyGamesView,
+function(Backbone, $, CreateGameView, ActiveGameView, ListMyGamesView,
 CreatePlayerView, SearchFriendsView, MyFriendsView) {
 
-    var activeView = {};
+//    var activeView = {};
+//    var topView = {};
 
     var YakutiaRouter = Backbone.Router.extend({
 
@@ -23,43 +24,40 @@ CreatePlayerView, SearchFriendsView, MyFriendsView) {
             '*path':  'defaultRoute'
         },
         listGames: function() {
-            this.fixViews();
-            console.log("listing my games"),
-            activeView = new ListMyGamesView();
+            this.closeBodyViewIfExists();
+            this.attachNewBodyView(new ListMyGamesView());
         },
         createGames: function() {
-            this.fixViews();
-            console.log("create game page");
-            activeView = new CreateGameView();
+            this.closeBodyViewIfExists();
+            this.attachNewBodyView(new CreateGameView());
         },
         playGame: function(gameId) {
-            this.fixViews();
-            console.log("Go to game id: " + gameId);
-            activeView = new ActiveGameView();
+            this.closeBodyViewIfExists();
+            this.attachNewBodyView(new ActiveGameView());
         },
         defaultRoute: function() {
-            this.fixViews();
-            console.log("Create player page");
-            activeView = new CreatePlayerView();
+            //TODO go to login and after that it is handled separately
+            this.closeBodyViewIfExists();
+            this.attachNewBodyView(new CreatePlayerView());
         },
         searchFriend: function() {
-            this.fixViews();
-            console.log("SearchFriends!!!");
-            activeView = new SearchFriendsView();
+            this.closeBodyViewIfExists();
+            this.attachNewBodyView(new SearchFriendsView());
         },
         listMyFriends: function() {
-            this.fixViews();
-            console.log("ListMyFriends ey yo");
-            activeView = new MyFriendsView();
+            this.closeBodyViewIfExists();
+            this.attachNewBodyView(new MyFriendsView());
         },
-        fixViews: function() {
-            if (!$.isEmptyObject(activeView)) {
-                $('#game-container').remove();
-                $('#slask-container').remove();
-                $('#yakutia-main').append('<div id="game-container" class="container"></div>');
-                $('#yakutia-main').append('<div id="slask-container" class="container"></div>');
+        closeBodyViewIfExists: function() {
+            if (yakutia.bodyView){
+                yakutia.bodyView.close();
+                $('#superContainer').append('<div id="bodyContainer" class="container"></div>')
             }
-        }
+        },
+        attachNewBodyView: function(view) {
+            yakutia.bodyView = view;
+            yakutia.bodyView.render();
+        },
     });
 
     return YakutiaRouter;

@@ -5,7 +5,7 @@ function(Backbone, _, MyFriendsTemplate, FriendsCollection) {
 
     var MyFriendsView = Backbone.View.extend({
 
-        el: "#slask-container",
+        el: "#bodyContainer",
 
         events: {
             'click .AcceptFriend' : 'acceptInvite',
@@ -73,6 +73,10 @@ function(Backbone, _, MyFriendsTemplate, FriendsCollection) {
                     self.collection.remove(friendId)
                 });
             console.log('decline friend invite');
+        },
+        close: function() {
+            this.remove();
+            this.unbind();
         }
     });
 

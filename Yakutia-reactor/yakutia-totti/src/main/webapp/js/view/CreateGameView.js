@@ -19,7 +19,7 @@ function(Backbone, _, CreateGameTemplate, FriendsCollection) {
 
     var CreateGameView = Backbone.View.extend({
 
-        el: "#game-container",
+        el: "#bodyContainer",
 
         events: {
             "keyup #gameName" : "handleKeyUp",
@@ -36,7 +36,7 @@ function(Backbone, _, CreateGameTemplate, FriendsCollection) {
             this.collection = new FriendsCollection();
             this.listenTo(this.collection, "add remove", this.render)
             this.listenTo(this.collection, "add remove", this.render)
-            this.render();
+//            this.render();
             this.collection.fetch({ url: '/friend/get/all/'+window.playerId });
         },
         render: function() {
@@ -104,6 +104,10 @@ function(Backbone, _, CreateGameTemplate, FriendsCollection) {
             this.model.get('invites').remove(gamePlayerId);
             this.collection.add(friendModel);
             this.handleKeyUp();
+        },
+        close: function() {
+            this.remove();
+            this.unbind();
         }
 
     });

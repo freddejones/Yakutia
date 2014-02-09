@@ -32,6 +32,10 @@ define(['backbone', 'underscore'], function(Backbone, _) {
 
         resetWell: function() {
             $('#landinfo').text("Hoover the map please")
+        },
+        close: function() {
+            this.remove();
+            this.unbind();
         }
 
     });

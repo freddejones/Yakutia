@@ -75,7 +75,8 @@ require.config({
         hbs: 'lib/resthub/require-handlebars',
         template: '../template',
 		json2: 'lib/json2',
-        console: 'lib/resthub/console'
+        console: 'lib/resthub/console',
+        router: 'router'
     }
 });
 

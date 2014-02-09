@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.freddejones.game.yakutia.dao.GameDao;
 import se.freddejones.game.yakutia.dao.GamePlayerDao;
+import se.freddejones.game.yakutia.dao.UnitDao;
 import se.freddejones.game.yakutia.entity.Game;
 import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Unit;
+import se.freddejones.game.yakutia.exception.NoGameFoundException;
 import se.freddejones.game.yakutia.exception.NotEnoughUnitsException;
-import se.freddejones.game.yakutia.model.GameSetupStuff;
-import se.freddejones.game.yakutia.model.LandArea;
-import se.freddejones.game.yakutia.model.UnitType;
-import se.freddejones.game.yakutia.model.YakutiaModel;
+import se.freddejones.game.yakutia.exception.TerritoryNotConnectedException;
+import se.freddejones.game.yakutia.model.*;
 import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
 import se.freddejones.game.yakutia.model.dto.GameStateModelDTO;
@@ -35,6 +35,8 @@ public class GameServiceImpl implements GameService {
     protected GameDao gameDao;
     @Autowired
     protected GamePlayerDao gamePlayerDao;
+    @Autowired
+    protected UnitDao unitDao;
 
 
     @Override
@@ -69,12 +71,21 @@ public class GameServiceImpl implements GameService {
     public List<YakutiaModel> getGameModelForPlayerAndGameId(Long playerId, Long gameId) {
         List<YakutiaModel> yakutiaModels = new ArrayList<YakutiaModel>();
         GamePlayer gp = gamePlayerDao.getGamePlayerByGameIdAndPlayerId(playerId, gameId);
-        if (gp != null) {
-            for (Unit unit : gp.getUnits()) {
-                yakutiaModels.add(new YakutiaModel(unit.getLandArea().toString(), unit.getStrength(), true));
+        List<GamePlayer> gamePlayers = gamePlayerDao.getGamePlayersByGameId(gameId);
+        for (GamePlayer gamePlayer : gamePlayers) {
+            if (gp.getGamePlayerId() == gamePlayer.getGamePlayerId()) {
+                for (Unit unit : gamePlayer.getUnits()) {
+                    yakutiaModels.add(new YakutiaModel(unit.getLandArea().toString(), unit.getStrength(), true));
+                }
+            } else {
+                for (Unit unit : gamePlayer.getUnits()) {
+                    if (unit.getLandArea() != LandArea.UNASSIGNEDLAND) {
+                        yakutiaModels.add(new YakutiaModel(unit.getLandArea().toString(), unit.getStrength(), false));
+                    }
+                }
             }
-
         }
+
         return yakutiaModels;
     }
 
@@ -158,9 +169,10 @@ public class GameServiceImpl implements GameService {
         gameStateModelDTO.setGameId(gameId);
         gameStateModelDTO.setPlayerId(playerId);
 
-        if (gamePlayer.getActionStatus() == null) {
+        if (gamePlayer.getActionStatus() == null ||
+                gamePlayer.getActionStatus() == ActionStatus.PLACE_UNITS) {
             gameStateModelDTO.setState(ActionStatus.PLACE_UNITS.toString());
-        } else if (gamePlayer.getActionStatus() == ActionStatus.PLACE_UNITS) {
+        } else if (gamePlayer.getActionStatus() == ActionStatus.ATTACK) {
             gameStateModelDTO.setState(ActionStatus.ATTACK.toString());
         }
 
@@ -169,18 +181,48 @@ public class GameServiceImpl implements GameService {
 
     @Override
     @Transactional(readOnly = false)
-    public GameStateModelDTO updateStateModel(GameStateModelDTO gameStateModelDTO) throws NotEnoughUnitsException {
+    public GameStateModelDTO updateStateModel(GameStateModelDTO gameStateModelDTO)
+            throws NotEnoughUnitsException, TerritoryNotConnectedException {
         GamePlayer gamePlayer = gamePlayerDao.getGamePlayerByGameIdAndPlayerId(
                 gameStateModelDTO.getPlayerId(), gameStateModelDTO.getGameId());
-
 
         if (ActionStatus.PLACE_UNITS.toString().equals(gameStateModelDTO.getState())) {
             placeUnitUpdate(gameStateModelDTO, gamePlayer);
         } else if (ActionStatus.ATTACK.toString().equals(gameStateModelDTO.getState())) {
-
+            attackTerritory(gameStateModelDTO, gamePlayer);
         }
 
         return gameStateModelDTO;
+    }
+
+    private void attackTerritory(GameStateModelDTO gameStateModelDTO, GamePlayer gamePlayer) throws TerritoryNotConnectedException {
+        gameStateModelDTO.getAttackActionUpdate();
+        LandArea attackingTerritory = LandArea.translateLandArea(gameStateModelDTO.getAttackActionUpdate().getTerritoryAttackSrc());
+        LandArea defendingTerritory = LandArea.translateLandArea(gameStateModelDTO.getAttackActionUpdate().getTerritoryAttackDest());
+
+        if (!GameManager.isTerritoriesConnected(attackingTerritory, defendingTerritory)) {
+            throw new TerritoryNotConnectedException(String.format("[%s] not connected to [%s]",
+                    attackingTerritory.toString(), defendingTerritory.toString()));
+        }
+
+        Long defendingGamePlayerId = unitDao.getGamePlayerIdByLandAreaAndGameId(
+                gamePlayer.getGameId(), defendingTerritory);
+
+        GamePlayer defendingGamePlayer = gamePlayerDao.getGamePlayerByGamePlayerId(defendingGamePlayerId);
+        for (Unit u : defendingGamePlayer.getUnits()) {
+            if (defendingTerritory.equals(u.getLandArea())) {
+                int remainingUnit = u.getStrength() - gameStateModelDTO.getAttackActionUpdate().getAttackingNumberOfUnits();
+                u.setStrength(remainingUnit);
+                gamePlayerDao.setUnitsToGamePlayer(defendingGamePlayerId, u);
+
+                if (remainingUnit <= 0) {
+                    // Change owner of territory
+                    u.setGamePlayer(gamePlayer);
+                    gamePlayerDao.setUnitsToGamePlayer(gamePlayer.getGamePlayerId(), u);
+                }
+
+            }
+        }
     }
 
     private void placeUnitUpdate(GameStateModelDTO gameStateModelDTO, GamePlayer gamePlayer) throws NotEnoughUnitsException {
@@ -201,6 +243,7 @@ public class GameServiceImpl implements GameService {
                 gamePlayerDao.setUnitsToGamePlayer(gamePlayer.getGamePlayerId(), unassignedLandUnit);
                 if (unassignedLandUnit.getStrength() == 0) {
                     gameStateModelDTO.setState(ActionStatus.ATTACK.toString());
+                    gamePlayerDao.setActionStatus(gamePlayer.getGamePlayerId(), ActionStatus.ATTACK);
                 }
             }
         }

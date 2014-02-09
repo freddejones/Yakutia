@@ -3,7 +3,7 @@ function(Backbone, _, MenuTemplate) {
 
     var MenuView = Backbone.View.extend({
 
-        el: "#main-menu",
+        el: "#mainMenu",
 
         initialize: function() {
             this.template = _.template(MenuTemplate);
@@ -13,6 +13,10 @@ function(Backbone, _, MenuTemplate) {
             this.$el.html(this.template);
             return this;
         },
+        close: function() {
+            this.remove();
+            this.unbind();
+        }
 
     });
     return MenuView;

@@ -1,10 +1,13 @@
 package se.freddejones.game.yakutia.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import se.freddejones.game.yakutia.entity.Player;
+import se.freddejones.game.yakutia.exception.NoGameFoundException;
 import se.freddejones.game.yakutia.exception.NotEnoughUnitsException;
+import se.freddejones.game.yakutia.exception.TerritoryNotConnectedException;
 import se.freddejones.game.yakutia.model.YakutiaModel;
 import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
@@ -49,7 +52,11 @@ public class GameController {
     public List<YakutiaModel> getGame(@PathVariable("playerId") Long playerId,
                                        @PathVariable("gameId") Long gameId) {
         log.info("Getting game information for gameId: " + gameId + " and playerId: " + playerId);
-        return gameService.getGameModelForPlayerAndGameId(playerId, gameId);
+        List<YakutiaModel> yakutiaModels = gameService.getGameModelForPlayerAndGameId(playerId, gameId);
+        if (yakutiaModels.isEmpty()) {
+            throw new NoGameFoundException();
+        }
+        return yakutiaModels;
     }
 
     @RequestMapping(value = "/start/{gameId}", method = RequestMethod.PUT)
@@ -72,9 +79,12 @@ public class GameController {
         return gameService.getGameStateModel(gameId, playerId);
     }
 
+    // TODO hack up the gamestate model and make new rest urls instead of
+
     @RequestMapping(value = "/state/update", method = RequestMethod.POST)
     @ResponseBody
-    public GameStateModelDTO updateGameStateModel(@RequestBody GameStateModelDTO gameStateModelDTO) throws NotEnoughUnitsException {
+    public GameStateModelDTO updateGameStateModel(@RequestBody GameStateModelDTO gameStateModelDTO)
+            throws NotEnoughUnitsException, TerritoryNotConnectedException {
         return gameService.updateStateModel(gameStateModelDTO);
     }
 }

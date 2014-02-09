@@ -20,7 +20,7 @@ function(Backbone, _, FriendSearchTemplate) {
 
     var ActiveGameView = Backbone.View.extend({
 
-        el: "#slask-container",
+        el: "#bodyContainer",
 
         events: {
             'click .FriendRequest' : 'sendFriendRequest'
@@ -59,6 +59,10 @@ function(Backbone, _, FriendSearchTemplate) {
                     self.collection.remove(friendId)
                 });
         },
+        close: function() {
+            this.remove();
+            this.unbind();
+        }
     });
 
     return ActiveGameView;

@@ -31,7 +31,7 @@ function(Backbone, _, ListMyGamesTmpl, options, router) {
 
     var ListMyGamesView = Backbone.View.extend({
 
-        el: "#game-container",
+        el: "#bodyContainer",
 
         events: {
             'click .StartGame' : 'startGame',
@@ -44,7 +44,6 @@ function(Backbone, _, ListMyGamesTmpl, options, router) {
             this.model = Backbone.Model.extend({});
             var self = this;
             this.collection = new GamesCollection();
-            this.render();
             this.listenTo(this.collection, "change reset add remove", this.render)
             this.collection.fetch({ url: '/game/get/'+window.playerId });
         },
@@ -89,6 +88,10 @@ function(Backbone, _, ListMyGamesTmpl, options, router) {
                 }
             });
             return this;
+        },
+        close: function() {
+            this.remove();
+            this.unbind();
         }
     });
     return ListMyGamesView;

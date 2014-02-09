@@ -6,6 +6,7 @@ import se.freddejones.game.yakutia.dao.GamePlayerDao;
 import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Unit;
 import se.freddejones.game.yakutia.model.LandArea;
+import se.freddejones.game.yakutia.model.statuses.ActionStatus;
 
 import java.util.List;
 
@@ -35,6 +36,11 @@ public class GamePlayerDaoImpl extends AbstractDaoImpl implements GamePlayerDao 
     }
 
     @Override
+    public GamePlayer getGamePlayerByGamePlayerId(Long gamePlayerId) {
+        return (GamePlayer) getCurrentSession().get(GamePlayer.class, gamePlayerId);
+    }
+
+    @Override
     public void setUnitsToGamePlayer(Long gamePlayerId, Unit unit) {
         Session session = getCurrentSession();
         GamePlayer gamePlayer = (GamePlayer) session.get(GamePlayer.class, gamePlayerId);
@@ -51,6 +57,12 @@ public class GamePlayerDaoImpl extends AbstractDaoImpl implements GamePlayerDao 
             }
         }
         return new Unit();
+    }
+
+    @Override
+    public void setActionStatus(Long gamePlayerId, ActionStatus actionStatus) {
+        GamePlayer gamePlayer = (GamePlayer) getCurrentSession().get(GamePlayer.class, gamePlayerId);
+        gamePlayer.setActionStatus(actionStatus);
     }
 
 

@@ -1,16 +1,20 @@
 package se.freddejones.game.yakutia.service;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import se.freddejones.game.yakutia.dao.GamePlayerDao;
+import se.freddejones.game.yakutia.dao.UnitDao;
 import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Unit;
 import se.freddejones.game.yakutia.exception.NotEnoughUnitsException;
+import se.freddejones.game.yakutia.exception.TerritoryNotConnectedException;
 import se.freddejones.game.yakutia.model.LandArea;
+import se.freddejones.game.yakutia.model.dto.AttackActionUpdate;
 import se.freddejones.game.yakutia.model.dto.GameStateModelDTO;
 import se.freddejones.game.yakutia.model.dto.PlaceUnitUpdate;
 import se.freddejones.game.yakutia.model.statuses.ActionStatus;
@@ -28,6 +32,7 @@ import static org.mockito.Mockito.*;
 public class GameServiceTest {
 
     @Mock private GamePlayerDao gamePlayerDaoMock;
+    @Mock private UnitDao unitDaoMock;
     @InjectMocks private GameServiceImpl gameService;
 
     private GamePlayer gamePlayerMock;
@@ -59,7 +64,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void testMatchingLandAreaShouldCallDAOtoUpdateUnits() throws NotEnoughUnitsException {
+    public void testMatchingLandAreaShouldCallDAOtoUpdateUnits() throws Exception {
         // Given: a gamestateModel incoming object with placeUnitUpdate object
         GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
         Unit unitMock = new Unit();
@@ -113,6 +118,42 @@ public class GameServiceTest {
 
         // When: gameService updateStateModel service method is called upon
         gameService.updateStateModel(gameStateModelDTO);
+
+        // Then: Exception
+    }
+
+    @Test(expected = TerritoryNotConnectedException.class)
+    public void testAttackingTerritoryNotAllowed() throws Exception {
+        // Given: a update dto with two not connected territories
+        GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
+        gameStateModelDTO.setState(ActionStatus.ATTACK.toString());
+        AttackActionUpdate attackActionUpdate = getAttackActionUpdateObject();
+        attackActionUpdate.setTerritoryAttackSrc(LandArea.UKRAINA.toString());
+        gameStateModelDTO.setAttackActionUpdate(attackActionUpdate);
+
+        // When: updating state model
+        gameService.updateStateModel(gameStateModelDTO);
+
+        // Then: Exception expected
+    }
+
+    @Test
+    public void testUpdateStateModelWhenAttackingTerritory() throws Exception {
+        // Given:
+        GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
+        gameStateModelDTO.setState(ActionStatus.ATTACK.toString());
+        gameStateModelDTO.setAttackActionUpdate(getAttackActionUpdateObject());
+
+        when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(anyLong(), anyLong())).thenReturn(gamePlayerMock);
+        when(gamePlayerDaoMock.getGamePlayerByGamePlayerId(anyLong())).thenReturn(gamePlayerMock);
+        setupUnitsForGamePlayerMock();
+        when(unitDaoMock.getGamePlayerIdByLandAreaAndGameId(anyLong(), (LandArea) anyObject())).thenReturn(1L);
+
+        // When:
+        gameService.updateStateModel(gameStateModelDTO);
+
+        // Then: dao methods have been called
+        verify(gamePlayerDaoMock, atLeast(2)).setUnitsToGamePlayer(anyLong(), (Unit) anyObject());
     }
 
     private void setupUnitsForGamePlayerMock() {
@@ -121,6 +162,14 @@ public class GameServiceTest {
         unit.setLandArea(LandArea.SWEDEN);
         unitsForGamePlayer.add(unit);
         when(gamePlayerMock.getUnits()).thenReturn(unitsForGamePlayer);
+    }
+
+    private AttackActionUpdate getAttackActionUpdateObject() {
+        AttackActionUpdate attackActionUpdate = new AttackActionUpdate();
+        attackActionUpdate.setAttackingNumberOfUnits(5);
+        attackActionUpdate.setTerritoryAttackDest(LandArea.SWEDEN.toString());
+        attackActionUpdate.setTerritoryAttackSrc(LandArea.NORWAY.toString());
+        return attackActionUpdate;
     }
 
     private GameStateModelDTO getGameStateModelDTOWithPlaceUnitUpdateObject() {

@@ -83,6 +83,7 @@ function(Backbone, ImageMapster, _, YakutiaLandView) {
             _.bindAll(this, 'render', 'clickedOnArea', 'clickPlaceUnitButton');
             this.collection = new YakutiaColl();
             var self = this;
+            console.log(this.model.get('stateModel').get('state'));
             this.model = new YakutiaGameStateModel();
             this.model.fetch({
                 url: '/game/state/'+window.gameId+'/'+window.playerId
@@ -142,6 +143,10 @@ function(Backbone, ImageMapster, _, YakutiaLandView) {
             if (this.model.get('state') === 'PLACE_UNITS') {
                 console.log('what to do with this one');
             }
+        },
+        close: function() {
+            this.remove();
+            this.unbind();
         }
 
     });

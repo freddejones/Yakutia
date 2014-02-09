@@ -3,6 +3,7 @@ package se.freddejones.game.yakutia.dao;
 import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Unit;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
+import se.freddejones.game.yakutia.model.statuses.ActionStatus;
 
 import java.util.List;
 
@@ -15,7 +16,9 @@ public interface GamePlayerDao {
     List<GamePlayer> getGamePlayersByPlayerId(Long playerId);
     List<GamePlayer> getGamePlayersByGameId(Long gameId);
     GamePlayer getGamePlayerByGameIdAndPlayerId(Long playerId, Long gameId);
+    GamePlayer getGamePlayerByGamePlayerId(Long gamePlayerId);
     void setUnitsToGamePlayer(Long gamePlayerId, Unit unit);
     Unit getUnassignedLand(Long gamePlayerId);
+    void setActionStatus(Long gamPlayerId, ActionStatus actionStatus);
 
 }

@@ -1,13 +1,13 @@
 define([
     'router',
     'bootstrap',
-    'view/MainView'
+    'view/YakutiaManager'
     ],
-function(YakutiaRouter, Bootstrap, MenuView) {
+function(YakutiaRouter, Bootstrap, YakutiaManager) {
 
     window.playerId = 1;
-    var route = new YakutiaRouter();
-    window.router = route;
+    window.gameId = 1;
+    window.router = new YakutiaRouter();
     Backbone.history.start();
-    new MenuView();
+//    new YakutiaManager().init();
 });
