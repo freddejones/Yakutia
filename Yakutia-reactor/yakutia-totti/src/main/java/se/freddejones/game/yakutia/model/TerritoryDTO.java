@@ -2,13 +2,13 @@ package se.freddejones.game.yakutia.model;
 
 import java.io.Serializable;
 
-public class YakutiaModel implements Serializable {
+public class TerritoryDTO implements Serializable {
 
     private String landName;
     private int units;
     private boolean isOwnedByPlayer;
 
-    public YakutiaModel(String landName, int units, boolean ownedByPlayer) {
+    public TerritoryDTO(String landName, int units, boolean ownedByPlayer) {
         this.landName = landName;
         this.units = units;
         isOwnedByPlayer = ownedByPlayer;

@@ -9,13 +9,13 @@ import java.util.List;
  */
 public class YakutiaSuperModel implements Serializable {
 
-    List<YakutiaModel> landAreas;
+    List<TerritoryDTO> landAreas;
 
-    public List<YakutiaModel> getLandAreas() {
+    public List<TerritoryDTO> getLandAreas() {
         return landAreas;
     }
 
-    public void setLandAreas(List<YakutiaModel> landAreas) {
+    public void setLandAreas(List<TerritoryDTO> landAreas) {
         this.landAreas = landAreas;
     }
 }

@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import se.freddejones.game.yakutia.model.YakutiaModel;
+import se.freddejones.game.yakutia.model.TerritoryDTO;
 import se.freddejones.game.yakutia.service.GameService;
 
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ public class GameControllerTest {
 
     @Test
     public void testGetGameForAPlayer() throws Exception {
-        final ArrayList<YakutiaModel> yakutiaModels = getYakutiaModels();
-        when(gameService.getGameModelForPlayerAndGameId(anyLong(), anyLong())).thenReturn(yakutiaModels);
+        final ArrayList<TerritoryDTO> territoryDTOs = getYakutiaModels();
+        when(gameService.getTerritoryInformationForActiveGame(anyLong(), anyLong())).thenReturn(territoryDTOs);
         mockMvc.perform(get("/game/get/1/game/2"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -41,8 +41,8 @@ public class GameControllerTest {
 
     @Test
     public void testGetWrongGameIdForPlayerResponse() throws Exception {
-        final ArrayList<YakutiaModel> yakutiaModels = getYakutiaModels();
-        when(gameService.getGameModelForPlayerAndGameId(1L, 2L)).thenReturn(yakutiaModels);
+        final ArrayList<TerritoryDTO> territoryDTOs = getYakutiaModels();
+        when(gameService.getTerritoryInformationForActiveGame(1L, 2L)).thenReturn(territoryDTOs);
         Assert.assertEquals("Not allowed to view this game",
                 mockMvc.perform(get("/game/get/1/game/3"))
                     .andDo(print())
@@ -50,11 +50,11 @@ public class GameControllerTest {
                     .andReturn().getResponse().getErrorMessage());
     }
 
-    private ArrayList<YakutiaModel> getYakutiaModels() {
-        final YakutiaModel testLand = new YakutiaModel("testLand", 6, true);
-        final ArrayList<YakutiaModel> yakutiaModels = new ArrayList<YakutiaModel>();
-        yakutiaModels.add(testLand);
-        return yakutiaModels;
+    private ArrayList<TerritoryDTO> getYakutiaModels() {
+        final TerritoryDTO testLand = new TerritoryDTO("testLand", 6, true);
+        final ArrayList<TerritoryDTO> territoryDTOs = new ArrayList<TerritoryDTO>();
+        territoryDTOs.add(testLand);
+        return territoryDTOs;
     }
 
 

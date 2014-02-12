@@ -21,7 +21,7 @@ function(Backbone, _, Kinetic, MapDefinitions, TerritoryModel) {
                 fill: color,
                 //scale: {x:1, y:1}
             });
-            console.log(this.model.get('stateModel').get('state'));
+
             this.model.get('layer').add(this.territory);
             this.tooltip = this.getTooltip(this.model);
             this.model.get('layer').add(this.tooltip);
@@ -31,17 +31,13 @@ function(Backbone, _, Kinetic, MapDefinitions, TerritoryModel) {
                 this.territory.on('mouseover', function() {
                     this.setFill('blue');
                     self.model.get('layer').draw();
-//                    self.render();
                 });
-//
                 this.territory.on('mouseout', function() {
                     this.setFill(color);
                     self.model.get('layer').draw();
-//                    self.render();
                 });
-//
-                this.territory.on('click', function() {
 
+                this.territory.on('click', function() {
                     if (self.currentStateModel.get('state') === 'PLACE_UNITS') {
                       self.currentStateModel.set('placeUnitUpdate', {numberOfUnits: 1, landArea: self.model.get('id')});
                       self.currentStateModel.save({}, {
@@ -68,13 +64,16 @@ function(Backbone, _, Kinetic, MapDefinitions, TerritoryModel) {
                         _.extend(self.currentStateModel.get('attackActionUpdate'), {territoryAttackDest: self.model.get('id')});
                         self.currentStateModel.save({}, {
                               url: '/game/state/update/',
-                              success: function() {
+                              success: function(stuff) {
                                   console.log('attack was made');
-                                  self.model.set('units', self.model.get('units')+1);
+//                                  self.model.set('units', self.model.get('units')+1);
+//                                  self.territory.fill('yellow');
+                                  self.rebuild = true;
                                   self.tooltip.destroy();
-                                  self.tooltip = self.getTooltip(self.model);
-                                  self.model.get('layer').add(self.tooltip);
-                                  self.model.get('layer').draw();
+                                  self.territory.destroy();
+//                                  self.tooltip = self.getTooltip(self.model);
+//                                  self.model.get('layer').add(self.tooltip);
+//                                  self.model.get('layer').draw();
                               }
                           });
                         }

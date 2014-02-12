@@ -60,10 +60,11 @@ function(Backbone, _, Kinetic, GameMapTemplate, MapDefinitions, TerritoryModel, 
                     self.renderSubModel();
                 }
             });
-            self.listenTo(self.collection, 'change', function() {
+            this.listenTo(this.collection, 'change', function() {
                 this.collection.fetch({
                     url: '/game/get/'+window.playerId+'/game/'+window.gameId,
                     success: function(models, response) {
+
                     }
                 });
             });

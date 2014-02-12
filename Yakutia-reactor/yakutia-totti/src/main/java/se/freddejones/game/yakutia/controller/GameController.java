@@ -1,21 +1,18 @@
 package se.freddejones.game.yakutia.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import se.freddejones.game.yakutia.entity.Player;
 import se.freddejones.game.yakutia.exception.NoGameFoundException;
 import se.freddejones.game.yakutia.exception.NotEnoughUnitsException;
 import se.freddejones.game.yakutia.exception.TerritoryNotConnectedException;
-import se.freddejones.game.yakutia.model.YakutiaModel;
+import se.freddejones.game.yakutia.model.TerritoryDTO;
 import se.freddejones.game.yakutia.model.dto.CreateGameDTO;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
 import se.freddejones.game.yakutia.model.dto.GameStateModelDTO;
+import se.freddejones.game.yakutia.model.dto.PlaceUnitUpdate;
 import se.freddejones.game.yakutia.service.GameService;
-import se.freddejones.game.yakutia.service.PlayerService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -31,7 +28,8 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @RequestMapping(value  = "/create", method = RequestMethod.POST, headers = {"content-type=application/json"})
+    @RequestMapping(value  = "/create", method = RequestMethod.POST,
+            headers = {"content-type=application/json"})
     @ResponseBody
     public Long createNewGame(@RequestBody final CreateGameDTO createGameDTO) {
         log.info("Received CreateGameDTO: " + createGameDTO.toString());
@@ -49,14 +47,14 @@ public class GameController {
 
     @RequestMapping(value = "/get/{playerId}/game/{gameId}", method = RequestMethod.GET)
     @ResponseBody
-    public List<YakutiaModel> getGame(@PathVariable("playerId") Long playerId,
+    public List<TerritoryDTO> getGame(@PathVariable("playerId") Long playerId,
                                        @PathVariable("gameId") Long gameId) {
         log.info("Getting game information for gameId: " + gameId + " and playerId: " + playerId);
-        List<YakutiaModel> yakutiaModels = gameService.getGameModelForPlayerAndGameId(playerId, gameId);
-        if (yakutiaModels.isEmpty()) {
+        List<TerritoryDTO> territoryDTOs = gameService.getTerritoryInformationForActiveGame(playerId, gameId);
+        if (territoryDTOs.isEmpty()) {
             throw new NoGameFoundException();
         }
-        return yakutiaModels;
+        return territoryDTOs;
     }
 
     @RequestMapping(value = "/start/{gameId}", method = RequestMethod.PUT)
@@ -69,22 +67,16 @@ public class GameController {
     @RequestMapping(value = "/state/{gameId}/{playerId}", method = RequestMethod.GET)
     @ResponseBody
     public GameStateModelDTO getCurrentGameState(@PathVariable("gameId") Long gameId,
-                                                 @PathVariable("playerId") Long playerId)
-            throws Exception {
-
-        log.info("Fetching game state for playerId: "
-                + playerId + " and gameid: "
-                + gameId);
-
+         @PathVariable("playerId") Long playerId) throws Exception {
+        log.info("Fetching game state for playerId: " + playerId + " and gameid: "+ gameId);
         return gameService.getGameStateModel(gameId, playerId);
     }
 
-    // TODO hack up the gamestate model and make new rest urls instead of
 
-    @RequestMapping(value = "/state/update", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/state/perform/place/unit", method = RequestMethod.POST)
     @ResponseBody
-    public GameStateModelDTO updateGameStateModel(@RequestBody GameStateModelDTO gameStateModelDTO)
-            throws NotEnoughUnitsException, TerritoryNotConnectedException {
-        return gameService.updateStateModel(gameStateModelDTO);
+    public TerritoryDTO updateGameStateModel(@RequestBody PlaceUnitUpdate placeUnitUpdate) throws NotEnoughUnitsException {
+        return gameService.placeUnitAction(placeUnitUpdate);
     }
 }
