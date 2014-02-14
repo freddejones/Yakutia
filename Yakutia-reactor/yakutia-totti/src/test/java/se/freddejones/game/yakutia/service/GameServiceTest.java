@@ -1,5 +1,6 @@
 package se.freddejones.game.yakutia.service;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,16 +14,14 @@ import se.freddejones.game.yakutia.dao.UnitDao;
 import se.freddejones.game.yakutia.entity.Game;
 import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Unit;
-import se.freddejones.game.yakutia.exception.NotEnoughPlayersException;
-import se.freddejones.game.yakutia.exception.NotEnoughUnitsException;
-import se.freddejones.game.yakutia.exception.TerritoryNotConnectedException;
+import se.freddejones.game.yakutia.exception.*;
 import se.freddejones.game.yakutia.model.LandArea;
 import se.freddejones.game.yakutia.model.TerritoryDTO;
-import se.freddejones.game.yakutia.model.dto.AttackActionUpdate;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
 import se.freddejones.game.yakutia.model.dto.GameStateModelDTO;
 import se.freddejones.game.yakutia.model.dto.PlaceUnitUpdate;
 import se.freddejones.game.yakutia.model.statuses.ActionStatus;
+import se.freddejones.game.yakutia.model.statuses.GamePlayerStatus;
 import se.freddejones.game.yakutia.model.statuses.GameStatus;
 import se.freddejones.game.yakutia.service.impl.GameServiceImpl;
 
@@ -32,7 +31,6 @@ import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,6 +39,7 @@ public class GameServiceTest {
     @Mock private GamePlayerDao gamePlayerDaoMock;
     @Mock private UnitDao unitDaoMock;
     @Mock private GameDao gameDaoMock;
+    @Mock private GameSetupService gameSetupServiceMock;
     @InjectMocks private GameServiceImpl gameService;
 
     private GamePlayer gamePlayerMock;
@@ -141,7 +140,7 @@ public class GameServiceTest {
     public void testGetTerritoryInformationReturnsUnitsOnAGamePlayer() throws Exception {
         when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(10L, 12L)).thenReturn(gamePlayerMock);
         List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
-        setupUnitsForGamePlayerMock();
+        setupUnitsForGamePlayerDefaultMock();
         gamePlayers.add(gamePlayerMock);
         GamePlayer counterPartGamePlayer = mock(GamePlayer.class);
         gamePlayers.add(counterPartGamePlayer);
@@ -158,7 +157,7 @@ public class GameServiceTest {
     public void testThatGetTerritoryInformationBelongsToPlayer() throws Exception {
         when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(10L, 12L)).thenReturn(gamePlayerMock);
         List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
-        setupUnitsForGamePlayerMock();
+        setupUnitsForGamePlayerDefaultMock();
         gamePlayers.add(gamePlayerMock);
         GamePlayer counterPartGamePlayer = mock(GamePlayer.class);
         gamePlayers.add(counterPartGamePlayer);
@@ -174,7 +173,7 @@ public class GameServiceTest {
     public void testThatGetTerritoryInformationCanReturnUnitsNotBeloningToPlayer() throws Exception {
         when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(10L, 12L)).thenReturn(gamePlayerMock);
         List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
-        setupUnitsForGamePlayerMock();
+        setupUnitsForGamePlayerDefaultMock();
         gamePlayers.add(gamePlayerMock);
         GamePlayer counterPartGamePlayer = mock(GamePlayer.class);
         when(counterPartGamePlayer.getGamePlayerId()).thenReturn(45L);
@@ -201,182 +200,141 @@ public class GameServiceTest {
         // Then: exception is thrown
     }
 
-    @Test
-    @Ignore
-    public void testPlaceUnitUpdateTransitionToAttack() throws Exception {
-/*
-        // Given: 2 players left in unassigned land
-        Unit unitMock = new Unit();
-        unitMock.setStrength(2);
-        GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
-        gameStateModelDTO.getPlaceUnitUpdate().setNumberOfUnits(2);
-        setupUnitsForGamePlayerMock();
+    @Test(expected = NotEnoughPlayersException.class)
+    public void testNotEnoughPlayerToStartGameWhenOnlyOnePlayerExists() throws Exception {
+        // Given: No players received from gamePlayerDao
+        List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
+        gamePlayers.add(gamePlayerMock);
+        when(gamePlayerDaoMock.getGamePlayersByGameId(1L)).thenReturn(gamePlayers);
 
-        when(gamePlayerDaoMock
-                .getGamePlayerByGameIdAndPlayerId(anyLong(), anyLong()))
-                .thenReturn(gamePlayerMock);
-        when(gamePlayerDaoMock.getUnassignedLand(anyLong())).thenReturn(unitMock);
+        // When: setting game to started
+        gameService.setGameToStarted(1L);
 
-        // When: updateStateModel service method is called upon
-        GameStateModelDTO returnObject = gameService.updateStateModel(gameStateModelDTO);
+        // Then: exception is thrown
+    }
 
-        // Then: next state for the model should be set
-        assertThat(returnObject.getState()).isEqualTo(ActionStatus.ATTACK.toString());
-        */
+    @Test(expected = NotEnoughPlayersException.class)
+    public void testNotEnoughPlayersAcceptedInvite() throws Exception {
+        List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
+        gamePlayers.add(gamePlayerMock);
+        when(gamePlayerMock.getGamePlayerStatus()).thenReturn(GamePlayerStatus.ACCEPTED);
+        GamePlayer gamePlayerMockNotAccepted = mock(GamePlayer.class);
+        when(gamePlayerMockNotAccepted.getGamePlayerStatus()).thenReturn(GamePlayerStatus.INVITED);
+        gamePlayers.add(gamePlayerMockNotAccepted);
+
+        when(gamePlayerDaoMock.getGamePlayersByGameId(1L)).thenReturn(gamePlayers);
+
+        // When: setting game to started
+        gameService.setGameToStarted(1L);
+
+        // Then: exception is thrown
+    }
+
+    @Test(expected = ToManyPlayersException.class)
+    public void testToManyPlayersToStartGame() throws Exception {
+        // Given: To many players added to gameplayers
+        List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
+        when(gamePlayerMock.getGamePlayerStatus()).thenReturn(GamePlayerStatus.ACCEPTED);
+        for (int i=0; i<10; i++) {
+            gamePlayers.add(gamePlayerMock);
+        }
+        when(gamePlayerDaoMock.getGamePlayersByGameId(1L)).thenReturn(gamePlayers);
+
+        // When: setting game to started
+        gameService.setGameToStarted(1L);
+
+        // Then: exception is thrown
     }
 
     @Test
-    @Ignore
-    public void testMatchingLandAreaShouldCallDAOtoUpdateUnits() throws Exception {
-        /*
-        // Given: a gamestateModel incoming object with placeUnitUpdate object
-        GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
-        Unit unitMock = new Unit();
-        unitMock.setStrength(2);
-        when(gamePlayerDaoMock
-                .getGamePlayerByGameIdAndPlayerId(anyLong(), anyLong())).thenReturn(gamePlayerMock);
-        when(gamePlayerDaoMock.getUnassignedLand(anyLong())).thenReturn(unitMock);
-        setupUnitsForGamePlayerMock();
+    public void testStartGameSuccessfully() throws Exception {
+        setupValidNumberOfPlayersInMock();
 
-        // When: gameService updateStateModel service method i called upon
-        gameService.updateStateModel(gameStateModelDTO);
+        gameService.setGameToStarted(1L);
 
-        // Then: three methods from gamePlayerDao is called
-        verify(gamePlayerDaoMock).getGamePlayerByGameIdAndPlayerId(anyLong(), anyLong());
-        verify(gamePlayerDaoMock).getUnassignedLand(anyLong());
-        verify(gamePlayerDaoMock, atLeast(2)).setUnitsToGamePlayer(anyLong(), (Unit) anyObject());
-        */
+        verify(gameSetupServiceMock).initializeNewGame(any(List.class));
+        verify(gameDaoMock).startGame(1L);
     }
 
     @Test
-    @Ignore
-    public void testNameAValidUpdateShouldReturnAValidReturnObject() throws Exception {
-        /*
-        // Given: a gamestateModel incoming object with placeUnitUpdate object
-        Unit unitMock = new Unit();
-        unitMock.setStrength(2);
-        GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
-        when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(anyLong(), anyLong()))
-                .thenReturn(gamePlayerMock);
-        when(gamePlayerDaoMock.getUnassignedLand(anyLong())).thenReturn(unitMock);
+    public void testStartGameThrowsException() {
+        try {
+            setupValidNumberOfPlayersInMock();
+            doThrow(CouldNotCreateGameException.class).when(gameSetupServiceMock)
+                    .initializeNewGame(any(List.class));
+            gameService.setGameToStarted(1L);
+        } catch (NotEnoughPlayersException e) {
+            Assert.fail("Should not enter this exception");
+        } catch (ToManyPlayersException e) {
+            Assert.fail("Should not enter this exception");
+        } catch (CouldNotCreateGameException e) {
+            verifyZeroInteractions(gameDaoMock);
+        }
 
-
-        // When: gameService updateStateModel service method is called upon
-        GameStateModelDTO returnObject = gameService.updateStateModel(gameStateModelDTO);
-
-        // Then: returning object should have values set
-        assertThat(returnObject).isNotNull();
-        assertThat(returnObject.getGameId()).isNotNull().isEqualTo(1L);
-        assertThat(returnObject.getPlayerId()).isNotNull().isEqualTo(1L);
-        */
     }
 
-    @Ignore
+    @Test
+    public void testPlaceUnitUpdateValid() throws Exception {
+
+        // Given
+        PlaceUnitUpdate placeUnitUpdate = new PlaceUnitUpdate(3, "SWEDEN", 1L, 1L);
+        setupGetGamesForPlayerDefaultMockSettings();
+        setupUnitsForGamePlayerDefaultMock();
+
+        // When: placing units
+        TerritoryDTO returnObj = gameService.placeUnitAction(placeUnitUpdate);
+
+        // Then
+        assertThat(returnObj.isOwnedByPlayer()).isTrue();
+        assertThat(returnObj.getLandName()).isEqualTo(LandArea.SWEDEN.toString());
+        assertThat(returnObj.getUnits()).isEqualTo(8);
+    }
+
     @Test(expected = NotEnoughUnitsException.class)
-    public void testNotEnoughUnitExceptionIsThrown() throws Exception {
-//        // Given: no unassigned units left
-//        Unit unitMock = mock(Unit.class);
-//        unitMock.setStrength(0);
-//        GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
-//        gameStateModelDTO.getPlaceUnitUpdate().setNumberOfUnits(1);
-//        setupUnitsForGamePlayerMock();
-//        when(gamePlayerDaoMock
-//                .getGamePlayerByGameIdAndPlayerId(anyLong(), anyLong()))
-//                .thenReturn(gamePlayerMock);
-//        when(gamePlayerDaoMock.getUnassignedLand(anyLong())).thenReturn(unitMock);
-//
-//        // When: gameService updateStateModel service method is called upon
-//        gameService.updateStateModel(gameStateModelDTO);
-//
-//        // Then: Exception
+    public void testPlaceUnitWhenInsufficientFunds() throws Exception {
+        // Given
+        PlaceUnitUpdate placeUnitUpdate = new PlaceUnitUpdate(1, "SWEDEN", 1L, 1L);
+        setupGetGamesForPlayerDefaultMockSettings();
+        setupUnitsForGamePlayerMock(5,0);
+
+        // When: placing units
+        gameService.placeUnitAction(placeUnitUpdate);
     }
 
-    @Test(expected = TerritoryNotConnectedException.class)
-    @Ignore
-    public void testAttackingTerritoryNotAllowed() throws Exception {
-//        // Given: a update dto with two not connected territories
-//        GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
-//        gameStateModelDTO.setState(ActionStatus.ATTACK.toString());
-//        AttackActionUpdate attackActionUpdate = getAttackActionUpdateObject();
-//        attackActionUpdate.setTerritoryAttackSrc(LandArea.UKRAINA.toString());
-//        gameStateModelDTO.setAttackActionUpdate(attackActionUpdate);
-//
-//        // When: updating state model
-//        gameService.updateStateModel(gameStateModelDTO);
-//
-//        // Then: Exception expected
-    }
-
-
-    @Test
-    @Ignore
-    public void testUpdateStateModelWhenAttackingTerritory() throws Exception {
-//        // Given:
-//        GameStateModelDTO gameStateModelDTO = getGameStateModelDTOWithPlaceUnitUpdateObject();
-//        gameStateModelDTO.setState(ActionStatus.ATTACK.toString());
-//        gameStateModelDTO.setAttackActionUpdate(getAttackActionUpdateObject());
-//
-//        when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(anyLong(), anyLong())).thenReturn(gamePlayerMock);
-//        when(gamePlayerDaoMock.getGamePlayerByGamePlayerId(anyLong())).thenReturn(gamePlayerMock);
-//        setupUnitsForGamePlayerMock();
-//        when(unitDaoMock.getGamePlayerIdByLandAreaAndGameId(anyLong(), (LandArea) anyObject())).thenReturn(1L);
-//
-//        // When:
-//        gameService.updateStateModel(gameStateModelDTO);
-//
-//        // Then: dao methods have been called
-//        verify(gamePlayerDaoMock, atLeast(2)).setUnitsToGamePlayer(anyLong(), (Unit) anyObject());
+    private void setupValidNumberOfPlayersInMock() {
+        List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
+        when(gamePlayerMock.getGamePlayerStatus()).thenReturn(GamePlayerStatus.ACCEPTED);
+        gamePlayers.add(gamePlayerMock);
+        gamePlayers.add(gamePlayerMock);
+        when(gamePlayerDaoMock.getGamePlayersByGameId(1L)).thenReturn(gamePlayers);
     }
 
     private void setupGetGamesForPlayerDefaultMockSettings() {
         List<GamePlayer> gamePlayers = new ArrayList<GamePlayer>();
         gamePlayers.add(gamePlayerMock);
         when(gamePlayerDaoMock.getGamePlayersByPlayerId(anyLong())).thenReturn(gamePlayers);
+        when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(anyLong(), anyLong())).thenReturn(gamePlayerMock);
         when(gamePlayerMock.getGameId()).thenReturn(666L);
         when(gameDaoMock.getGameByGameId(666L)).thenReturn(gameMock);
         when(gameMock.getCreationTime()).thenReturn(new Date());
         when(gameMock.getGameStatus()).thenReturn(GameStatus.CREATED);
     }
 
-    private void setupUnitsForGamePlayerMock() {
+    private void setupUnitsForGamePlayerDefaultMock() {
+        setupUnitsForGamePlayerMock(5, 3);
+    }
+
+    private void setupUnitsForGamePlayerMock(int unitsForLandArea, int unassignedUnits) {
         List<Unit> unitsForGamePlayer = new ArrayList<Unit>();
         Unit unit = new Unit();
         unit.setLandArea(LandArea.SWEDEN);
+        unit.setStrength(unitsForLandArea);
         unitsForGamePlayer.add(unit);
 
         Unit unitUnassigned = new Unit();
         unitUnassigned.setLandArea(LandArea.UNASSIGNEDLAND);
+        unitUnassigned.setStrength(unassignedUnits);
         unitsForGamePlayer.add(unitUnassigned);
         when(gamePlayerMock.getUnits()).thenReturn(unitsForGamePlayer);
-    }
-
-    private AttackActionUpdate getAttackActionUpdateObject() {
-        AttackActionUpdate attackActionUpdate = new AttackActionUpdate();
-        attackActionUpdate.setAttackingNumberOfUnits(5);
-        attackActionUpdate.setTerritoryAttackDest(LandArea.SWEDEN.toString());
-        attackActionUpdate.setTerritoryAttackSrc(LandArea.NORWAY.toString());
-        return attackActionUpdate;
-    }
-
-//    private GameStateModelDTO getGameStateModelDTOWithPlaceUnitUpdateObject() {
-//        GameStateModelDTO gameStateModelDTO = setupBasicGameStateModel();
-//        PlaceUnitUpdate placeUnitUpdate = getPlaceUnitUpdateSimpleSetup();
-//        gameStateModelDTO.setPlaceUnitUpdate(placeUnitUpdate);
-//        return gameStateModelDTO;
-//    }
-
-    private PlaceUnitUpdate getPlaceUnitUpdateSimpleSetup() {
-        PlaceUnitUpdate placeUnitUpdate = new PlaceUnitUpdate();
-        placeUnitUpdate.setLandArea(LandArea.SWEDEN.toString());
-        placeUnitUpdate.setNumberOfUnits(2);
-        return placeUnitUpdate;
-    }
-
-    private GameStateModelDTO setupBasicGameStateModel() {
-        GameStateModelDTO gameStateModelDTO = new GameStateModelDTO();
-        gameStateModelDTO.setState(ActionStatus.PLACE_UNITS.toString());
-        gameStateModelDTO.setPlayerId(1L);
-        gameStateModelDTO.setGameId(1L);
-        return gameStateModelDTO;
     }
 }

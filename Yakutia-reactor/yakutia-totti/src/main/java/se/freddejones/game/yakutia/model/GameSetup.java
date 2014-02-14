@@ -5,7 +5,7 @@ import se.freddejones.game.yakutia.entity.Unit;
 
 import java.util.List;
 
-public class GameSetupStuff {
+public class GameSetup {
 
     private GamePlayer gp;
     private List<Unit> units;
