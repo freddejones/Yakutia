@@ -122,14 +122,13 @@ public class GameServiceImpl implements GameService {
         GamePlayer gamePlayer = gamePlayerDao.
                 getGamePlayerByGameIdAndPlayerId(placeUnitUpdate.getPlayerId(), placeUnitUpdate.getGameId());
 
-        // TODO extract dao method for getting unassigned land
         for (Unit unit : gamePlayer.getUnits()) {
            if (LandArea.UNASSIGNEDLAND.equals(unit.getLandArea())
                    && unit.getStrength() < placeUnitUpdate.getNumberOfUnits()) {
                 throw new NotEnoughUnitsException("Insufficient funds");
            }
         }
-        int strength = -1;
+        int strength = 0;
         for (Unit unit : gamePlayer.getUnits()) {
             if (unit.getLandArea().equals(LandArea.translateLandArea(placeUnitUpdate.getLandArea()))) {
                 strength = unit.getStrength() + placeUnitUpdate.getNumberOfUnits();
@@ -142,7 +141,14 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public TerritoryDTO attackTerritoryAction(AttackActionUpdate attackActionUpdate) throws TerritoryNotConnectedException {
-        return null;
+        GamePlayer attackingGamePlayer = gamePlayerDao.getGamePlayerByGameIdAndPlayerId(attackActionUpdate.getPlayerId(), attackActionUpdate.getGameId());
+
+        // is connected?
+        if (!GameManager.isTerritoriesConnected(
+                LandArea.translateLandArea(attackActionUpdate.getTerritoryAttackSrc()),
+                LandArea.translateLandArea(attackActionUpdate.getTerritoryAttackDest()))) {
+            throw new TerritoryNotConnectedException("Territories are not connected");
+        }
     }
 
     @Override

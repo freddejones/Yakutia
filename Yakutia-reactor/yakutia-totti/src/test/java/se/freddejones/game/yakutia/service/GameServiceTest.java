@@ -17,6 +17,7 @@ import se.freddejones.game.yakutia.entity.Unit;
 import se.freddejones.game.yakutia.exception.*;
 import se.freddejones.game.yakutia.model.LandArea;
 import se.freddejones.game.yakutia.model.TerritoryDTO;
+import se.freddejones.game.yakutia.model.dto.AttackActionUpdate;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
 import se.freddejones.game.yakutia.model.dto.GameStateModelDTO;
 import se.freddejones.game.yakutia.model.dto.PlaceUnitUpdate;
@@ -36,6 +37,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class GameServiceTest {
 
+    public static final long GAME_ID = 1L;
+    public static final long PLAYER_ID = 1L;
     @Mock private GamePlayerDao gamePlayerDaoMock;
     @Mock private UnitDao unitDaoMock;
     @Mock private GameDao gameDaoMock;
@@ -299,6 +302,51 @@ public class GameServiceTest {
 
         // When: placing units
         gameService.placeUnitAction(placeUnitUpdate);
+    }
+
+    @Test
+    public void testPlaceUnitUpdateValidPokesGamePlayerDao() throws Exception {
+        // Given
+        PlaceUnitUpdate placeUnitUpdate = new PlaceUnitUpdate(3, "SWEDEN", 1L, 1L);
+        setupGetGamesForPlayerDefaultMockSettings();
+        setupUnitsForGamePlayerDefaultMock();
+
+        // When: placing units
+        gameService.placeUnitAction(placeUnitUpdate);
+        verify(gamePlayerDaoMock, times(1)).setUnitsToGamePlayer(anyLong(), any(Unit.class));
+    }
+
+    @Test(expected = TerritoryNotConnectedException.class)
+    public void testAttackTerritoryNotConnectedTerritory() throws Exception {
+        AttackActionUpdate attackActionUpdate =
+                new AttackActionUpdate(LandArea.SWEDEN.toString(), LandArea.FINLAND.toString(), 5, GAME_ID, PLAYER_ID);
+
+        gameService.attackTerritoryAction(attackActionUpdate);
+    }
+
+    @Test
+    public void testAttackTerritoryAndClaimTerritory() throws Exception {
+
+        AttackActionUpdate attackActionUpdate =
+                new AttackActionUpdate(LandArea.SWEDEN.toString(), LandArea.NORWAY.toString(), 5, GAME_ID, PLAYER_ID);
+        when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(GAME_ID, PLAYER_ID)).thenReturn(gamePlayerMock);
+        when(gameDaoMock.getGameByGameId(GAME_ID)).thenReturn(gameMock);
+
+        TerritoryDTO returnObj = gameService.attackTerritoryAction(attackActionUpdate);
+        // Then:
+        assertThat(returnObj.getUnits()).isEqualTo(5);
+        assertThat(returnObj.getLandName()).isEqualTo(LandArea.DENMARK.toString());
+        assertThat(returnObj.isOwnedByPlayer()).isTrue();
+    }
+
+    @Test
+    public void testAttackTerritoryAndNotTakeOutAnyUnitsFromOtherPlayer() throws Exception {
+
+    }
+
+    @Test
+    public void testAttackTerritoryAndTakeOutSomeUnitsFromOtherPlayer() throws Exception {
+
     }
 
     private void setupValidNumberOfPlayersInMock() {

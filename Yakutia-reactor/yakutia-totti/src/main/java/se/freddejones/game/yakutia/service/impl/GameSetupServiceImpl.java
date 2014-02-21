@@ -17,7 +17,7 @@ import java.util.List;
 
 import static se.freddejones.game.yakutia.model.GameManager.getLandAreas;
 
-@Service("playerservice")
+@Service("GameSetupService")
 @Transactional(readOnly = true)
 public class GameSetupServiceImpl implements GameSetupService {
 
