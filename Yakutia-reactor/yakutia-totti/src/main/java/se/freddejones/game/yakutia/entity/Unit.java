@@ -1,6 +1,6 @@
 package se.freddejones.game.yakutia.entity;
 
-import se.freddejones.game.yakutia.model.LandArea;
+import se.freddejones.game.yakutia.model.Territory;
 import se.freddejones.game.yakutia.model.UnitType;
 
 import javax.persistence.*;
@@ -10,13 +10,13 @@ import java.io.Serializable;
 @Table(name = "UNITS")
 @NamedQueries({
         @NamedQuery(name="Unit.getUnitsByLandArea",
-                query = "SELECT u FROM Unit u where landArea = :laName")
+                query = "SELECT u FROM Unit u where territory = :laName")
 })
 public class Unit implements Serializable {
 
 	private int id;
     private int strength;
-    private LandArea landArea;
+    private Territory territory;
     private UnitType typeOfUnit;
     private GamePlayer gamePlayer;
 
@@ -30,12 +30,12 @@ public class Unit implements Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    public LandArea getLandArea() {
-        return landArea;
+    public Territory getTerritory() {
+        return territory;
     }
 
-    public void setLandArea(LandArea landArea) {
-        this.landArea = landArea;
+    public void setTerritory(Territory territory) {
+        this.territory = territory;
     }
 
     public int getStrength() {

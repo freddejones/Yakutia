@@ -2,7 +2,6 @@ package se.freddejones.game.yakutia.service;
 
 import junit.framework.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,7 +14,7 @@ import se.freddejones.game.yakutia.entity.Game;
 import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Unit;
 import se.freddejones.game.yakutia.exception.*;
-import se.freddejones.game.yakutia.model.LandArea;
+import se.freddejones.game.yakutia.model.Territory;
 import se.freddejones.game.yakutia.model.TerritoryDTO;
 import se.freddejones.game.yakutia.model.dto.AttackActionUpdate;
 import se.freddejones.game.yakutia.model.dto.GameDTO;
@@ -39,6 +38,7 @@ public class GameServiceTest {
 
     public static final long GAME_ID = 1L;
     public static final long PLAYER_ID = 1L;
+    public static final long GAME_PLAYER_ID = 12L;
     @Mock private GamePlayerDao gamePlayerDaoMock;
     @Mock private UnitDao unitDaoMock;
     @Mock private GameDao gameDaoMock;
@@ -152,8 +152,8 @@ public class GameServiceTest {
         List<TerritoryDTO> territoryDTOList = gameService.getTerritoryInformationForActiveGame(10L,12L);
 
         assertThat(territoryDTOList.size()).isEqualTo(2);
-        assertThat(territoryDTOList.get(0).getLandName()).isEqualTo(LandArea.SWEDEN.toString());
-        assertThat(territoryDTOList.get(1).getLandName()).isEqualTo(LandArea.UNASSIGNEDLAND.toString());
+        assertThat(territoryDTOList.get(0).getLandName()).isEqualTo(Territory.SWEDEN.toString());
+        assertThat(territoryDTOList.get(1).getLandName()).isEqualTo(Territory.UNASSIGNEDLAND.toString());
     }
 
     @Test
@@ -181,7 +181,7 @@ public class GameServiceTest {
         GamePlayer counterPartGamePlayer = mock(GamePlayer.class);
         when(counterPartGamePlayer.getGamePlayerId()).thenReturn(45L);
         Unit unit = new Unit();
-        unit.setLandArea(LandArea.FINLAND);
+        unit.setTerritory(Territory.FINLAND);
         List<Unit> units = new ArrayList<Unit>();
         units.add(unit);
         when(counterPartGamePlayer.getUnits()).thenReturn(units);
@@ -283,13 +283,16 @@ public class GameServiceTest {
         PlaceUnitUpdate placeUnitUpdate = new PlaceUnitUpdate(3, "SWEDEN", 1L, 1L);
         setupGetGamesForPlayerDefaultMockSettings();
         setupUnitsForGamePlayerDefaultMock();
+        Unit unitMock = mock(Unit.class);
+        when(unitMock.getStrength()).thenReturn(3);
+        when(gamePlayerDaoMock.getUnassignedLand(anyLong())).thenReturn(unitMock);
 
         // When: placing units
         TerritoryDTO returnObj = gameService.placeUnitAction(placeUnitUpdate);
 
         // Then
         assertThat(returnObj.isOwnedByPlayer()).isTrue();
-        assertThat(returnObj.getLandName()).isEqualTo(LandArea.SWEDEN.toString());
+        assertThat(returnObj.getLandName()).isEqualTo(Territory.SWEDEN.toString());
         assertThat(returnObj.getUnits()).isEqualTo(8);
     }
 
@@ -298,7 +301,9 @@ public class GameServiceTest {
         // Given
         PlaceUnitUpdate placeUnitUpdate = new PlaceUnitUpdate(1, "SWEDEN", 1L, 1L);
         setupGetGamesForPlayerDefaultMockSettings();
-        setupUnitsForGamePlayerMock(5,0);
+        Unit unitMock = mock(Unit.class);
+        when(unitMock.getStrength()).thenReturn(0);
+        when(gamePlayerDaoMock.getUnassignedLand(anyLong())).thenReturn(unitMock);
 
         // When: placing units
         gameService.placeUnitAction(placeUnitUpdate);
@@ -310,6 +315,9 @@ public class GameServiceTest {
         PlaceUnitUpdate placeUnitUpdate = new PlaceUnitUpdate(3, "SWEDEN", 1L, 1L);
         setupGetGamesForPlayerDefaultMockSettings();
         setupUnitsForGamePlayerDefaultMock();
+        Unit unitMock = mock(Unit.class);
+        when(unitMock.getStrength()).thenReturn(3);
+        when(gamePlayerDaoMock.getUnassignedLand(anyLong())).thenReturn(unitMock);
 
         // When: placing units
         gameService.placeUnitAction(placeUnitUpdate);
@@ -319,7 +327,7 @@ public class GameServiceTest {
     @Test(expected = TerritoryNotConnectedException.class)
     public void testAttackTerritoryNotConnectedTerritory() throws Exception {
         AttackActionUpdate attackActionUpdate =
-                new AttackActionUpdate(LandArea.SWEDEN.toString(), LandArea.FINLAND.toString(), 5, GAME_ID, PLAYER_ID);
+                new AttackActionUpdate(Territory.SWEDEN.toString(), Territory.FINLAND.toString(), 5, GAME_ID, PLAYER_ID);
 
         gameService.attackTerritoryAction(attackActionUpdate);
     }
@@ -328,20 +336,54 @@ public class GameServiceTest {
     public void testAttackTerritoryAndClaimTerritory() throws Exception {
 
         AttackActionUpdate attackActionUpdate =
-                new AttackActionUpdate(LandArea.SWEDEN.toString(), LandArea.NORWAY.toString(), 5, GAME_ID, PLAYER_ID);
+                new AttackActionUpdate(Territory.SWEDEN.toString(), Territory.NORWAY.toString(), 5, GAME_ID, PLAYER_ID);
         when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(GAME_ID, PLAYER_ID)).thenReturn(gamePlayerMock);
+        GamePlayer defendingGamePlayerMock = mock(GamePlayer.class);
+        when(gamePlayerDaoMock.getGamePlayerByGameIdAndTerritory(GAME_ID, Territory.NORWAY)).thenReturn(defendingGamePlayerMock);
         when(gameDaoMock.getGameByGameId(GAME_ID)).thenReturn(gameMock);
+        List<Unit> units = new ArrayList<Unit>();
+        Unit u = new Unit();
+        u.setStrength(6);
+        u.setTerritory(Territory.SWEDEN);
+        units.add(u);
+        when(gamePlayerMock.getUnits()).thenReturn(units);
+
 
         TerritoryDTO returnObj = gameService.attackTerritoryAction(attackActionUpdate);
         // Then:
-        assertThat(returnObj.getUnits()).isEqualTo(5);
-        assertThat(returnObj.getLandName()).isEqualTo(LandArea.DENMARK.toString());
+        assertThat(returnObj.getUnits()).isEqualTo(1);
+        assertThat(returnObj.getLandName()).isEqualTo(Territory.SWEDEN.toString());
         assertThat(returnObj.isOwnedByPlayer()).isTrue();
+        verify(gamePlayerDaoMock, times(2)).setUnitsToGamePlayer(eq(GAME_PLAYER_ID), any(Unit.class));
+        verify(gamePlayerDaoMock, times(1)).setUnitsToGamePlayer(11L, any(Unit.class));
     }
 
     @Test
-    public void testAttackTerritoryAndNotTakeOutAnyUnitsFromOtherPlayer() throws Exception {
+    public void testAttackTerritoryAndLooseBattleAndAllUnits() throws Exception {
+        int attackingTerritoryStrength = 6;
+        AttackActionUpdate attackActionUpdate =
+                new AttackActionUpdate(Territory.SWEDEN.toString(),
+                        Territory.NORWAY.toString(), attackingTerritoryStrength-1, GAME_ID, PLAYER_ID);
 
+        when(gamePlayerDaoMock.getGamePlayerByGameIdAndPlayerId(GAME_ID, PLAYER_ID)).thenReturn(gamePlayerMock);
+        when(gamePlayerMock.getGamePlayerId()).thenReturn(GAME_PLAYER_ID);
+        GamePlayer defendingGamePlayerMock = mock(GamePlayer.class);
+        when(gamePlayerDaoMock.getGamePlayerByGameIdAndTerritory(GAME_ID, Territory.NORWAY)).thenReturn(defendingGamePlayerMock);
+        when(gameDaoMock.getGameByGameId(GAME_ID)).thenReturn(gameMock);
+        List<Unit> units = new ArrayList<Unit>();
+        Unit u = new Unit();
+        u.setStrength(6);
+        u.setTerritory(Territory.SWEDEN);
+        units.add(u);
+        when(gamePlayerMock.getUnits()).thenReturn(units);
+
+        TerritoryDTO returnObj = gameService.attackTerritoryAction(attackActionUpdate);
+
+        // Then:
+        assertThat(returnObj.getUnits()).isEqualTo(1);
+        assertThat(returnObj.getLandName()).isEqualTo(Territory.SWEDEN.toString());
+        assertThat(returnObj.isOwnedByPlayer()).isTrue();
+        verify(gamePlayerDaoMock).setUnitsToGamePlayer(eq(GAME_PLAYER_ID), any(Unit.class));
     }
 
     @Test
@@ -354,7 +396,7 @@ public class GameServiceTest {
         when(gamePlayerMock.getGamePlayerStatus()).thenReturn(GamePlayerStatus.ACCEPTED);
         gamePlayers.add(gamePlayerMock);
         gamePlayers.add(gamePlayerMock);
-        when(gamePlayerDaoMock.getGamePlayersByGameId(1L)).thenReturn(gamePlayers);
+        when(gamePlayerDaoMock.getGamePlayersByGameId(GAME_ID)).thenReturn(gamePlayers);
     }
 
     private void setupGetGamesForPlayerDefaultMockSettings() {
@@ -375,12 +417,12 @@ public class GameServiceTest {
     private void setupUnitsForGamePlayerMock(int unitsForLandArea, int unassignedUnits) {
         List<Unit> unitsForGamePlayer = new ArrayList<Unit>();
         Unit unit = new Unit();
-        unit.setLandArea(LandArea.SWEDEN);
+        unit.setTerritory(Territory.SWEDEN);
         unit.setStrength(unitsForLandArea);
         unitsForGamePlayer.add(unit);
 
         Unit unitUnassigned = new Unit();
-        unitUnassigned.setLandArea(LandArea.UNASSIGNEDLAND);
+        unitUnassigned.setTerritory(Territory.UNASSIGNEDLAND);
         unitUnassigned.setStrength(unassignedUnits);
         unitsForGamePlayer.add(unitUnassigned);
         when(gamePlayerMock.getUnits()).thenReturn(unitsForGamePlayer);

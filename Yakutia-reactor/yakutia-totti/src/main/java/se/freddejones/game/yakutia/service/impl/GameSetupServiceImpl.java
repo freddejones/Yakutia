@@ -8,7 +8,7 @@ import se.freddejones.game.yakutia.entity.GamePlayer;
 import se.freddejones.game.yakutia.entity.Unit;
 import se.freddejones.game.yakutia.exception.CouldNotCreateGameException;
 import se.freddejones.game.yakutia.model.GameSetup;
-import se.freddejones.game.yakutia.model.LandArea;
+import se.freddejones.game.yakutia.model.Territory;
 import se.freddejones.game.yakutia.model.UnitType;
 import se.freddejones.game.yakutia.service.GameSetupService;
 
@@ -62,17 +62,17 @@ public class GameSetupServiceImpl implements GameSetupService {
             Unit reinforcementUnit = new Unit();
             reinforcementUnit.setStrength(3);
             reinforcementUnit.setTypeOfUnit(UnitType.TANK);
-            reinforcementUnit.setLandArea(LandArea.UNASSIGNEDLAND);
+            reinforcementUnit.setTerritory(Territory.UNASSIGNEDLAND);
             gamePlayerDao.setUnitsToGamePlayer(gss.getGp().getGamePlayerId(), reinforcementUnit);
         }
     }
 
     private void addTerritoryAndUnitsToGamePlayer(List<GamePlayer> gamePlayers, ArrayList<GameSetup> gamePlayersSetup) {
-        List<LandArea> landAreas = getLandAreas();
+        List<Territory> territories = getLandAreas();
         int gamePlayerCounter = 0;
-        for(LandArea landArea : landAreas) {
+        for(Territory territory : territories) {
             Unit u = new Unit();
-            u.setLandArea(landArea);
+            u.setTerritory(territory);
             u.setStrength(0);
             u.setTypeOfUnit(UnitType.TANK);
             gamePlayersSetup.get(gamePlayerCounter).getUnits().add(u);

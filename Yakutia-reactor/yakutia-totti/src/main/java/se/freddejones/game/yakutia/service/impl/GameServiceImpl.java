@@ -75,12 +75,12 @@ public class GameServiceImpl implements GameService {
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gp.getGamePlayerId() == gamePlayer.getGamePlayerId()) {
                 for (Unit unit : gamePlayer.getUnits()) {
-                    territoryDTOs.add(new TerritoryDTO(unit.getLandArea().toString(), unit.getStrength(), true));
+                    territoryDTOs.add(new TerritoryDTO(unit.getTerritory().toString(), unit.getStrength(), true));
                 }
             } else {
                 for (Unit unit : gamePlayer.getUnits()) {
-                    if (unit.getLandArea() != LandArea.UNASSIGNEDLAND) {
-                        territoryDTOs.add(new TerritoryDTO(unit.getLandArea().toString(), unit.getStrength(), false));
+                    if (unit.getTerritory() != Territory.UNASSIGNEDLAND) {
+                        territoryDTOs.add(new TerritoryDTO(unit.getTerritory().toString(), unit.getStrength(), false));
                     }
                 }
             }
@@ -122,15 +122,14 @@ public class GameServiceImpl implements GameService {
         GamePlayer gamePlayer = gamePlayerDao.
                 getGamePlayerByGameIdAndPlayerId(placeUnitUpdate.getPlayerId(), placeUnitUpdate.getGameId());
 
-        for (Unit unit : gamePlayer.getUnits()) {
-           if (LandArea.UNASSIGNEDLAND.equals(unit.getLandArea())
-                   && unit.getStrength() < placeUnitUpdate.getNumberOfUnits()) {
-                throw new NotEnoughUnitsException("Insufficient funds");
-           }
+        if (gamePlayerDao.getUnassignedLand(gamePlayer.getGamePlayerId()).getStrength()
+                < placeUnitUpdate.getNumberOfUnits()) {
+            throw new NotEnoughUnitsException("Insufficient funds");
         }
+
         int strength = 0;
         for (Unit unit : gamePlayer.getUnits()) {
-            if (unit.getLandArea().equals(LandArea.translateLandArea(placeUnitUpdate.getLandArea()))) {
+            if (unit.getTerritory().equals(Territory.translateLandArea(placeUnitUpdate.getLandArea()))) {
                 strength = unit.getStrength() + placeUnitUpdate.getNumberOfUnits();
                 unit.setStrength(strength);
                 gamePlayerDao.setUnitsToGamePlayer(gamePlayer.getGamePlayerId(), unit);
@@ -141,15 +140,52 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public TerritoryDTO attackTerritoryAction(AttackActionUpdate attackActionUpdate) throws TerritoryNotConnectedException {
-        GamePlayer attackingGamePlayer = gamePlayerDao.getGamePlayerByGameIdAndPlayerId(attackActionUpdate.getPlayerId(), attackActionUpdate.getGameId());
+        Long playerId = attackActionUpdate.getPlayerId();
+        Long gameId = attackActionUpdate.getGameId();
+        GamePlayer attackingGamePlayer = gamePlayerDao.getGamePlayerByGameIdAndPlayerId(playerId, gameId);
 
-        // is connected?
+        Territory destionationTerritory = Territory.translateLandArea(attackActionUpdate.getTerritoryAttackDest());
         if (!GameManager.isTerritoriesConnected(
-                LandArea.translateLandArea(attackActionUpdate.getTerritoryAttackSrc()),
-                LandArea.translateLandArea(attackActionUpdate.getTerritoryAttackDest()))) {
+                Territory.translateLandArea(attackActionUpdate.getTerritoryAttackSrc()),
+                destionationTerritory)) {
             throw new TerritoryNotConnectedException("Territories are not connected");
         }
+
+        GamePlayer defendingGamePlayer = gamePlayerDao.getGamePlayerByGameIdAndTerritory(gameId, destionationTerritory);
+
+        Unit defendingUnit = getUnitByTerritory(attackActionUpdate.getTerritoryAttackDest(), defendingGamePlayer.getUnits());
+        Unit attackingUnit = getUnitByTerritory(attackActionUpdate.getTerritoryAttackSrc(), attackingGamePlayer.getUnits());
+
+        // create class for handling battleoutcome:
+        // attacking territory wins fully = true/false
+        // defending diff in units
+        // attacking diff in units
+
+        int battleOutComeWin = 2;
+
+        if (battleOutComeWin > 0) {
+            // decrease strength for defending territory
+        } else {
+            // decrease strength for attacking territory
+            int currentStrength = attackingUnit.getStrength();
+            attackingUnit.setStrength(currentStrength + battleOutComeWin);
+            gamePlayerDao.setUnitsToGamePlayer(attackingGamePlayer.getGamePlayerId(), attackingUnit);
+        }
+
+
+        TerritoryDTO territoryDTO = new TerritoryDTO("SWEDEN", attackingUnit.getStrength(), true);
+        return territoryDTO;
     }
+
+    private Unit getUnitByTerritory(String territory, List<Unit> defendingGamePlayerUnits) {
+        for (Unit unit : defendingGamePlayerUnits) {
+            if (unit.getTerritory().equals(Territory.translateLandArea(territory))) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public TerritoryDTO moveUnitsAction(PlaceUnitUpdate placeUnitUpdate) {
@@ -194,8 +230,8 @@ public class GameServiceImpl implements GameService {
 
 //    private void attackTerritory(GameStateModelDTO gameStateModelDTO, GamePlayer gamePlayer) throws TerritoryNotConnectedException {
 //        gameStateModelDTO.getAttackActionUpdate();
-//        LandArea attackingTerritory = LandArea.translateLandArea(gameStateModelDTO.getAttackActionUpdate().getTerritoryAttackSrc());
-//        LandArea defendingTerritory = LandArea.translateLandArea(gameStateModelDTO.getAttackActionUpdate().getTerritoryAttackDest());
+//        Territory attackingTerritory = Territory.translateLandArea(gameStateModelDTO.getAttackActionUpdate().getTerritoryAttackSrc());
+//        Territory defendingTerritory = Territory.translateLandArea(gameStateModelDTO.getAttackActionUpdate().getTerritoryAttackDest());
 //
 //        if (!GameManager.isTerritoriesConnected(attackingTerritory, defendingTerritory)) {
 //            throw new TerritoryNotConnectedException(String.format("[%s] not connected to [%s]",
@@ -207,7 +243,7 @@ public class GameServiceImpl implements GameService {
 //
 //        GamePlayer defendingGamePlayer = gamePlayerDao.getGamePlayerByGamePlayerId(defendingGamePlayerId);
 //        for (Unit u : defendingGamePlayer.getUnits()) {
-//            if (defendingTerritory.equals(u.getLandArea())) {
+//            if (defendingTerritory.equals(u.getTerritory())) {
 //                int remainingUnit = u.getStrength() - gameStateModelDTO.getAttackActionUpdate().getAttackingNumberOfUnits();
 //                u.setStrength(remainingUnit);
 //                gamePlayerDao.setUnitsToGamePlayer(defendingGamePlayerId, u);
@@ -224,15 +260,15 @@ public class GameServiceImpl implements GameService {
 
 //    private void placeUnitUpdate(GameStateModelDTO gameStateModelDTO, GamePlayer gamePlayer) throws NotEnoughUnitsException {
 //        Unit unassignedLandUnit = gamePlayerDao.getUnassignedLand(gamePlayer.getGamePlayerId());
-//        LandArea landAreaInRequest = LandArea.translateLandArea(
-//                gameStateModelDTO.getPlaceUnitUpdate().getLandArea());
+//        Territory landAreaInRequest = Territory.translateLandArea(
+//                gameStateModelDTO.getPlaceUnitUpdate().getTerritory());
 //
 //        if (unassignedLandUnit.getStrength() - gameStateModelDTO.getPlaceUnitUpdate().getNumberOfUnits() < 0) {
 //            throw new NotEnoughUnitsException("Insufficient units for doing PLACE UNIT operation");
 //        }
 //
 //        for (Unit unit : gamePlayer.getUnits()) {
-//            if (unit.getLandArea() == landAreaInRequest) {
+//            if (unit.getTerritory() == landAreaInRequest) {
 //                int numberOfUnits = gameStateModelDTO.getPlaceUnitUpdate().getNumberOfUnits();
 //                unit.setStrength(unit.getStrength() + numberOfUnits);
 //                gamePlayerDao.setUnitsToGamePlayer(gamePlayer.getGamePlayerId(), unit);
